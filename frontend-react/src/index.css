@@ -1,3 +1,33 @@
 :root {
+    /* Light Theme */
+    --primary-color: #124E66;
+    --secondary-color: #6c757d;
+    --tertiary-color: #f8f9fa;
+    --quaternary-color: #ffffff;
+    --quinary-color: rgba(240, 240, 240, 0.95);
+    --background-color: #ffffff;
+    --text-color: #212529;
+    --text-color-light: #ffffff;
+    --grass-stadium: #2E5A27;
+    --leather-color: #8B4513;
+    --gray-uniform: #333333;
+    --blue-stadium: #1B4B8A;
+    --red: #CD2026;
+}
 
+[data-theme="dark"] {
+    /* Dark Theme */
+    --primary-color: #124E66;
+    --secondary-color: #444;
+    --tertiary-color: #222;
+    --quaternary-color: #333;
+    --quinary-color: rgba(240, 240, 240, 0.95);
+    --background-color: #181818;
+    --text-color: #f8f9fa;
+    --text-color-light: #ffffff;
+}
+
+body, .app {
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
