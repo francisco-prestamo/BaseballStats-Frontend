@@ -4,7 +4,7 @@ import LoginModal from './LoginModal';
 import { useAuth } from '../../authContext';
 import { FaUser, FaMoon, FaSun } from 'react-icons/fa';
 import { FaUserPlus } from "react-icons/fa6";
-
+import './Navbar.css';
 
 interface NavbarProps {
     toggleTheme: () => void;
