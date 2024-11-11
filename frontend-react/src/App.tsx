@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './authContext';
 import Navbar from "./components/common/Navbar";
 import Home from './pages/common/Home';
-import Profile from './pages/users/Profile';
+import Profile from './pages/users/all/Profile.tsx';
 import PrivateRoute from './components/common/PrivateRoute';
 
 import './App.css';
