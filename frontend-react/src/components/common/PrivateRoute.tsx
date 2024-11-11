@@ -15,7 +15,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, requiredUserType 
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
-    if (requiredUserType && (userType !== requiredUserType || requiredUserType == 'allAuthenticated')) {
+    if (requiredUserType && (userType !== requiredUserType && requiredUserType !== 'allAuthenticated')) {
         return <Navigate to="/" replace />;
     }
 
