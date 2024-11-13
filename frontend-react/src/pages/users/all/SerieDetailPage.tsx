@@ -40,7 +40,7 @@ const SerieDetailPage: React.FC = () => {
             <h3>Games</h3>
             <ul>
                 {games.map((game) => (
-                    <li key={`${game.team1.id}-${game.team2.id}-${game.date}`}>{game.team1.name}-{game.team2.name}-{game.date.toString()}</li>
+                    <li key={`${game.id}`}>{game.team1.name}-{game.team2.name}-{game.date.toString()}-{game.team1Runs}-{game.team2Runs}</li>
                 ))}
             </ul>
         </div>
