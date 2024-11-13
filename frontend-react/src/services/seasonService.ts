@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { Season, Series } from './types';
+import { API_URL } from './config';
 
-const API_URL = 'api-url';
+
 const SEASONS_URL = `${API_URL}/seasons`;
 const SERIES_URL = `${API_URL}/series`;
 

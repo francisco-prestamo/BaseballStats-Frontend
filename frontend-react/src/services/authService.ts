@@ -1,6 +1,6 @@
 import axios from 'axios';
+import { API_URL } from './config';
 
-const API_URL = 'api-url';
 const LOGIN_URL = `${API_URL}/login`;
 const REGISTER_URL = `${API_URL}/register`;
 
