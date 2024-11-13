@@ -5,10 +5,11 @@ import Navbar from "./components/common/Navbar";
 import Home from './pages/common/Home';
 import Profile from './pages/users/all/Profile.tsx';
 import PrivateRoute from './components/common/PrivateRoute';
-
+import SeasonsPage from "./pages/users/all/SeasonsPage";
+import SeasonDetailPage from "./pages/users/all/SeasonDetailsPage";
+import SerieDetailPage from "./pages/users/all/SerieDetailPage";
 import './App.css';
-import SeasonsPage from "./pages/users/all/SeasonsPage.tsx";
-import SeasonDetailPage from "./pages/users/all/SeasonDetailsPage.tsx";
+
 
 const App: React.FC = () => {
     const [theme, setTheme] = useState('light');
@@ -43,6 +44,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute requiredUserType="allAuthenticated">
                                         <SeasonDetailPage />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/series/:seasonId/:serieId"
+                                element={
+                                    <PrivateRoute requiredUserType="allAuthenticated">
+                                        <SerieDetailPage />
                                     </PrivateRoute>
                                 }
                             />

@@ -4,7 +4,22 @@ export interface Season {
 
 export interface Series {
     id: string;
+    idSeason: string;
     name: string;
     startDate: Date;
     endDate: Date;
 }
+
+export interface Team {
+    id: string;
+    name: string;
+    initials: string;
+    color: string;
+}
+
+export interface Game {
+    team1: Team;
+    team2: Team;
+    date: Date;
+}
+

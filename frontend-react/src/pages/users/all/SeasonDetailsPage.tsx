@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { fetchSeriesBySeason } from '../../../services/seasonService';
 import { Series } from '../../../services/types';
 
@@ -7,6 +7,7 @@ const SeasonDetailPage: React.FC = () => {
     const { seasonId } = useParams<{ seasonId: string }>();
     const [seriesList, setSeriesList] = useState<Series[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getSeries = async () => {
@@ -23,13 +24,21 @@ const SeasonDetailPage: React.FC = () => {
         getSeries();
     }, [seasonId]);
 
+    const handleSerieClick = (serieId: string) => {
+        if (seasonId) {
+            navigate(`/series/${seasonId}/${serieId}`);
+        }
+    };
+
     return (
         <div>
             <h2>Series for Season {seasonId}</h2>
             {error && <p>{error}</p>}
             <ul>
                 {seriesList.map((series) => (
-                    <li key={series.id}>{series.name}</li>
+                    <li key={series.id} onClick={() => handleSerieClick(series.id)}>
+                        {series.name}
+                    </li>
                 ))}
             </ul>
         </div>
