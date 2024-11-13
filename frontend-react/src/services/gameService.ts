@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Game, PlayerInPosition } from './types';
-import { API_URL } from "./config.ts";
+import { Game, PlayerInPosition, Change } from './types';
+import { API_URL } from './config';
 
 const GAMES_URL = `${API_URL}/games`;
 
@@ -26,8 +26,8 @@ export const fetchTeamAlignments = async (gameId: string): Promise<{ team1Alignm
     }
 };
 
-// Fetch player substitutions made during the game
-export const fetchPlayerSubstitutions = async (gameId: string): Promise<{ team1Substitutions: PlayerInPosition[]; team2Substitutions: PlayerInPosition[] }> => {
+// Fetch player substitutions made during the game (with time and change details)
+export const fetchPlayerSubstitutions = async (gameId: string): Promise<{ team1Substitutions: Change[]; team2Substitutions: Change[] }> => {
     try {
         const response = await axios.get(`${GAMES_URL}/${gameId}/substitutions`);
         return response.data;

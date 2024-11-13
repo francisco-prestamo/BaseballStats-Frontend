@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchGameDetails, fetchTeamAlignments, fetchPlayerSubstitutions } from '../../../services/gameService';
-import { Game, PlayerInPosition } from '../../../services/types';
+import { Game, PlayerInPosition, Change } from '../../../services/types';
 
 const GameDetailsPage: React.FC = () => {
     const { gameId } = useParams<{ gameId: string }>();
     const [game, setGame] = useState<Game | null>(null);
     const [team1Alignment, setTeam1Alignment] = useState<PlayerInPosition[]>([]);
     const [team2Alignment, setTeam2Alignment] = useState<PlayerInPosition[]>([]);
-    const [team1Substitutions, setTeam1Substitutions] = useState<PlayerInPosition[]>([]);
-    const [team2Substitutions, setTeam2Substitutions] = useState<PlayerInPosition[]>([]);
+    const [team1Substitutions, setTeam1Substitutions] = useState<Change[]>([]);
+    const [team2Substitutions, setTeam2Substitutions] = useState<Change[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -54,28 +54,36 @@ const GameDetailsPage: React.FC = () => {
                     <h3>Team Alignments</h3>
                     <p><strong>{game.team1.name} Alignment:</strong></p>
                     <ul>
-                        {team1Alignment.map((player) => (
-                            <li key={player.idPlayer}>{player.name} - {player.position}</li>
+                        {team1Alignment.map((playerInPosition) => (
+                            <li key={playerInPosition.player.id}>{playerInPosition.player.name} - {playerInPosition.position}</li>
                         ))}
                     </ul>
                     <p><strong>{game.team2.name} Alignment:</strong></p>
                     <ul>
-                        {team2Alignment.map((player) => (
-                            <li key={player.idPlayer}>{player.name} - {player.position}</li>
+                        {team2Alignment.map((playerInPosition) => (
+                            <li key={playerInPosition.player.id}>{playerInPosition.player.name} - {playerInPosition.position}</li>
                         ))}
                     </ul>
 
                     <h3>Player Substitutions</h3>
                     <p><strong>{game.team1.name} Substitutions:</strong></p>
                     <ul>
-                        {team1Substitutions.map((sub, index) => (
-                            <li key={index}>{sub.name} - {sub.position}</li>
+                        {team1Substitutions.map((change, index) => (
+                            <li key={index}>
+                                {change.playerOut.player.name} (Out) - {change.playerOut.position}
+                                replaced by {change.playerIn.player.name} (In) - {change.playerIn.position}
+                                at {change.time.toString()}
+                            </li>
                         ))}
                     </ul>
                     <p><strong>{game.team2.name} Substitutions:</strong></p>
                     <ul>
-                        {team2Substitutions.map((sub, index) => (
-                            <li key={index}>{sub.name} - {sub.position}</li>
+                        {team2Substitutions.map((change, index) => (
+                            <li key={index}>
+                                {change.playerOut.player.name} (Out) - {change.playerOut.position}
+                                replaced by {change.playerIn.player.name} (In) - {change.playerIn.position}
+                                at {change.time.toString()}
+                            </li>
                         ))}
                     </ul>
                 </>

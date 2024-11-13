@@ -29,9 +29,20 @@ export interface Game {
     team2Runs: number;
 }
 
-export interface PlayerInPosition {
-    idPlayer: string;
+export interface Player {
+    id: string;
     name: string;
+}
+
+export interface PlayerInPosition {
+    player: Player;
     position: string;
     team: string;
+}
+
+export interface Change {
+    id: string;
+    playerOut: PlayerInPosition;
+    playerIn: PlayerInPosition;
+    time: Date;
 }
