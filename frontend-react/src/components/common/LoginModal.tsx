@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../authContext';
-import { login, register } from '../../services/api';
+import { login, register } from '../../services/authService';
 
 interface LoginModalProps {
     closeModal: () => void;
