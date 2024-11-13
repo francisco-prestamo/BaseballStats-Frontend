@@ -1,4 +1,3 @@
-// src/pages/users/all/SeasonDetailPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchSeriesBySeason } from '../../../services/seasonService';
