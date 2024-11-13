@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Game, Team } from './types';
-import {API_URL} from "./config.ts";
-
+import { API_URL } from './config';
 
 const SERIES_URL = `${API_URL}/series`;
 
