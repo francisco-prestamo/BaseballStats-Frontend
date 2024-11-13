@@ -9,6 +9,7 @@ import SeasonsPage from "./pages/users/all/SeasonsPage";
 import SeasonDetailPage from "./pages/users/all/SeasonDetailsPage";
 import SerieDetailPage from "./pages/users/all/SerieDetailPage";
 import './App.css';
+import GameDetailsPage from "./pages/users/all/GameDetailsPage.tsx";
 
 
 const App: React.FC = () => {
@@ -52,6 +53,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute requiredUserType="allAuthenticated">
                                         <SerieDetailPage />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/games/:gameId"
+                                element={
+                                    <PrivateRoute requiredUserType="allAuthenticated">
+                                        <GameDetailsPage />
                                     </PrivateRoute>
                                 }
                             />

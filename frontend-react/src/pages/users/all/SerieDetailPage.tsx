@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { fetchGamesInSeries, fetchTeamsInSeries } from '../../../services/serieService';
 import { Game, Team } from '../../../services/types';
 
 const SerieDetailPage: React.FC = () => {
     const { seasonId, serieId } = useParams<{ seasonId: string; serieId: string }>();
+    const navigate = useNavigate();
     const [games, setGames] = useState<Game[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const getSeriesDetails = async () => {
-            console.log(seasonId,serieId)
             try {
                 if (seasonId && serieId) {
                     const gamesData = await fetchGamesInSeries(seasonId, serieId);
@@ -27,6 +27,11 @@ const SerieDetailPage: React.FC = () => {
         getSeriesDetails();
     }, [seasonId, serieId]);
 
+    // Function to handle navigation to GameDetailsPage
+    const handleGameClick = (gameId: string) => {
+        navigate(`/games/${gameId}`);
+    };
+
     return (
         <div>
             <h2>Details for Series {serieId} in Season {seasonId}</h2>
@@ -40,7 +45,9 @@ const SerieDetailPage: React.FC = () => {
             <h3>Games</h3>
             <ul>
                 {games.map((game) => (
-                    <li key={`${game.id}`}>{game.team1.name}-{game.team2.name}-{game.date.toString()}-{game.team1Runs}-{game.team2Runs}</li>
+                    <li key={game.id} onClick={() => handleGameClick(game.id)} style={{ cursor: 'pointer', color: 'blue' }}>
+                        {game.team1.name} - {game.team2.name} on {game.date.toString()} | Score: {game.team1Runs} - {game.team2Runs}
+                    </li>
                 ))}
             </ul>
         </div>
