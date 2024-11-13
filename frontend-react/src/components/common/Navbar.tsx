@@ -42,6 +42,9 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme }) => {
 
                     <ul className={`navbar-menu ${isMenuOpen ? 'open' : ''}`}>
                         <li><Link to="/" onClick={toggleMenu} className="navbar-link">Home</Link></li>
+                        {isAuthenticated && (
+                            <li><Link to="/seasons" onClick={toggleMenu} className="navbar-link">Seasons</Link></li>
+                        )}
                     </ul>
 
                     <div className="auth-search-container">
