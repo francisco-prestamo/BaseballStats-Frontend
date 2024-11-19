@@ -1,29 +1,17 @@
-import axios from 'axios';
+import apiClient from './apiClient';
 import { Season, Series } from './types';
-import { API_URL } from './config';
 
-
-const SEASONS_URL = `${API_URL}/seasons`;
-const SERIES_URL = `${API_URL}/series`;
+const SEASONS_URL = '/seasons';
+const SERIES_URL = '/series';
 
 // Fetch all seasons
 export const fetchSeasons = async (): Promise<Season[]> => {
-    try {
-        const response = await axios.get(SEASONS_URL);
-        return response.data as Season[];
-    } catch (error) {
-        console.error(error);
-        throw new Error('Failed to fetch seasons');
-    }
+    const response = await apiClient.get(SEASONS_URL);
+    return response.data;
 };
 
 // Fetch all series for a specific season
 export const fetchSeriesBySeason = async (seasonId: string): Promise<Series[]> => {
-    try {
-        const response = await axios.get(`${SERIES_URL}/${seasonId}`);
-        return response.data as Series[];
-    } catch (error) {
-        console.error(error);
-        throw new Error('Failed to fetch series for the selected season');
-    }
+    const response = await apiClient.get(`${SERIES_URL}/${seasonId}`);
+    return response.data;
 };

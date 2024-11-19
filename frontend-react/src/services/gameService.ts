@@ -1,38 +1,22 @@
-import axios from 'axios';
+import apiClient from './apiClient';
 import { Game, PlayerInPosition, Change } from './types';
-import { API_URL } from './config';
 
-const GAMES_URL = `${API_URL}/games`;
+const GAMES_URL = '/games';
 
 // Fetch detailed info for a specific game
 export const fetchGameDetails = async (gameId: string): Promise<Game> => {
-    try {
-        const response = await axios.get(`${GAMES_URL}/${gameId}`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Failed to fetch game details');
-    }
+    const response = await apiClient.get(`${GAMES_URL}/${gameId}`);
+    return response.data;
 };
 
 // Fetch alignments of the teams in a game
 export const fetchTeamAlignments = async (gameId: string): Promise<{ team1Alignment: PlayerInPosition[]; team2Alignment: PlayerInPosition[] }> => {
-    try {
-        const response = await axios.get(`${GAMES_URL}/${gameId}/alignments`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Failed to fetch team alignments');
-    }
+    const response = await apiClient.get(`${GAMES_URL}/${gameId}/alignments`);
+    return response.data;
 };
 
-// Fetch player substitutions made during the game (with time and change details)
+// Fetch player substitutions made during the game
 export const fetchPlayerSubstitutions = async (gameId: string): Promise<{ team1Substitutions: Change[]; team2Substitutions: Change[] }> => {
-    try {
-        const response = await axios.get(`${GAMES_URL}/${gameId}/substitutions`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Failed to fetch player substitutions');
-    }
+    const response = await apiClient.get(`${GAMES_URL}/${gameId}/substitutions`);
+    return response.data;
 };

@@ -8,8 +8,9 @@ import PrivateRoute from './components/common/PrivateRoute';
 import SeasonsPage from "./pages/users/all/SeasonsPage";
 import SeasonDetailPage from "./pages/users/all/SeasonDetailsPage";
 import SerieDetailPage from "./pages/users/all/SerieDetailPage";
-import './App.css';
 import GameDetailsPage from "./pages/users/all/GameDetailsPage.tsx";
+import './App.css';
+import SessionExpiredPage from "./pages/common/SessionExpiredPage.tsx";
 
 
 const App: React.FC = () => {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                     <div className="container">
                         <Routes>
                             <Route path="/" element={<Home />} />
+                            <Route path="/session-expired" element={<SessionExpiredPage />} />
                             <Route
                                 path="/seasons"
                                 element={

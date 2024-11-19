@@ -10,18 +10,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('authToken'));
     const [userType, setUserType] = useState<string | null>(localStorage.getItem('userType'));
 
     const login = (token: string, userType: string) => {
-        localStorage.setItem('token', token);
+        localStorage.setItem('authToken', token);
         localStorage.setItem('userType', userType);
         setIsAuthenticated(true);
         setUserType(userType);
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
         localStorage.removeItem('userType');
         setIsAuthenticated(false);
         setUserType(null);
