@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchGameDetails, fetchTeamAlignments, fetchPlayerSubstitutions } from '../../../services/gameService';
+import {
+    fetchGameDetails,
+    fetchTeamAlignments,
+    fetchPlayerSubstitutions
+} from '../../../services/gameService';
+import { GiBaseballGlove, GiBaseballBat } from 'react-icons/gi';
+import { PiBaseballCap } from 'react-icons/pi';
 import { Game, PlayerInPosition, Change } from '../../../services/types';
+import baseballFieldImg from '../../../images/baseball-field.png';
+import {BiRightArrow} from "react-icons/bi";
 
-const GameDetailsPage: React.FC = () => {
+type Position = 'Pitcher' | 'Catcher' | 'First-Base' | 'Second-Base' | 'Third-Base' |
+    'Shortstop' | 'Left-Field' | 'Center-Field' | 'Right-Field';
+
+const GameDetailsPage = () => {
     const { gameId } = useParams<{ gameId: string }>();
     const [game, setGame] = useState<Game | null>(null);
     const [team1Alignment, setTeam1Alignment] = useState<PlayerInPosition[]>([]);
@@ -11,6 +22,7 @@ const GameDetailsPage: React.FC = () => {
     const [team1Substitutions, setTeam1Substitutions] = useState<Change[]>([]);
     const [team2Substitutions, setTeam2Substitutions] = useState<Change[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [showingTeam1, setShowingTeam1] = useState<boolean>(true);
 
     useEffect(() => {
         const getGameDetails = async () => {
@@ -28,64 +40,157 @@ const GameDetailsPage: React.FC = () => {
                 }
             } catch (error) {
                 console.error(error);
-                setError('Failed to fetch game details');
+                setError('Failed to fetch game details. Please try again later.');
             }
         };
         getGameDetails();
     }, [gameId]);
 
+    const fieldAlignment = showingTeam1 ? team1Alignment : team2Alignment;
+    const battingAlignment = showingTeam1 ? team2Alignment : team1Alignment;
+
+    const getPlayerIcon = (position: Position) => {
+        if (position === 'Pitcher') {
+            return <PiBaseballCap className="text-xl text-primary" />;
+        }
+        return <GiBaseballGlove className="text-xl text-primary" />;
+    };
+
+    const getPlayerPosition = (position: Position) => {
+        const baseStyles = "absolute transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 bg-bg-light dark:bg-primary-light backdrop-blur rounded-lg border border-primary-lighter text-sm font-medium transition-all duration-200 whitespace-nowrap z-10 hover:scale-105 hover:shadow-md hover:bg-secondary-lightest dark:hover:bg-primary flex items-center gap-2";
+
+        const positions: Record<Position, string> = {
+            'Pitcher': 'top-[60%] left-[50%]',
+            'Catcher': 'top-[90%] left-[50%]',
+            'First-Base': 'top-[55%] left-[75%]',
+            'Second-Base': 'top-[40%] left-[62%]',
+            'Third-Base': 'top-[55%] left-[25%]',
+            'Shortstop': 'top-[40%] left-[38%]',
+            'Left-Field': 'top-[20%] left-[20%]',
+            'Center-Field': 'top-[15%] left-[50%]',
+            'Right-Field': 'top-[20%] left-[80%]'
+        };
+
+        return `${baseStyles} ${positions[position]}`;
+    };
+
     return (
-        <div>
-            <h2>Game Details</h2>
-            {error && <p>{error}</p>}
-            {game && (
+        <div className="container mx-auto p-4 space-y-4">
+            {/* Error Display */}
+            {error && (
+                <div className="bg-red-500 text-text-light p-4 rounded-lg mb-6 text-center font-semibold">
+                    <p>{error}</p>
+                </div>
+            )}
+
+            {/* If error is present, skip rendering the rest */}
+            {!error && (
                 <>
-                    <h3>Teams</h3>
-                    <p>
-                        <strong>{game.team1.name}</strong> vs <strong>{game.team2.name}</strong>
-                    </p>
-                    <p>
-                        Winner: {game.winTeam ? game.team1.name : game.team2.name}
-                    </p>
-                    <p>
-                        Score: {game.team1Runs} - {game.team2Runs}
-                    </p>
+                    {/* Header */}
+                    <div className="bg-gradient-to-br from-primary to-primary-light rounded-2xl p-6 shadow-lg">
+                        <div className="flex justify-between items-center text-text-light">
+                            <h1 className="text-4xl font-bold">Game Details</h1>
+                            {game && (
+                                <div className="text-right">
+                                    <p className="text-2xl">{game.team1.name} vs {game.team2.name}</p>
+                                    <p className="text-xl mt-2">Score: {game.team1Runs} - {game.team2Runs}</p>
+                                    <p className="text-lg mt-1">Winner: {game.winTeam ? game.team1.name : game.team2.name}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
-                    <h3>Team Alignments</h3>
-                    <p><strong>{game.team1.name} Alignment:</strong></p>
-                    <ul>
-                        {team1Alignment.map((playerInPosition) => (
-                            <li key={playerInPosition.player.id}>{playerInPosition.player.name} - {playerInPosition.position}</li>
-                        ))}
-                    </ul>
-                    <p><strong>{game.team2.name} Alignment:</strong></p>
-                    <ul>
-                        {team2Alignment.map((playerInPosition) => (
-                            <li key={playerInPosition.player.id}>{playerInPosition.player.name} - {playerInPosition.position}</li>
-                        ))}
-                    </ul>
+                    {/* Field and Batting Lineup */}
+                    <div className="flex flex-col md:flex-row gap-4">
+                        {/* Field Alignment Section */}
+                        <div className="flex-1 min-w-[500px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6">
+                            <div className="text-center">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light">
+                                        {showingTeam1 ? game?.team1.name : game?.team2.name} Field Positions
+                                    </h2>
+                                    <button
+                                        className="px-4 py-2 bg-primary dark:bg-primary-light rounded-lg text-text-light font-medium hover:bg-primary-light dark:hover:bg-primary transition-colors"
+                                        onClick={() => setShowingTeam1(!showingTeam1)}
+                                    >
+                                        Switch Teams
+                                    </button>
+                                </div>
+                                <div className="relative aspect-video w-full">
+                                    <img
+                                        src={baseballFieldImg}
+                                        alt="Baseball Field"
+                                        className="w-full h-full object-cover rounded-xl"
+                                    />
+                                    {fieldAlignment.map((player) => (
+                                        <div
+                                            key={player.player.id}
+                                            className={getPlayerPosition(player.position as Position)}
+                                        >
+                                            {getPlayerIcon(player.position as Position)}
+                                            {player.player.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
 
-                    <h3>Player Substitutions</h3>
-                    <p><strong>{game.team1.name} Substitutions:</strong></p>
-                    <ul>
-                        {team1Substitutions.map((change, index) => (
-                            <li key={index}>
-                                {change.playerOut.player.name} (Out) - {change.playerOut.position}
-                                replaced by {change.playerIn.player.name} (In) - {change.playerIn.position}
-                                at {change.time.toString()}
-                            </li>
-                        ))}
-                    </ul>
-                    <p><strong>{game.team2.name} Substitutions:</strong></p>
-                    <ul>
-                        {team2Substitutions.map((change, index) => (
-                            <li key={index}>
-                                {change.playerOut.player.name} (Out) - {change.playerOut.position}
-                                replaced by {change.playerIn.player.name} (In) - {change.playerIn.position}
-                                at {change.time.toString()}
-                            </li>
-                        ))}
-                    </ul>
+                        {/* Batting Lineup Section */}
+                        <div className="flex-2 min-w-[300px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6">
+                            <h3 className="text-xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
+                                {showingTeam1 ? game?.team2.name : game?.team1.name} Batting Lineup
+                            </h3>
+                            <div className="space-y-2">
+                                {battingAlignment.map((player, index) => (
+                                    <div
+                                        key={player.player.id}
+                                        className="flex items-center justify-between p-2 bg-secondary-lightest dark:bg-primary rounded-lg hover:bg-secondary-light dark:hover:bg-primary-light transition-colors"
+                                    >
+                                        <span className="font-medium text-text-dark dark:text-text-light">{index + 1}.</span>
+                                        <span className="text-text-dark dark:text-text-light">{player.player.name}</span>
+                                        <GiBaseballBat className="text-xl text-primary dark:text-primary-lighter" />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Substitutions Section */}
+                    <div className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6">
+                        <h3 className="text-xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
+                            Substitutions
+                        </h3>
+                        <div className="space-y-4">
+                            {[
+                                { name: game?.team1.name, subs: team1Substitutions },
+                                { name: game?.team2.name, subs: team2Substitutions }
+                            ].map((team, idx) => (
+                                <div key={idx} className="space-y-2">
+                                    <h4 className="font-medium text-text-dark dark:text-text-light">{team.name}</h4>
+                                    <div className="overflow-y-auto max-h-32">
+                                        {team.subs.map((sub, index) => (
+                                            <div key={index}
+                                                 className="flex items-center justify-between p-3 bg-secondary-lightest dark:bg-primary rounded-lg hover:bg-secondary-light dark:hover:bg-primary-light transition-all duration-200 group">
+                                                <div className="flex items-center space-x-2">
+                                                    <p className="font-semibold text-text-dark dark:text-text-light">In: {sub.playerIn.player.name}</p>
+                                                    <p className="font-semibold text-text-dark dark:text-text-light"><BiRightArrow/></p>
+                                                    <p className="font-semibold text-text-dark dark:text-text-light">Out: {sub.playerOut.player.name}</p>
+                                                </div>
+                                                <div className="flex items-center space-x-2">
+                                                <div
+                                                        className="px-3 py-1 bg-primary/10 dark:bg-primary-lighter/10 rounded-full">
+                                                        <p className="text-sm text-primary dark:text-primary-lighter">
+                                                            {sub.time.toString()}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    ))}
+                                </div>
+                                </div>
+                                ))}
+                        </div>
+                    </div>
                 </>
             )}
         </div>
