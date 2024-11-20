@@ -36,7 +36,7 @@ const App: React.FC = () => {
             <Router>
                 <div className="min-h-screen transition-all bg-bg-light dark:bg-bg-dark text-text-dark dark:text-text-light">
                     <Navbar toggleTheme={toggleTheme} theme={theme} onLoginClick={toggleLoginModal} />
-                    <div className="container mx-auto px-4 py-6 pt-24">
+                    <div className="container mx-auto px-4 py-6 pt-32">
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/session-expired" element={<SessionExpiredPage />} />

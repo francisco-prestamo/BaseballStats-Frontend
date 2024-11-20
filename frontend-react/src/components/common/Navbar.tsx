@@ -22,20 +22,22 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
     };
 
     return (
-        <nav className="fixed top-5 left-1/2 transform -translate-x-1/2 z-20 w-4/5 max-w-6xl bg-bg-light/50 dark:bg-bg-dark/50 backdrop-blur-[10px] rounded-xl border border-secondary/20 dark:border-primary/20 shadow-lg px-6 py-4">
+        <nav className="fixed top-5 left-1/2 transform -translate-x-1/2 z-20 w-4/5 max-w-6xl bg-bg-light/70 dark:bg-bg-dark/70 backdrop-blur-md rounded-xl border border-secondary/30 dark:border-primary/30 shadow-lg px-8 py-5">
             <div className="flex items-center justify-between">
+                {/* Logo */}
                 <Link
                     to="/"
-                    className="text-xl font-bold text-primary dark:text-text-light hover:text-primary-light transition-colors"
+                    className="text-2xl font-bold text-primary dark:text-text-light hover:text-primary-light transition-colors"
                 >
                     Icon
                 </Link>
 
-                <ul className="hidden md:flex items-center space-x-6">
+                {/* Desktop Navigation */}
+                <ul className="hidden md:flex items-center space-x-8">
                     <li>
                         <Link
                             to="/"
-                            className="text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                            className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                         >
                             Home
                         </Link>
@@ -44,7 +46,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                         <li>
                             <Link
                                 to="/seasons"
-                                className="text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                             >
                                 Seasons
                             </Link>
@@ -52,47 +54,61 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                     )}
                 </ul>
 
-                <div className="flex items-center space-x-4">
+                {/* Action Buttons */}
+                <div className="flex items-center space-x-6">
+                    {/* Theme Toggle */}
                     <button
                         onClick={toggleTheme}
-                        className="p-2 rounded-full bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light transition-colors"
+                        className="p-3 rounded-full bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light transition-colors shadow-md"
+                        aria-label="Toggle Theme"
                     >
-                        {theme === 'light' ? <FaMoon className="text-primary"/> : <FaSun className="text-text-light"/>}
+                        {theme === 'light' ? (
+                            <FaMoon className="text-xl text-primary" />
+                        ) : (
+                            <FaSun className="text-xl text-text-light" />
+                        )}
                     </button>
 
+                    {/* Authentication Buttons */}
                     {!isAuthenticated ? (
                         <button
                             onClick={onLoginClick}
-                            className="p-2 rounded-full bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light transition-colors"
+                            className="p-3 rounded-full bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light transition-colors shadow-md"
+                            aria-label="Login"
                         >
-                            <FaUserPlus className="text-primary dark:text-text-light"/>
+                            <FaUserPlus className="text-xl text-primary dark:text-text-light" />
                         </button>
                     ) : (
                         <button
                             onClick={handleProfileClick}
-                            className="p-2 rounded-full bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light transition-colors"
+                            className="p-3 rounded-full bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light transition-colors shadow-md"
+                            aria-label="Profile"
                         >
-                            <FaUser className="text-primary dark:text-text-light"/>
+                            <FaUser className="text-xl text-primary dark:text-text-light" />
                         </button>
                     )}
 
+                    {/* Mobile Menu Toggle */}
                     <button
-                        className="md:hidden"
+                        className="md:hidden flex flex-col items-center justify-center space-y-1"
                         onClick={toggleMenu}
+                        aria-label="Toggle Menu"
                     >
-                        <span className="block w-6 h-0.5 bg-text-dark dark:bg-text-light mb-1"></span>
-                        <span className="block w-6 h-0.5 bg-text-dark dark:bg-text-light mb-1"></span>
-                        <span className="block w-6 h-0.5 bg-text-dark dark:bg-text-light"></span>
+                        <span className="block w-8 h-1 bg-text-dark dark:bg-text-light rounded"></span>
+                        <span className="block w-8 h-1 bg-text-dark dark:bg-text-light rounded"></span>
+                        <span className="block w-8 h-1 bg-text-dark dark:bg-text-light rounded"></span>
                     </button>
                 </div>
             </div>
 
+            {/* Mobile Menu */}
             {isMenuOpen && (
-                <ul className="md:hidden bg-bg-light/50 dark:bg-bg-dark/50 backdrop-blur-[10px] rounded-xl border border-secondary/20 dark:border-primary/20 shadow-lg py-4 px-4 mt-2">
+                <ul className="md:hidden bg-bg-light/90 dark:bg-bg-dark/90 backdrop-blur-md rounded-xl border border-secondary/30 dark:border-primary/30 shadow-lg py-4 px-6 mt-3 space-y-4">
                     <li>
                         <Link
                             to="/"
-                            className="block py-2 text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                            onClick={toggleMenu}
+                            className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                         >
                             Home
                         </Link>
@@ -101,7 +117,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                         <li>
                             <Link
                                 to="/seasons"
-                                className="block py-2 text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                onClick={toggleMenu}
+                                className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                             >
                                 Seasons
                             </Link>
