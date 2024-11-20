@@ -25,7 +25,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         return (
             <div
                 ref={ref}
-                className={`rounded-2xl shadow-lg overflow-hidden transition-all duration-200 ${className}`}
+                className={`rounded-2xl shadow-lg overflow-hidden transition-all duration-200 p-4 ${className}`}
                 {...props}
             >
                 {children}
@@ -40,7 +40,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
         return (
             <div
                 ref={ref}
-                className={`p-6 space-y-1.5 ${className}`}
+                className={`p-4 space-y-1.5 ${className}`}
                 {...props}
             >
                 {children}
@@ -70,7 +70,7 @@ export const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
         return (
             <div
                 ref={ref}
-                className={`p-6 pt-0 ${className}`}
+                className={`p-4 pt-0 ${className}`}
                 {...props}
             >
                 {children}
