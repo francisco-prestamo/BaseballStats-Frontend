@@ -17,6 +17,7 @@ export interface Team {
     color: string;
     winGames: number;
     loseGames: number;
+    totalRuns: number;
 }
 
 export interface Game {

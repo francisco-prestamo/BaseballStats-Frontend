@@ -43,14 +43,24 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                         </Link>
                     </li>
                     {isAuthenticated && (
-                        <li>
-                            <Link
-                                to="/seasons"
-                                className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
-                            >
-                                Seasons
-                            </Link>
-                        </li>
+                        <>
+                            <li>
+                                <Link
+                                    to="/seasons"
+                                    className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                >
+                                    Seasons
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/series"
+                                    className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                >
+                                    Series
+                                </Link>
+                            </li>
+                        </>
                     )}
                 </ul>
 
@@ -114,15 +124,26 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                         </Link>
                     </li>
                     {isAuthenticated && (
-                        <li>
-                            <Link
-                                to="/seasons"
-                                onClick={toggleMenu}
-                                className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
-                            >
-                                Seasons
-                            </Link>
-                        </li>
+                        <>
+                            <li>
+                                <Link
+                                    to="/seasons"
+                                    onClick={toggleMenu}
+                                    className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                >
+                                    Seasons
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/series"
+                                    onClick={toggleMenu}
+                                    className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                >
+                                    Seasons
+                                </Link>
+                            </li>
+                        </>
                     )}
                 </ul>
             )}
