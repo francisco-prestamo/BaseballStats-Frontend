@@ -11,7 +11,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated ,userType} = useAuth();
     const navigate = useNavigate();
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                 {/* Logo */}
                 <Link
                     to="/"
-                    className="text-2xl font-bold text-primary dark:text-text-light hover:text-primary-light transition-colors"
+                    className="text-2xl mr-16 font-bold text-primary dark:text-text-light hover:text-primary-light transition-colors"
                 >
                     Icon
                 </Link>
@@ -37,7 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                     <li>
                         <Link
                             to="/"
-                            className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                            className="text-lg mr-12 font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                         >
                             Home
                         </Link>
@@ -60,6 +60,16 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                                     Series
                                 </Link>
                             </li>
+                            {userType == "admin" && (
+                                <li>
+                                    <Link
+                                        to="/admin"
+                                        className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                    >
+                                        Administration
+                                    </Link>
+                                </li>
+                            )}
                         </>
                     )}
                 </ul>
@@ -140,9 +150,19 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                                     onClick={toggleMenu}
                                     className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                                 >
-                                    Seasons
+                                    Series
                                 </Link>
                             </li>
+                            {userType == "admin" && (
+                                <li>
+                                    <Link
+                                        to="/admin"
+                                        className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                    >
+                                        Administration
+                                    </Link>
+                                </li>
+                            )}
                         </>
                     )}
                 </ul>
