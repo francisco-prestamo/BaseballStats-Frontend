@@ -12,6 +12,7 @@ import GameDetailsPage from './pages/users/all/GameDetailsPage';
 import SessionExpiredPage from './pages/common/SessionExpiredPage';
 import LoginModal from './components/common/LoginModal';
 import SeriesPage from "./pages/users/all/SeriesPage.tsx";
+import AdminPage from "./pages/users/admin/AdminPage";
 
 const App: React.FC = () => {
     const [theme, setTheme] = useState('light');
@@ -41,6 +42,14 @@ const App: React.FC = () => {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/session-expired" element={<SessionExpiredPage />} />
+                            <Route
+                                path="/profile"
+                                element={
+                                    <PrivateRoute requiredUserType="allAuthenticated">
+                                        <Profile />
+                                    </PrivateRoute>
+                                }
+                            />
                             <Route
                                 path="/seasons"
                                 element={
@@ -82,10 +91,10 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/profile"
+                                path="/seasons"
                                 element={
-                                    <PrivateRoute requiredUserType="allAuthenticated">
-                                        <Profile />
+                                    <PrivateRoute requiredUserType="admin">
+                                        <AdminPage />
                                     </PrivateRoute>
                                 }
                             />
