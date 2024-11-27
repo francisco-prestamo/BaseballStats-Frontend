@@ -4,11 +4,13 @@ import {
     fetchGameDetails,
     fetchTeamAlignments,
     fetchPlayerSubstitutions
-} from '../../../services/gameService';
+} from '../../../services/users/all/gameService.ts';
 import {GiBaseballGlove, GiBaseballBat} from 'react-icons/gi';
 import {PiBaseballCap} from 'react-icons/pi';
 import {BiRightArrow, BiTrophy} from 'react-icons/bi';
-import {Game, PlayerInPosition, Change} from '../../../services/types';
+import {Game} from "../../../models/Game";
+import {PlayerInPosition} from "../../../models/PlayerInPosition";
+import {Change} from "../../../models/Change";
 import baseballFieldImg from '../../../images/baseball-field.png';
 
 type Position = 'Pitcher' | 'Catcher' | 'First-Base' | 'Second-Base' | 'Third-Base' |

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchSeriesBySeason } from '../../../services/seasonService';
-import { Series } from '../../../services/types';
+import { fetchSeriesBySeason } from '../../../services/users/all/seasonService';
 import { BiTrophy, BiRightArrow } from 'react-icons/bi';
 import { GiBaseballBat } from 'react-icons/gi';
+import {Serie} from "../../../models/Serie";
 
 const SeasonDetailPage: React.FC = () => {
     const { seasonId } = useParams<{ seasonId: string }>();
-    const [seriesList, setSeriesList] = useState<Series[]>([]);
+    const [seriesList, setSeriesList] = useState<Serie[]>([]);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 

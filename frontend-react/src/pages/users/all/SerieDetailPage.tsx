@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchGamesInSeries, fetchTeamsInSeries } from '../../../services/serieService';
-import { Game, Team } from '../../../services/types';
+import { fetchGamesInSeries, fetchTeamsInSeries } from '../../../services/users/all/serieService';
 import {BiTrophy, BiRightArrow, BiCalendar, BiMedal, BiSad, BiChevronDown, BiChevronUp, BiFilter} from 'react-icons/bi';
 import { GiBaseballBat, GiPodiumWinner, GiPodiumSecond, GiPodiumThird } from 'react-icons/gi';
+import {Team} from "../../../models/Team";
+import {Game} from "../../../models/Game";
 
 interface TeamStanding extends Team {
     winningPercentage: number;
