@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient from '../../config/apiClient';
 
 const LOGIN_URL = '/login';
 const REGISTER_URL = '/register';
