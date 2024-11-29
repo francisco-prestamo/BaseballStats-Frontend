@@ -1,7 +1,7 @@
 import {Team} from "./Team.ts";
 
 export interface Game {
-    id: string;
+    id: number;
     team1: Team;
     team2: Team;
     date: Date;

@@ -17,7 +17,7 @@ const SerieDetailPage: React.FC = () => {
     const [teamStandings, setTeamStandings] = useState<TeamStanding[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [showAllTeams, setShowAllTeams] = useState(false);
-    const [selectedTeam, setSelectedTeam] = useState<string>('all');
+    const [selectedTeam, setSelectedTeam] = useState<number | 'all'>('all');
     const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
     useEffect(() => {
@@ -64,8 +64,8 @@ const SerieDetailPage: React.FC = () => {
         }
     }, [selectedTeam, games]);
 
-    const handleGameClick = (gameId: string) => {
-        navigate(`/games/${gameId}`);
+    const handleGameClick = (gameId: number) => {
+        navigate(`/games/${gameId}/${seasonId}/${serieId}`);
     };
 
     const getRankIcon = (index: number) => {
@@ -211,7 +211,10 @@ const SerieDetailPage: React.FC = () => {
                         <BiFilter className="text-xl text-primary dark:text-primary-lighter" />
                         <select
                             value={selectedTeam}
-                            onChange={(e) => setSelectedTeam(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value === 'all' ? 'all' : Number(e.target.value);
+                                setSelectedTeam(value);
+                            }}
                             className="bg-secondary-lightest dark:bg-primary rounded-lg px-3 py-1 border border-primary/20 dark:border-primary-lighter/20"
                         >
                             <option value="all">All Teams</option>
