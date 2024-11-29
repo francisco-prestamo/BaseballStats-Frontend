@@ -1,23 +1,28 @@
-import {useState, useEffect} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     fetchGameDetails,
     fetchTeamAlignments,
     fetchPlayerSubstitutions
 } from '../../../services/users/all/gameService.ts';
-import {GiBaseballGlove, GiBaseballBat} from 'react-icons/gi';
-import {PiBaseballCap} from 'react-icons/pi';
-import {BiRightArrow, BiTrophy} from 'react-icons/bi';
-import {Game} from "../../../models/Game";
-import {PlayerInPosition} from "../../../models/PlayerInPosition";
-import {Change} from "../../../models/Change";
+import { GiBaseballGlove, GiBaseballBat } from 'react-icons/gi';
+import { PiBaseballCap } from 'react-icons/pi';
+import { BiRightArrow, BiTrophy } from 'react-icons/bi';
+import { Game } from "../../../models/Game";
+import { PlayerInPosition } from "../../../models/PlayerInPosition";
+import { Change } from "../../../models/Change";
 import baseballFieldImg from '../../../images/baseball-field.png';
 
 type Position = 'Pitcher' | 'Catcher' | 'First-Base' | 'Second-Base' | 'Third-Base' |
     'Shortstop' | 'Left-Field' | 'Center-Field' | 'Right-Field';
 
-const GameDetailsPage = () => {
-    const {gameId} = useParams<{ gameId: string }>();
+const GameDetailsPage: React.FC = () => {
+    const navigate = useNavigate();
+    const { gameId, seasonId, serieId } = useParams<{
+        gameId: string,
+        seasonId: string,
+        serieId: string
+    }>();
     const [game, setGame] = useState<Game | null>(null);
     const [team1Alignment, setTeam1Alignment] = useState<PlayerInPosition[]>([]);
     const [team2Alignment, setTeam2Alignment] = useState<PlayerInPosition[]>([]);
@@ -48,6 +53,10 @@ const GameDetailsPage = () => {
         getGameDetails();
     }, [gameId]);
 
+    // Navigation to Player Details
+    const navigateToPlayerDetails = (playerId: number) => {
+        navigate(`/players/${playerId}/${seasonId}/${serieId}`);
+    };
 
     const fieldAlignment = showingTeam1 ? team1Alignment : team2Alignment;
     const battingAlignment = showingTeam1 ? team2Alignment : team1Alignment;
@@ -60,7 +69,7 @@ const GameDetailsPage = () => {
     };
 
     const getPlayerPosition = (position: Position) => {
-        const baseStyles = "absolute transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 bg-bg-light dark:bg-primary-light backdrop-blur rounded-lg border border-primary/20 dark:border-primary-lighter/20 text-sm font-medium transition-all duration-300 whitespace-nowrap z-10 hover:scale-105 hover:shadow-xl group-hover:border-primary/40 dark:group-hover:border-primary-lighter/40 flex items-center gap-2";
+        const baseStyles = "absolute transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 bg-bg-light dark:bg-primary-light backdrop-blur rounded-lg border border-primary/20 dark:border-primary-lighter/20 text-sm font-medium transition-all duration-300 whitespace-nowrap z-10 hover:scale-105 hover:shadow-xl group-hover:border-primary/40 dark:group-hover:border-primary-lighter/40 flex items-center gap-2 cursor-pointer";
 
         const positions: Record<Position, string> = {
             'Pitcher': 'top-[60%] left-[50%]',
@@ -81,15 +90,13 @@ const GameDetailsPage = () => {
         <div className="container mx-auto p-6 space-y-10">
             {/* Error Display */}
             {error && (
-                <div
-                    className="bg-red-500 text-text-light p-4 rounded-lg mb-6 text-center font-semibold animate-fade-in">
+                <div className="bg-red-500 text-text-light p-4 rounded-lg mb-6 text-center font-semibold animate-fade-in">
                     <p>{error}</p>
                 </div>
             )}
 
             {/* Header */}
-            <div
-                className="bg-gradient-to-br from-primary to-primary-light rounded-2xl p-8 shadow-lg text-text-light animate-fade-in">
+            <div className="bg-gradient-to-br from-primary to-primary-light rounded-2xl p-8 shadow-lg text-text-light animate-fade-in">
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-5xl font-bold">Game Details</h1>
@@ -104,17 +111,16 @@ const GameDetailsPage = () => {
                 </div>
             </div>
 
-            {!error && (
+            {!error && game && (
                 <>
                     {/* Field and Batting Lineup */}
                     <div className="flex flex-col md:flex-row gap-6">
                         {/* Field Alignment Section */}
-                        <div
-                            className="flex-1 min-w-[500px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                        <div className="flex-1 min-w-[500px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
                             <div className="text-center">
                                 <div className="flex justify-between items-center mb-4">
                                     <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light">
-                                        {showingTeam1 ? game?.team1.name : game?.team2.name} Field Positions
+                                        {showingTeam1 ? game.team1.name : game.team2.name} Field Positions
                                     </h2>
                                     <button
                                         className="px-4 py-2 bg-primary dark:bg-primary-light rounded-lg text-text-light font-medium hover:bg-primary-light dark:hover:bg-primary transition-all duration-300 border border-primary-lighter/20 hover:scale-105"
@@ -133,6 +139,7 @@ const GameDetailsPage = () => {
                                         <div
                                             key={player.player.id}
                                             className={getPlayerPosition(player.position as Position)}
+                                            onClick={() => navigateToPlayerDetails(player.player.id)}
                                         >
                                             {getPlayerIcon(player.position as Position)}
                                             {player.player.name}
@@ -143,25 +150,22 @@ const GameDetailsPage = () => {
                         </div>
 
                         {/* Batting Lineup Section */}
-                        <div
-                            className="flex-2 min-w-[300px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                        <div className="flex-2 min-w-[300px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
                             <h3 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
-                                {showingTeam1 ? game?.team2.name : game?.team1.name} Batting Lineup
+                                {showingTeam1 ? game.team2.name : game.team1.name} Batting Lineup
                             </h3>
                             <div className="space-y-3">
                                 {battingAlignment.map((player, index) => (
                                     <div
                                         key={player.player.id}
-                                        className="group flex items-center justify-between p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
+                                        className="group flex items-center justify-between p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40 cursor-pointer"
+                                        onClick={() => navigateToPlayerDetails(player.player.id)}
                                     >
                                         <div className="flex items-center space-x-4">
-                                            <div
-                                                className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary-lighter/10 flex items-center justify-center border border-primary/20 dark:border-primary-lighter/20 animate-pop-in">
-                                                <span
-                                                    className="font-medium text-primary dark:text-primary-lighter">{index + 1}</span>
+                                            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary-lighter/10 flex items-center justify-center border border-primary/20 dark:border-primary-lighter/20 animate-pop-in">
+                                                <span className="font-medium text-primary dark:text-primary-lighter">{index + 1}</span>
                                             </div>
-                                            <span
-                                                className="text-text-dark dark:text-text-light">{player.player.name}</span>
+                                            <span className="text-text-dark dark:text-text-light">{player.player.name}</span>
                                         </div>
                                         <GiBaseballBat className="text-2xl text-primary dark:text-primary-lighter"/>
                                     </div>
@@ -171,15 +175,14 @@ const GameDetailsPage = () => {
                     </div>
 
                     {/* Substitutions Section */}
-                    <div
-                        className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                    <div className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
                         <h3 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
                             Substitutions
                         </h3>
                         <div className="space-y-6">
                             {[
-                                {name: game?.team1.name, subs: team1Substitutions},
-                                {name: game?.team2.name, subs: team2Substitutions}
+                                {name: game.team1.name, subs: team1Substitutions},
+                                {name: game.team2.name, subs: team2Substitutions}
                             ].map((team, idx) => (
                                 <div key={idx} className="space-y-3">
                                     <h4 className="text-lg font-semibold text-text-dark dark:text-text-light">{team.name}</h4>
@@ -187,19 +190,24 @@ const GameDetailsPage = () => {
                                         {team.subs.map((sub, index) => (
                                             <div
                                                 key={index}
-                                                className="group flex items-center justify-between p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl  border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
+                                                className="group flex items-center justify-between p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
                                             >
                                                 <div className="flex items-center space-x-4">
-                                                    <p className="font-semibold text-text-dark dark:text-text-light">
+                                                    <p
+                                                        className="font-semibold text-text-dark dark:text-text-light cursor-pointer hover:text-primary"
+                                                        onClick={() => navigateToPlayerDetails(sub.playerIn.player.id)}
+                                                    >
                                                         {sub.playerIn.player.name}
                                                     </p>
                                                     <BiRightArrow className="text-primary dark:text-primary-lighter"/>
-                                                    <p className="font-semibold text-text-dark dark:text-text-light">
+                                                    <p
+                                                        className="font-semibold text-text-dark dark:text-text-light cursor-pointer hover:text-primary"
+                                                        onClick={() => navigateToPlayerDetails(sub.playerOut.player.id)}
+                                                    >
                                                         {sub.playerOut.player.name}
                                                     </p>
                                                 </div>
-                                                <div
-                                                    className="px-4 py-1 bg-primary/10 dark:bg-primary-lighter/10 rounded-full border border-primary/20 dark:border-primary-lighter/20">
+                                                <div className="px-4 py-1 bg-primary/10 dark:bg-primary-lighter/10 rounded-full border border-primary/20 dark:border-primary-lighter/20">
                                                     <p className="text-sm text-primary dark:text-primary-lighter">
                                                         {sub.time.toString()}
                                                     </p>

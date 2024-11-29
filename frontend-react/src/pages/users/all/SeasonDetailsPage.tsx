@@ -26,7 +26,7 @@ const SeasonDetailPage: React.FC = () => {
         getSeries();
     }, [seasonId]);
 
-    const handleSerieClick = (serieId: string) => {
+    const handleSerieClick = (serieId: number) => {
         if (seasonId) {
             navigate(`/series/${seasonId}/${serieId}`);
         }

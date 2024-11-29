@@ -23,7 +23,7 @@ const SeasonsPage: React.FC = () => {
         loadSeasons();
     }, []);
 
-    const handleSeasonClick = (seasonId: string) => {
+    const handleSeasonClick = (seasonId: number) => {
         navigate(`/seasons/${seasonId}`);
     };
 

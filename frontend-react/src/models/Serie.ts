@@ -1,6 +1,6 @@
 export interface Serie {
-    id: string;
-    idSeason: string;
+    id: number;
+    idSeason: number;
     name: string;
     startDate: Date;
     endDate: Date;

@@ -1,3 +1,3 @@
 export interface Season {
-    id: string;
+    id: number;
 }

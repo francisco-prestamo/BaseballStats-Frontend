@@ -54,7 +54,7 @@ const SeriesPage = () => {
         setFilteredSeries(result);
     }, [series, searchTerm, sortField, sortOrder]);
 
-    const handleSeriesClick = (seasonId: string, seriesId: string) => {
+    const handleSeriesClick = (seasonId: number, seriesId: number) => {
         navigate(`/series/${seasonId}/${seriesId}`);
     };
 
