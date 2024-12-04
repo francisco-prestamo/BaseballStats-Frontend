@@ -1,5 +1,8 @@
-import apiClient from './apiClient';
-import { Game, PlayerInPosition, Change } from './types';
+import apiClient from '../../config/apiClient.ts';
+import {Game} from "../../../models/Game.ts";
+import {PlayerInPosition} from "../../../models/PlayerInPosition.ts";
+import {Change} from "../../../models/Change.ts";
+
 
 const GAMES_URL = '/games';
 

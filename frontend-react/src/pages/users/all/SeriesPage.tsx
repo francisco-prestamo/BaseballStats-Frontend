@@ -1,13 +1,13 @@
 import{ useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Series } from '../../../services/types';
 import { BiFilterAlt, BiRightArrow, BiSortAlt2 } from 'react-icons/bi';
 import { GiBaseballBat } from 'react-icons/gi';
-import { fetchAllSeries } from '../../../services/serieService';
+import { fetchAllSeries } from '../../../services/users/all/serieService';
+import {Serie} from "../../../models/Serie";
 
 const SeriesPage = () => {
-    const [series, setSeries] = useState<Series[]>([]);
-    const [filteredSeries, setFilteredSeries] = useState<Series[]>([]);
+    const [series, setSeries] = useState<Serie[]>([]);
+    const [filteredSeries, setFilteredSeries] = useState<Serie[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortField, setSortField] = useState<'name' | 'startDate'>('startDate');
@@ -54,7 +54,7 @@ const SeriesPage = () => {
         setFilteredSeries(result);
     }, [series, searchTerm, sortField, sortOrder]);
 
-    const handleSeriesClick = (seasonId: string, seriesId: string) => {
+    const handleSeriesClick = (seasonId: number, seriesId: number) => {
         navigate(`/series/${seasonId}/${seriesId}`);
     };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../authContext';
-import { login, register } from '../../services/authService';
+import { login } from '../../services/users/all/authService';
 
 interface LoginModalProps {
     closeModal: () => void;
@@ -9,22 +9,19 @@ interface LoginModalProps {
 const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [isRegisterMode, setIsRegisterMode] = useState(false);
+
     const { login: authLogin } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            if (isRegisterMode) {
-                const { token, userType } = await register(username, password);
-                authLogin(token, userType);
-            } else {
+
                 const { token, userType } = await login(username, password);
                 authLogin(token, userType);
-            }
+
             closeModal();
         } catch (error) {
-            console.error(isRegisterMode ? 'Registration failed' : 'Login failed', error);
+            console.error('Login failed', error);
         }
     };
 
@@ -39,7 +36,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
                 </button>
 
                 <h2 className="text-2xl font-bold mb-6 text-text-dark dark:text-text-light">
-                    {isRegisterMode ? 'Register' : 'Login'}
+                    Login
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -81,16 +78,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
                         type="submit"
                         className="w-full bg-primary dark:bg-primary-light text-text-light py-2 rounded-md hover:bg-primary-light dark:hover:bg-primary transition-colors duration-200"
                     >
-                        {isRegisterMode ? 'Register' : 'Login'}
+                       Login
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => setIsRegisterMode(!isRegisterMode)}
-                        className="w-full text-primary dark:text-text-light hover:underline mt-4"
-                    >
-                        {isRegisterMode ? 'Already have an account? Login' : "Don't have an account? Register"}
-                    </button>
+
                 </form>
             </div>
         </div>

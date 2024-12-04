@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchSeasons } from '../../../services/seasonService';
-import { Season } from '../../../services/types';
+import { fetchSeasons } from '../../../services/users/all/seasonService';
 import { BiCalendar, BiRightArrow } from 'react-icons/bi';
 import { GiBaseballBat } from 'react-icons/gi';
+import {Season} from "../../../models/Season";
 
 const SeasonsPage: React.FC = () => {
     const [seasons, setSeasons] = useState<Season[]>([]);
@@ -23,7 +23,7 @@ const SeasonsPage: React.FC = () => {
         loadSeasons();
     }, []);
 
-    const handleSeasonClick = (seasonId: string) => {
+    const handleSeasonClick = (seasonId: number) => {
         navigate(`/seasons/${seasonId}`);
     };
 

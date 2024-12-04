@@ -1,5 +1,6 @@
-import apiClient from './apiClient';
-import { Season, Series } from './types';
+import apiClient from '../../config/apiClient.ts';
+import {Season} from "../../../models/Season.ts";
+import {Serie} from "../../../models/Serie.ts";
 
 const SEASONS_URL = '/seasons';
 const SERIES_URL = '/series';
@@ -11,7 +12,7 @@ export const fetchSeasons = async (): Promise<Season[]> => {
 };
 
 // Fetch all series for a specific season
-export const fetchSeriesBySeason = async (seasonId: string): Promise<Series[]> => {
+export const fetchSeriesBySeason = async (seasonId: string): Promise<Serie[]> => {
     const response = await apiClient.get(`${SERIES_URL}/${seasonId}`);
     return response.data;
 };
