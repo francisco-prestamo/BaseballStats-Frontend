@@ -1,7 +1,7 @@
 import apiClient from '../../config/apiClient.ts';
 import {Serie} from "../../../models/Serie.ts";
-import {Team} from "../../../models/Team.ts";
 import {Game} from "../../../models/Game.ts";
+import {TeamWithExtras} from "../../../models/TeamWithExtras.ts";
 
 
 const SERIES_URL = '/series';
@@ -13,7 +13,7 @@ export const fetchGamesInSeries = async (seasonId: string, serieId: string): Pro
 };
 
 // Fetch teams in a specific series
-export const fetchTeamsInSeries = async (seasonId: string, serieId: string): Promise<Team[]> => {
+export const fetchTeamsInSeries = async (seasonId: string, serieId: string): Promise<TeamWithExtras[]> => {
     const response = await apiClient.get(`${SERIES_URL}/${seasonId}/${serieId}/teams`);
     return response.data;
 };

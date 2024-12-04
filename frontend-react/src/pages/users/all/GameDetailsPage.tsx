@@ -38,7 +38,7 @@ const GameDetailsPage: React.FC = () => {
                     const gameData = await fetchGameDetails(gameId);
                     const alignments = await fetchTeamAlignments(gameId);
                     const substitutions = await fetchPlayerSubstitutions(gameId);
-
+                    console.log(alignments.team1Alignment);
                     setGame(gameData);
                     setTeam1Alignment(alignments.team1Alignment);
                     setTeam2Alignment(alignments.team2Alignment);
@@ -114,12 +114,12 @@ const GameDetailsPage: React.FC = () => {
             {!error && game && (
                 <>
                     {/* Field and Batting Lineup */}
-                    <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex flex-col lg:flex-row gap-6">
                         {/* Field Alignment Section */}
-                        <div className="flex-1 min-w-[500px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                        <div className="flex-2 w-full lg:min-w-[500px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
                             <div className="text-center">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light">
+                                <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+                                    <h2 className="text-xl sm:text-2xl font-semibold text-text-dark dark:text-text-light mb-2 sm:mb-0">
                                         {showingTeam1 ? game.team1.name : game.team2.name} Field Positions
                                     </h2>
                                     <button
@@ -142,32 +142,49 @@ const GameDetailsPage: React.FC = () => {
                                             onClick={() => navigateToPlayerDetails(player.player.id)}
                                         >
                                             {getPlayerIcon(player.position as Position)}
-                                            {player.player.name}
+                                            <span className="hidden sm:inline">{player.player.name}</span>
                                         </div>
                                     ))}
+                                </div>
+
+                                <div className="flex flex-col gap-4 mb-4 text-left">
+                                    <div className="bg-secondary-lightest dark:bg-primary-light p-3 rounded-lg">
+                                        <p className="text-sm font-medium text-text-dark dark:text-text-light opacity-70">Name</p>
+                                        <p className="font-semibold text-primary dark:text-primary-lighter">
+                                            {showingTeam1 ? game.team1.name : game.team2.name}
+                                        </p>
+                                    </div>
+                                    <div className="bg-secondary-lightest dark:bg-primary-light p-3 rounded-lg">
+                                        <p className="text-sm font-medium text-text-dark dark:text-text-light opacity-70">Color</p>
+                                        <p className="font-semibold text-primary dark:text-primary-lighter">
+                                            {showingTeam1 ? game.team1.color : game.team2.color}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Batting Lineup Section */}
-                        <div className="flex-2 min-w-[300px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
-                            <h3 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
+                        <div
+                            className="flex-1 w-full lg:min-w-[300px] bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                            <h3 className="text-xl sm:text-2xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
                                 {showingTeam1 ? game.team2.name : game.team1.name} Batting Lineup
                             </h3>
                             <div className="space-y-3">
                                 {battingAlignment.map((player, index) => (
                                     <div
                                         key={player.player.id}
-                                        className="group flex items-center justify-between p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40 cursor-pointer"
+                                        className="group flex items-center justify-between p-3 sm:p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40 cursor-pointer"
                                         onClick={() => navigateToPlayerDetails(player.player.id)}
                                     >
-                                        <div className="flex items-center space-x-4">
-                                            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary-lighter/10 flex items-center justify-center border border-primary/20 dark:border-primary-lighter/20 animate-pop-in">
-                                                <span className="font-medium text-primary dark:text-primary-lighter">{index + 1}</span>
+                                        <div className="flex items-center space-x-2 sm:space-x-4">
+                                            <div
+                                                className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-primary/10 dark:bg-primary-lighter/10 flex items-center justify-center border border-primary/20 dark:border-primary-lighter/20 animate-pop-in">
+                                            <span className="font-medium text-primary dark:text-primary-lighter text-xs sm:text-base">{index + 1}</span>
                                             </div>
-                                            <span className="text-text-dark dark:text-text-light">{player.player.name}</span>
+                                            <span className="text-sm sm:text-base text-text-dark dark:text-text-light">{player.player.name}</span>
                                         </div>
-                                        <GiBaseballBat className="text-2xl text-primary dark:text-primary-lighter"/>
+                                        <GiBaseballBat className="text-xl sm:text-2xl text-primary dark:text-primary-lighter"/>
                                     </div>
                                 ))}
                             </div>

@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                 {/* Logo */}
                 <Link
                     to="/"
-                    className="text-2xl mr-16 font-bold text-primary dark:text-text-light hover:text-primary-light transition-colors"
+                    className="text-2xl mr-12 font-bold text-primary dark:text-text-light hover:text-primary-light transition-colors"
                 >
                     Icon
                 </Link>
@@ -37,7 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                     <li>
                         <Link
                             to="/"
-                            className="text-lg mr-12 font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                            className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                         >
                             Home
                         </Link>
@@ -66,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                                         to="/admin"
                                         className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                                     >
-                                        Administration
+                                        Admin
                                     </Link>
                                 </li>
                             )}
@@ -157,9 +157,10 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                                 <li>
                                     <Link
                                         to="/admin"
+                                        onClick={toggleMenu}
                                         className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                                     >
-                                        Administration
+                                        Admin
                                     </Link>
                                 </li>
                             )}

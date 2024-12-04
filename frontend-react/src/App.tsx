@@ -91,7 +91,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/seasons"
+                                path="/admin"
                                 element={
                                     <PrivateRoute requiredUserType="admin">
                                         <AdminPage />
