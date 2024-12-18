@@ -17,6 +17,7 @@ const TeamDetails = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // const arrayStarPlayers = [];
 
   useEffect(() => {
     if (!teamId || !seriesId) return;
@@ -24,11 +25,13 @@ const TeamDetails = () => {
     const fetchData = async () => {
       try {
 
+        // Llamar a las API para obtener los datos
         const teamData = await fetchTeamInfo(teamId, seriesId);
         const gamesData = await fetchTeamGamesInThisSeries(teamId, seriesId);
         const starPlayersData = await fetchTeamStarPlayers(teamId, seriesId);
         const teamsPlayersInASeasonData = await fetchTeamPlayersInASeason(teamId, seriesId);
 
+        // Actualizar el estado con los datos obtenidos
         setTeam(teamData);
         setGames(gamesData);
         setStarPlayers(starPlayersData);
@@ -95,19 +98,19 @@ const TeamDetails = () => {
         <h2 className="text-2xl font-bold mb-4 text-dark dark:text-text-light">Star Players</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {starPlayers ?
-            starPlayers.map((starPlayer) => (
+            starPlayers.map(({ player, position }) => (
               <div
-                key={starPlayer.id}
+                key={player.id}
                 className="group bg-secondary-lightest dark:bg-primary rounded-lg p-5 shadow-lg hover:shadow-2xl transition-transform duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
               >
                 <div className="flex items-center space-x-4">
                   <FaStar className="inline-block text-yellow-500 ml-2" />
                   <div>
                     <h3 className="text-lg font-semibold text-dark dark:text-text-light">
-                      {starPlayer.name}
+                      {player.name}
                     </h3>
                     <h6 className="text-lg font-semibold text-dark dark:text-text-light">
-                      {starPlayer.position}
+                      {position}
                     </h6>
                   </div>
                 </div>
