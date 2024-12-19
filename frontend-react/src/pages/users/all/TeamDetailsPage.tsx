@@ -1,6 +1,6 @@
 // TeamDetails.tsx
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { fetchTeamInfo, fetchTeamGamesInThisSeries, fetchTeamStarPlayers, fetchTeamPlayersInASeason } from '../../../services/users/all/TeamService'; // Asegúrate de importar las funciones
 import { Game } from "../../../models/Game";
 import { Player } from "../../../models/Player";
@@ -9,7 +9,9 @@ import { FaStar } from 'react-icons/fa';
 import { PlayerInPosition } from '../../../models/PlayerInPosition';
 
 const TeamDetails = () => {
-  const { teamId, seriesId } = useParams<{ teamId: string; seriesId: string }>();
+  const { teamId, seriesId, seasonId } = useParams<{ teamId: string; seriesId: string, seasonId: string }>();
+
+  const navigate = useNavigate();
 
   const [team, setTeam] = useState<Team | null>(null);
   const [games, setGames] = useState<Game[]>([]);
@@ -46,6 +48,10 @@ const TeamDetails = () => {
 
     fetchData();
   }, [teamId, seriesId]);
+
+  const handleGameClick = (gameId: number) => {
+    navigate(`/games/${gameId}/${seasonId}/${seriesId}`);
+  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -128,6 +134,7 @@ const TeamDetails = () => {
           {games.map((game) => (
             <div
               key={game.id}
+              onClick={() => handleGameClick(game.id)}
               className="flex justify-between items-center bg-secondary-lightest dark:bg-primary-light rounded-lg p-4 shadow-md hover:shadow-lg transition-transform transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20"
             >
               <div>
