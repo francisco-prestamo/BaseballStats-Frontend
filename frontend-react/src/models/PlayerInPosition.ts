@@ -1,7 +1,7 @@
-import {Player} from "./Player.ts";
+import { Player } from "./Player";
 
 export interface PlayerInPosition {
-    player: Player;
-    position: string;
-    team: number;
+  player: Player;
+  position: string;
+  team: number;
 }

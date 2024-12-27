@@ -13,6 +13,7 @@ import SessionExpiredPage from './pages/common/SessionExpiredPage';
 import LoginModal from './components/common/LoginModal';
 import SeriesPage from "./pages/users/all/SeriesPage.tsx";
 import AdminPage from "./pages/users/admin/AdminPage";
+import TeamDetailsPage from './pages/users/all/TeamDetailsPage.tsx';
 
 const App: React.FC = () => {
     const [theme, setTheme] = useState('light');
@@ -89,6 +90,13 @@ const App: React.FC = () => {
                                         <GameDetailsPage />
                                     </PrivateRoute>
                                 }
+                            />
+                            <Route
+                                path="/team/:teamId/series/:seriesId/season/:seasonId"
+                                element={
+                                    <PrivateRoute requiredUserType="allAuthenticated">
+                                        <TeamDetailsPage />
+                                    </PrivateRoute>}
                             />
                             <Route
                                 path="/admin"
