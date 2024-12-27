@@ -22,16 +22,16 @@ const TeamDetails = () => {
   // const arrayStarPlayers = [];
 
   useEffect(() => {
-    if (!teamId || !seriesId) return;
+    if (!teamId || !seriesId || !seasonId) return;
 
     const fetchData = async () => {
       try {
 
         // Llamar a las API para obtener los datos
-        const teamData = await fetchTeamInfo(teamId, seriesId);
-        const gamesData = await fetchTeamGamesInThisSeries(teamId, seriesId);
-        const starPlayersData = await fetchTeamStarPlayers(teamId, seriesId);
-        const teamsPlayersInASeasonData = await fetchTeamPlayersInASeason(teamId, seriesId);
+        const teamData = await fetchTeamInfo(seasonId, seriesId, teamId);
+        const gamesData = await fetchTeamGamesInThisSeries(seasonId, seriesId, teamId);
+        const starPlayersData = await fetchTeamStarPlayers(seasonId, seriesId, teamId);
+        const teamsPlayersInASeasonData = await fetchTeamPlayersInASeason(seasonId, seriesId, teamId);
 
         // Actualizar el estado con los datos obtenidos
         setTeam(teamData);
@@ -47,7 +47,7 @@ const TeamDetails = () => {
     };
 
     fetchData();
-  }, [teamId, seriesId]);
+  }, [seasonId, seriesId, teamId]);
 
   const handleGameClick = (gameId: number) => {
     navigate(`/games/${gameId}/${seasonId}/${seriesId}`);

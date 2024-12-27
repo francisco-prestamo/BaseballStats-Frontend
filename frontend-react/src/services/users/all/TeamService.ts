@@ -7,42 +7,46 @@ import { PlayerInPosition } from "../../../models/PlayerInPosition";
 const TEAMS_URL = "/team";
 
 export const fetchTeamInfo = async (
-  teamId: string,
-  seriesId: string
+  seasonId: string,
+  seriesId: string,
+  teamId: string
 ): Promise<Team> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/${teamId}/series/${seriesId}`
+    `${TEAMS_URL}/${seasonId}/${seriesId}/${teamId}/`
   );
   return response.data;
 };
 
 export const fetchTeamGamesInThisSeries = async (
-  teamId: string,
-  seriesId: string
+  seasonId: string,
+  seriesId: string,
+  teamId: string
 ): Promise<Game[]> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/${teamId}/series/${seriesId}/games`
+    `${TEAMS_URL}/${seasonId}/${seriesId}/${teamId}/games`
   );
   return response.data;
 };
 
 export const fetchTeamStarPlayers = async (
-  teamId: string,
-  seriesId: string
+  seasonId: string,
+  seriesId: string,
+  teamId: string
 ): Promise<PlayerInPosition[]> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/${teamId}/series/${seriesId}/star-players`
+    `${TEAMS_URL}/${seasonId}/${seriesId}/${teamId}/star-players`
   );
 
   return response.data;
 };
 
 export const fetchTeamPlayersInASeason = async (
-  teamId: string,
-  seriesId: string
+  seasonId: string,
+  seriesId: string,
+  teamId: string
 ): Promise<Player[]> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/${teamId}/series/${seriesId}/players`
+    `${TEAMS_URL}/${seasonId}/${seriesId}/${teamId}/star-players`
   );
 
   return response.data;
