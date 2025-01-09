@@ -67,6 +67,9 @@ const SerieDetailPage: React.FC = () => {
     const handleGameClick = (gameId: number) => {
         navigate(`/games/${gameId}/${seasonId}/${serieId}`);
     };
+    const handleTeamClick = (teamId: number) => {
+        navigate(`/teams/${teamId}/${seasonId}/${serieId}`);
+    };
 
     const getRankIcon = (index: number) => {
         switch(index) {
@@ -143,6 +146,7 @@ const SerieDetailPage: React.FC = () => {
                 <div className="space-y-4">
                     {displayedTeams.map((team, index) => (
                         <div
+                            onClick={() => handleTeamClick(team.id)}
                             key={team.id}
                             className="group bg-secondary-lightest dark:bg-primary rounded-lg p-5 shadow-lg hover:shadow-2xl transition-transform duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
                         >

@@ -92,7 +92,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/team/:teamId/series/:seriesId/season/:seasonId"
+                                path="/teams/:teamId/:seasonId/:seriesId"
                                 element={
                                     <PrivateRoute requiredUserType="allAuthenticated">
                                         <TeamDetailsPage />

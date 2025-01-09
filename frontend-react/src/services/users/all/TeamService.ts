@@ -4,7 +4,7 @@ import { Player } from "../../../models/Player";
 import { Team } from "../../../models/Team";
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
 
-const TEAMS_URL = "/team";
+const TEAMS_URL = "/teams";
 
 export const fetchTeamInfo = async (
   seasonId: string,
@@ -46,7 +46,7 @@ export const fetchTeamPlayersInASeason = async (
   teamId: string
 ): Promise<Player[]> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/${seasonId}/${seriesId}/${teamId}/star-players`
+    `${TEAMS_URL}/${seasonId}/${seriesId}/${teamId}/players`
   );
 
   return response.data;
