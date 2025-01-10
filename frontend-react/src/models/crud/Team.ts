@@ -1,0 +1,8 @@
+export interface Team {
+  id: number;
+  name: string;
+  initials: string;
+  color: string;
+  representedIdentity: string;
+  DtId: number;
+}

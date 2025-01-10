@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../../../components/admin/Sidebar.tsx";
 import ManageUsers from "../../../components/admin/ManageUsers.tsx";
 import ManageSeasons from "../../../components/admin/ManageSeasons.tsx";
+import ManageTeams from "../../../components/admin/ManageTeams.tsx";
 
 
 const AdminPage: React.FC = () => {
@@ -17,6 +18,7 @@ const AdminPage: React.FC = () => {
                 {activeSection === 1 && <h1 className="text-2xl font-bold">Info Section</h1>}
                 {activeSection === 2 && <ManageUsers />}
                 {activeSection === 3 && <ManageSeasons />}
+                {activeSection === 4 && <ManageTeams />}
             </main>
         </div>
     );
