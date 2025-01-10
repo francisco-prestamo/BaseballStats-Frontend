@@ -7,7 +7,7 @@ import {
 } from '../../../services/users/all/gameService.ts';
 import { GiBaseballGlove, GiBaseballBat } from 'react-icons/gi';
 import { PiBaseballCap } from 'react-icons/pi';
-import { BiRightArrow, BiTrophy } from 'react-icons/bi';
+import { BiRightArrow } from 'react-icons/bi';
 import { Game } from "../../../models/Game";
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
 import { Change } from "../../../models/Change";
@@ -106,9 +106,15 @@ const GameDetailsPage: React.FC = () => {
                         {/* Navigate to Edit Alignment */}
                         <button
                             className="px-4 py-2 bg-primary dark:bg-primary-light rounded-lg text-text-light font-medium hover:bg-primary-light dark:hover:bg-primary transition-all duration-300 border border-primary-lighter/20 hover:scale-105"
-                            onClick={() =>
-                                navigate(`/editalignments/${gameId}/${showingTeam1 ? game.team1.id : game.team2.id}/${seasonId}/${serieId}`)
-                            }
+                            onClick={() => {
+                                if (game) {
+                                    navigate(
+                                        `/editalignments/${gameId}/${showingTeam1 ? game.team1.id : game.team2.id}/${seasonId}/${serieId}`
+                                    );
+                                } else {
+                                    console.error('Game is null');
+                                }
+                            }}
                         >
                             Edit Alignments
                         </button>
