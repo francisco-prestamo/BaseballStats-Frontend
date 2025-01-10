@@ -7,7 +7,7 @@ import {
 import { PlayerInPosition } from '../../../models/PlayerInPosition';
 import { Player } from '../../../models/Player';
 import { GiBaseballGlove } from 'react-icons/gi';
-import {fetchPlayerTeamForSeasonAndSeries} from "../../../services/users/all/playerService.ts";
+import { fetchTeamPlayersInASeason } from "../../../services/users/all/TeamService";
 
 const EditAlignment: React.FC = () => {
     const { gameId, teamId, seasonId, serieId } = useParams<{
@@ -24,46 +24,60 @@ const EditAlignment: React.FC = () => {
 
     useEffect(() => {
         const loadAlignmentAndPlayers = async () => {
+            if (!gameId || !teamId || !seasonId || !serieId) {
+                setError('Missing required parameters');
+                return;
+            }
+
             try {
                 const [alignmentData, players] = await Promise.all([
                     fetchTeamAlignment(gameId, teamId, seasonId, serieId),
-                    fetchPlayerTeamForSeasonAndSeries(teamId, seasonId, serieId),
+                    fetchTeamPlayersInASeason(seasonId, serieId, teamId),
                 ]);
 
                 if (alignmentData) {
                     setAlignment(alignmentData);
                 } else {
-                    console.warn("Alignment data is empty or undefined.");
+                    setError("No alignment data available.");
                 }
 
                 if (players) {
                     setTeamPlayers(players);
                 } else {
-                    console.warn("Players data is empty or undefined.");
+                    setError("No players data available.");
                 }
             } catch (error) {
                 console.error("Error fetching alignment or players data:", error);
+                setError('Failed to load data. Please try again.');
             }
         };
         loadAlignmentAndPlayers();
     }, [gameId, teamId, seasonId, serieId]);
 
     const handlePlayerChange = (index: number, newPlayerId: number) => {
-        const updatedAlignment = [...alignment];
-        const selectedPlayer = teamPlayers.find((player) => player.id === newPlayerId);
-        if (selectedPlayer) {
-            updatedAlignment[index].player = selectedPlayer;
-        }
-        setAlignment(updatedAlignment);
+        setAlignment(prevAlignment => {
+            const updatedAlignment = [...prevAlignment];
+            const selectedPlayer = teamPlayers.find((player) => player.id === newPlayerId);
+            if (selectedPlayer) {
+                updatedAlignment[index] = {
+                    ...updatedAlignment[index],
+                    player: selectedPlayer
+                };
+            }
+            return updatedAlignment;
+        });
     };
 
-    const saveAlignment = async () => {
+    const handleSaveAlignment = async () => {
+        if (!gameId || !teamId || !seasonId || !serieId) {
+            setError('Missing required parameters');
+            return;
+        }
+
         try {
             setIsSaving(true);
-            if (gameId && teamId) {
-                await saveTeamAlignment(gameId, teamId, seasonId, serieId, alignment);
-                navigate(`/games/${gameId}/${seasonId}/${serieId}`);
-            }
+            await saveTeamAlignment(gameId, teamId, seasonId, serieId, alignment);
+            navigate(`/games/${gameId}/${seasonId}/${serieId}`);
         } catch (err) {
             console.error(err);
             setError('Failed to save alignment. Please try again.');
@@ -71,6 +85,22 @@ const EditAlignment: React.FC = () => {
             setIsSaving(false);
         }
     };
+
+    if (!alignment.length || !teamPlayers.length) {
+        return (
+            <div className="container mx-auto p-6">
+                <div className="text-center">
+                    {error ? (
+                        <div className="bg-red-500 text-white p-4 rounded-lg">
+                            <p>{error}</p>
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -84,11 +114,14 @@ const EditAlignment: React.FC = () => {
 
             <div className="space-y-4">
                 {alignment.map((playerInPosition, index) => (
-                    <div key={playerInPosition.player.id} className="flex items-center space-x-4">
+                    <div
+                        key={`${playerInPosition.position}-${index}`}
+                        className="flex items-center space-x-4"
+                    >
                         <select
                             value={playerInPosition.player.id}
                             onChange={(e) => handlePlayerChange(index, parseInt(e.target.value))}
-                            className="border rounded-lg px-4 py-2"
+                            className="border rounded-lg px-4 py-2 w-64"
                         >
                             {teamPlayers.map((player) => (
                                 <option key={player.id} value={player.id}>
@@ -96,16 +129,16 @@ const EditAlignment: React.FC = () => {
                                 </option>
                             ))}
                         </select>
-                        <span className="font-medium">{playerInPosition.position}</span>
-                        <GiBaseballGlove className="text-2xl" />
+                        <span className="font-medium w-24">{playerInPosition.position}</span>
+                        <GiBaseballGlove className="text-2xl text-blue-600" />
                     </div>
                 ))}
             </div>
 
             <button
-                onClick={saveAlignment}
+                onClick={handleSaveAlignment}
                 disabled={isSaving}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {isSaving ? 'Saving...' : 'Save Alignment'}
             </button>
