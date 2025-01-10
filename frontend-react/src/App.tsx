@@ -15,6 +15,7 @@ import SeriesPage from "./pages/users/all/SeriesPage.tsx";
 import AdminPage from "./pages/users/admin/AdminPage";
 import TeamDetailsPage from './pages/users/all/TeamDetailsPage.tsx';
 import PlayerDetailsPage from "./pages/users/all/PlayerDetailsPage.tsx";
+import EditAlignment from "./pages/users/dt/EditAlignment.tsx";
 
 const App: React.FC = () => {
     const [theme, setTheme] = useState('light');
@@ -104,6 +105,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute requiredUserType="allAuthenticated">
                                         <PlayerDetailsPage />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/editalignments/:gameId/:teamId/:seasonId/:serieId"
+                                element={
+                                    <PrivateRoute requiredUserType="dt">
+                                        <EditAlignment />
                                     </PrivateRoute>
                                 }
                             />
