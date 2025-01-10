@@ -5,7 +5,7 @@ import { User } from "../../models/User.ts";
 
 const ManageUsers: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
-    const [newUser, setNewUser] = useState<User>({ username: "", userType: "admin" });
+    const [newUser, setNewUser] = useState<User>({id: -1, username: "", userType: "admin" });
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(null);
 
@@ -50,7 +50,7 @@ const ManageUsers: React.FC = () => {
             }
             await adminUserService.registerUser(newUser);
             fetchUsers();
-            setNewUser({ username: "", userType: "admin" });
+            setNewUser({id: -1, username: "", userType: "admin"});
         } catch (error) {
             console.error("Error registering user:", error);
         }
@@ -106,6 +106,13 @@ const ManageUsers: React.FC = () => {
                         Register New User
                     </h2>
                     <div className="space-y-4">
+                        <input
+                            type="number"
+                            placeholder="User ID (Optional)"
+                            value={newUser.id !== -1 ? newUser.id : ''}
+                            onChange={(e) => setNewUser({...newUser, id: Number(e.target.value)})}
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
                         <input
                             type="text"
                             placeholder="Username"
@@ -187,7 +194,7 @@ const ManageUsers: React.FC = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {typeUsers.map((user) => (
                                     <div
-                                        key={user.username}
+                                        key={user.id}
                                         className="group flex items-center justify-between p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
                                     >
                                         <div>
@@ -224,65 +231,87 @@ const ManageUsers: React.FC = () => {
                     <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light">
-                                Edit User
+                                Edit User: {editingUser.username}
                             </h2>
-                            <button
+                            <FaTimes
+                                className="text-xl text-text-dark dark:text-text-light cursor-pointer"
                                 onClick={() => setEditingUser(null)}
-                                className="p-2 rounded-lg hover:bg-secondary/30 dark:hover:bg-primary/30 transition-colors"
-                            >
-                                <FaTimes className="text-text-dark/70 dark:text-text-light/70"/>
-                            </button>
+                            />
                         </div>
                         <div className="space-y-4">
                             <input
+                                type="number"
+                                value={editingUser.id || ''}
+                                onChange={(e) =>
+                                    setEditingUser({...editingUser, id: Number(e.target.value)})
+                                }
+                                className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <input
                                 type="text"
-                                placeholder="Username"
                                 value={editingUser.username}
-                                onChange={(e) => setEditingUser({...editingUser, username: e.target.value})}
+                                onChange={(e) =>
+                                    setEditingUser({...editingUser, username: e.target.value})
+                                }
+                                className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <input
+                                type="password"
+                                value={editingUser.password || ''}
+                                onChange={(e) =>
+                                    setEditingUser({...editingUser, password: e.target.value})
+                                }
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <select
                                 value={editingUser.userType}
-                                onChange={(e) => setEditingUser({...editingUser, userType: e.target.value})}
+                                onChange={(e) =>
+                                    setEditingUser({...editingUser, userType: e.target.value})
+                                }
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             >
                                 <option value="admin">Admin</option>
                                 <option value="technicalDirector">Technical Director</option>
                                 <option value="journalist">Journalist</option>
                             </select>
-                            <button
-                                onClick={handleUpdateUser}
-                                className="w-full p-3 rounded-lg bg-primary text-text-light font-medium hover:bg-primary-light transition-all duration-300"
-                            >
-                                Update User
-                            </button>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={handleUpdateUser}
+                                    className="w-full p-3 bg-primary text-text-light rounded-lg hover:bg-primary-light transition-all duration-300"
+                                >
+                                    Update User
+                                </button>
+                                <button
+                                    onClick={() => setEditingUser(null)}
+                                    className="w-full p-3 bg-red-500 text-text-light rounded-lg hover:bg-red-600 transition-all duration-300"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Delete Confirmation Modal */}
+            {/* Delete User Confirmation */}
             {deleteConfirmation && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
                     <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
-                        <h2 className="text-2xl font-semibold mb-4 text-text-dark dark:text-text-light">
-                            Confirm Deletion
+                        <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4">
+                            Are you sure you want to delete {deleteConfirmation}?
                         </h2>
-                        <p className="mb-6 text-text-dark/70 dark:text-text-light/70">
-                            Are you sure you want to delete the user "{deleteConfirmation}"?
-                        </p>
-                        <div className="flex space-x-4">
-                            <button
-                                onClick={() => setDeleteConfirmation(null)}
-                                className="flex-grow p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 dark:bg-primary/30 dark:hover:bg-primary/50 transition-colors"
-                            >
-                                Cancel
-                            </button>
+                        <div className="flex gap-4">
                             <button
                                 onClick={handleDeleteUser}
-                                className="flex-grow p-3 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
+                                className="w-full p-3 bg-red-500 text-text-light rounded-lg hover:bg-red-600 transition-all duration-300"
                             >
-                                Delete
+                                Confirm
+                            </button>
+                            <button
+                                onClick={() => setDeleteConfirmation(null)}
+                                className="w-full p-3 bg-primary text-text-light rounded-lg hover:bg-primary-light transition-all duration-300"
+                            >
+                                Cancel
                             </button>
                         </div>
                     </div>
