@@ -14,7 +14,7 @@ const AdminPage: React.FC = () => {
             <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
 
             {/* Main Content */}
-            <main className="flex-1 p-4 mx-auto">
+            <main className="flex-1 p-4 mx-auto ml-16">
                 {activeSection === 1 && <h1 className="text-2xl font-bold">Info Section</h1>}
                 {activeSection === 2 && <ManageUsers />}
                 {activeSection === 3 && <ManageSeasons />}

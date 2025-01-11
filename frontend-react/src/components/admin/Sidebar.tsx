@@ -8,7 +8,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) => {
-    // Ahora hay 5 íconos en el array
     const icons = [FaInfoCircle, FaUsers, BiCalendar, FaBaseballBall, FaUserAlt];
 
     return (

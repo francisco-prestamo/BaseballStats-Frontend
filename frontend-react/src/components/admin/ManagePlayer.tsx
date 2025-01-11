@@ -175,9 +175,9 @@ const ManagePlayers: React.FC = () => {
                     />
 
                     {/* // Positions Section - Multiple Selection using checkboxes */}
-                    <div>
+                    <div className="my-4">
                         <label htmlFor="positions" className="block text-sm font-medium">Select Positions:</label>
-                        <div className="space-y-2">
+                        <div className="grid grid-cols-2 gap-4">  {/* 2 columnas con espacio entre elementos */}
                             {positionList.map((position) => (
                                 <div key={position} className="flex items-center">
                                     <input
@@ -187,8 +187,8 @@ const ManagePlayers: React.FC = () => {
                                         checked={newPlayer.positions.includes(position)}
                                         onChange={(e) => {
                                             const updatedPositions = e.target.checked
-                                                ? [...newPlayer.positions, position]  // Add the position if checked
-                                                : newPlayer.positions.filter(p => p !== position); // Remove if unchecked
+                                                ? [...newPlayer.positions, position]
+                                                : newPlayer.positions.filter(p => p !== position);
                                             setNewPlayer({
                                                 ...newPlayer,
                                                 positions: updatedPositions
@@ -280,7 +280,7 @@ const ManagePlayers: React.FC = () => {
                                 <FaTimes className="text-text-dark/70" />
                             </button>
                         </div>
-                        <div className="space-y-4">
+                        <div className="overflow-auto max-h-96 space-y-4">
                             {/* CI Input in Edit Modal */}
                             <input
                                 type="number"
@@ -342,20 +342,34 @@ const ManagePlayers: React.FC = () => {
                                     </option>
                                 ))}
                             </select> */}
-                            <select
-                                multiple
-                                value={editingPlayer.positions}
-                                onChange={(e) =>
-                                    setEditingPlayer({ ...editingPlayer, positions: Array.from(e.target.selectedOptions, option => option.value) })
-                                }
-                                className="w-full p-3"
-                            >
-                                {positionList.map((position) => (
-                                    <option key={position} value={position}>
-                                        {position}
-                                    </option>
-                                ))}
-                            </select>
+                            {/* // Positions Section - Multiple Selection using checkboxes */}
+                            <div className="my-4">
+                                <label htmlFor="positions" className="block text-sm font-medium">Select Positions:</label>
+                                <div className="grid grid-cols-2 gap-4">  {/* 2 columnas con espacio entre elementos */}
+                                    {positionList.map((position) => (
+                                        <div key={position} className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                id={position}
+                                                value={position}
+                                                checked={newPlayer.positions.includes(position)}
+                                                onChange={(e) => {
+                                                    const updatedPositions = e.target.checked
+                                                        ? [...newPlayer.positions, position]
+                                                        : newPlayer.positions.filter(p => p !== position);
+                                                    setNewPlayer({
+                                                        ...newPlayer,
+                                                        positions: updatedPositions
+                                                    });
+                                                }}
+                                                className="mr-2"
+                                            />
+                                            <label htmlFor={position} className="text-sm">{position}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
                         </div>
                         <button onClick={handleUpdatePlayer} className="mt-6 p-3 w-full bg-primary text-white">
                             Update Player
