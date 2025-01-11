@@ -1,5 +1,5 @@
 import React from "react";
-import { FaInfoCircle, FaUsers } from "react-icons/fa";
+import { FaInfoCircle, FaUsers, FaBaseballBall, FaUserAlt } from "react-icons/fa"; // Añadir FaBaseballBall
 import { BiCalendar } from "react-icons/bi";
 
 interface SidebarProps {
@@ -8,7 +8,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) => {
-    const icons = [FaInfoCircle, FaUsers, BiCalendar,FaInfoCircle];
+    // Ahora hay 5 íconos en el array
+    const icons = [FaInfoCircle, FaUsers, BiCalendar, FaBaseballBall, FaUserAlt];
 
     return (
         <aside
@@ -24,19 +25,18 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
                         key={index}
                         onClick={() => setActiveSection(index + 1)}
                         className={`
-                            flex  my-2 items-center justify-center p-3 rounded-lg transition-all duration-300
+                            flex my-2 items-center justify-center p-3 rounded-lg transition-all duration-300
                             ${activeSection === index + 1
-                            ? "bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light shadow-md scale-110"
-                            : "bg-secondary/30 dark:bg-primary/30 hover:bg-secondary/50 dark:hover:bg-primary/50"}
+                                ? "bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light shadow-md scale-110"
+                                : "bg-secondary/30 dark:bg-primary/30 hover:bg-secondary/50 dark:hover:bg-primary/50"}
                         `}
                         aria-label={`Section ${index + 1}`}
                     >
                         <Icon
-                            className={`
-                                text-xl 
+                            className={`text-xl 
                                 ${activeSection === index + 1
-                                ? "text-primary dark:text-text-light"
-                                : "text-text-dark/70 dark:text-text-light/70"}
+                                    ? "text-primary dark:text-text-light"
+                                    : "text-text-dark/70 dark:text-text-light/70"}
                             `}
                         />
                     </button>
