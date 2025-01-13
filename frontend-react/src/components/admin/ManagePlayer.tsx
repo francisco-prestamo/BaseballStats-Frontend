@@ -11,7 +11,7 @@ const ManagePlayers: React.FC = () => {
         name: "",
         age: 0,
         experience: 0,
-        battingAverage: 0,
+        battingAverage: -1,
         positions: [],
         teamId: 0,
     });
@@ -24,7 +24,6 @@ const ManagePlayers: React.FC = () => {
         "Second Baseman", "Shortstop", "Third Baseman", "Left Outfielder",
         "Center Outfielder", "Right Outfielder"]); // Lista de posiciones
     const [searchTerm, setSearchTerm] = useState("");
-    // const [searchTeam, setSearchTeam] = useState("");
 
     const fetchPlayers = async () => {
         try {
@@ -49,12 +48,6 @@ const ManagePlayers: React.FC = () => {
             player.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [players, searchTerm]);
-
-    // const filteredTeams = useMemo(() => {
-    //     return teamList.filter((team) =>
-    //         team.name.toLowerCase().includes(searchTeam.toLowerCase())
-    //     );
-    // }, [teamList, searchTeam]);
 
     const handleCreatePlayer = async () => {
         try {
@@ -282,66 +275,104 @@ const ManagePlayers: React.FC = () => {
                         </div>
                         <div className="overflow-auto max-h-96 space-y-4">
                             {/* CI Input in Edit Modal */}
-                            <input
-                                type="number"
-                                placeholder="Carné de Identidad (CI)"
-                                value={editingPlayer?.id || 0}
-                                onChange={(e) =>
-                                    setEditingPlayer({ ...editingPlayer, id: Number(e.target.value) })
-                                }
-                                className="w-full mb-3 p-3"
-                            />
+                            <div className="mb-4">
+                                <label htmlFor="ci" className="block text-sm font-medium text-text-dark mb-1">
+                                    Carné de Identidad (CI):
+                                </label>
+                                <input
+                                    id="ci"
+                                    type="number"
+                                    placeholder="Carné de Identidad (CI)"
+                                    value={editingPlayer?.id || 0}
+                                    onChange={(e) =>
+                                        setEditingPlayer({ ...editingPlayer, id: Number(e.target.value) })
+                                    }
+                                    className="w-full p-3 border rounded-lg"
+                                />
+                            </div>
 
-                            <input
-                                type="text"
-                                placeholder="Name"
-                                value={editingPlayer.name}
-                                onChange={(e) =>
-                                    setEditingPlayer({ ...editingPlayer, name: e.target.value })
-                                }
-                                className="w-full p-3"
-                            />
-                            <input
-                                type="number"
-                                placeholder="Age"
-                                value={editingPlayer.age}
-                                onChange={(e) =>
-                                    setEditingPlayer({ ...editingPlayer, age: Number(e.target.value) })
-                                }
-                                className="w-full p-3"
-                            />
-                            <input
-                                type="number"
-                                placeholder="Experience"
-                                value={editingPlayer.experience}
-                                onChange={(e) =>
-                                    setEditingPlayer({ ...editingPlayer, experience: Number(e.target.value) })
-                                }
-                                className="w-full p-3"
-                            />
-                            <input
-                                type="number"
-                                placeholder="Batting Average"
-                                value={editingPlayer.battingAverage}
-                                onChange={(e) =>
-                                    setEditingPlayer({ ...editingPlayer, battingAverage: Number(e.target.value) })
-                                }
-                                className="w-full p-3"
-                            />
-                            {/* <select
-                                value={editingPlayer.teamId}
-                                onChange={(e) =>
-                                    setEditingPlayer({ ...editingPlayer, teamId: Number(e.target.value) })
-                                }
-                                className="w-full p-3"
-                            >
-                                <option value={0}>Select Team</option>
-                                {filteredTeams.map((team) => (
-                                    <option key={team.id} value={team.id}>
-                                        {team.name}
-                                    </option>
-                                ))}
-                            </select> */}
+                            <div className="mb-4">
+                                <label htmlFor="name" className="block text-sm font-medium text-text-dark mb-1">
+                                    Name:
+                                </label>
+                                <input
+                                    id="name"
+                                    type="text"
+                                    placeholder="Name"
+                                    value={editingPlayer.name}
+                                    onChange={(e) =>
+                                        setEditingPlayer({ ...editingPlayer, name: e.target.value })
+                                    }
+                                    className="w-full p-3 border rounded-lg"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="age" className="block text-sm font-medium text-text-dark mb-1">
+                                    Age:
+                                </label>
+                                <input
+                                    id="age"
+                                    type="number"
+                                    placeholder="Age"
+                                    value={editingPlayer.age}
+                                    onChange={(e) =>
+                                        setEditingPlayer({ ...editingPlayer, age: Number(e.target.value) })
+                                    }
+                                    className="w-full p-3 border rounded-lg"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="experience" className="block text-sm font-medium text-text-dark mb-1">
+                                    Experience:
+                                </label>
+                                <input
+                                    id="experience"
+                                    type="number"
+                                    placeholder="Experience"
+                                    value={editingPlayer.experience}
+                                    onChange={(e) =>
+                                        setEditingPlayer({ ...editingPlayer, experience: Number(e.target.value) })
+                                    }
+                                    className="w-full p-3 border rounded-lg"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="battingAverage" className="block text-sm font-medium text-text-dark mb-1">
+                                    Batting Average:
+                                </label>
+                                <input
+                                    id="battingAverage"
+                                    type="number"
+                                    placeholder="Batting Average"
+                                    value={editingPlayer.battingAverage}
+                                    onChange={(e) =>
+                                        setEditingPlayer({ ...editingPlayer, battingAverage: Number(e.target.value) })
+                                    }
+                                    className="w-full p-3 border rounded-lg"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="team" className="block text-sm font-medium">Select Team:</label>
+                                <select
+                                    value={editingPlayer.teamId}
+                                    onChange={(e) =>
+                                        setEditingPlayer({ ...editingPlayer, teamId: Number(e.target.value) })
+                                    }
+                                    className="w-full p-3"
+                                >
+                                    <option value={0}> None </option>
+                                    {teamList.map((team) => (
+                                        <option key={team.id} value={team.id}>
+                                            {team.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             {/* // Positions Section - Multiple Selection using checkboxes */}
                             <div className="my-4">
                                 <label htmlFor="positions" className="block text-sm font-medium">Select Positions:</label>
