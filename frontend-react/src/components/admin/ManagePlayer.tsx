@@ -11,15 +11,10 @@ const ManagePlayers: React.FC = () => {
         age: 0,
         experience: 0,
         battingAverage: -1,
-        positions: [],
     });
 
     const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<number | null>(null);
-
-    const [positionList] = useState<string[]>(["Pitcher", "Catcher", "First Baseman",
-        "Second Baseman", "Shortstop", "Third Baseman", "Left Outfielder",
-        "Center Outfielder", "Right Outfielder"]); // Lista de posiciones
     const [searchTerm, setSearchTerm] = useState("");
 
     const fetchPlayers = async () => {
@@ -44,8 +39,7 @@ const ManagePlayers: React.FC = () => {
                 !newPlayer.name ||
                 newPlayer.age <= 0 ||
                 newPlayer.experience <= 0 ||
-                newPlayer.battingAverage <= 0 ||
-                newPlayer.positions.length === 0
+                newPlayer.battingAverage <= 0
             ) {
                 alert("All fields, including ID, are required to create a player.");
                 return;
@@ -53,7 +47,7 @@ const ManagePlayers: React.FC = () => {
 
             await adminPlayerService.createPlayer(newPlayer as Player);
             fetchPlayers();
-            setNewPlayer({ name: "", age: 0, experience: 0, battingAverage: -1, positions: [], id: 0 });
+            setNewPlayer({ name: "", age: 0, experience: 0, battingAverage: -1, id: 0 });
         } catch (error) {
             console.error("Error creating player:", error);
         }
@@ -152,34 +146,6 @@ const ManagePlayers: React.FC = () => {
                         onChange={(e) => setNewPlayer({ ...newPlayer, battingAverage: Number(e.target.value) })}
                         className="w-full mb-3 p-3"
                     />
-
-                    {/* // Positions Section - Multiple Selection using checkboxes */}
-                    <div className="my-4">
-                        <label htmlFor="positions" className="block text-sm font-medium">Select Positions:</label>
-                        <div className="grid grid-cols-2 gap-4">  {/* 2 columnas con espacio entre elementos */}
-                            {positionList.map((position) => (
-                                <div key={position} className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        id={position}
-                                        value={position}
-                                        checked={newPlayer.positions.includes(position)}
-                                        onChange={(e) => {
-                                            const updatedPositions = e.target.checked
-                                                ? [...newPlayer.positions, position]
-                                                : newPlayer.positions.filter(p => p !== position);
-                                            setNewPlayer({
-                                                ...newPlayer,
-                                                positions: updatedPositions
-                                            });
-                                        }}
-                                        className="mr-2"
-                                    />
-                                    <label htmlFor={position} className="text-sm">{position}</label>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
 
                     <button onClick={handleCreatePlayer} className="w-full p-3 bg-primary text-white">
                         Create Player
@@ -322,34 +288,6 @@ const ManagePlayers: React.FC = () => {
                                     }
                                     className="w-full p-3 border rounded-lg"
                                 />
-                            </div>
-
-                            {/* // Positions Section - Multiple Selection using checkboxes */}
-                            <div className="my-4">
-                                <label htmlFor="positions" className="block text-sm font-medium">Select Positions:</label>
-                                <div className="grid grid-cols-2 gap-4">  {/* 2 columnas con espacio entre elementos */}
-                                    {positionList.map((position) => (
-                                        <div key={position} className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                id={position}
-                                                value={position}
-                                                checked={newPlayer.positions.includes(position)}
-                                                onChange={(e) => {
-                                                    const updatedPositions = e.target.checked
-                                                        ? [...newPlayer.positions, position]
-                                                        : newPlayer.positions.filter(p => p !== position);
-                                                    setNewPlayer({
-                                                        ...newPlayer,
-                                                        positions: updatedPositions
-                                                    });
-                                                }}
-                                                className="mr-2"
-                                            />
-                                            <label htmlFor={position} className="text-sm">{position}</label>
-                                        </div>
-                                    ))}
-                                </div>
                             </div>
 
                         </div>

@@ -5,5 +5,4 @@ export interface Player {
   age: number;
   experience: number;
   battingAverage: number;
-  positions: string[];
 }
