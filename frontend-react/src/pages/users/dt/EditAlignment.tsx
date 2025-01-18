@@ -31,7 +31,7 @@ const EditAlignment: React.FC = () => {
 
             try {
                 const [alignmentData, players] = await Promise.all([
-                    fetchTeamAlignment(gameId, teamId, seasonId, serieId),
+                    fetchTeamAlignment(gameId, teamId),
                     fetchTeamPlayersInASeason(seasonId, serieId, teamId),
                 ]);
 
@@ -76,7 +76,7 @@ const EditAlignment: React.FC = () => {
 
         try {
             setIsSaving(true);
-            await saveTeamAlignment(gameId, teamId, seasonId, serieId, alignment);
+            await saveTeamAlignment(gameId, teamId, alignment);
             navigate(`/games/${gameId}/${seasonId}/${serieId}`);
         } catch (err) {
             console.error(err);
