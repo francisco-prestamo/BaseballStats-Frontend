@@ -6,5 +6,4 @@ export interface Player {
   experience: number;
   battingAverage: number;
   positions: string[];
-  teamId: number;
 }

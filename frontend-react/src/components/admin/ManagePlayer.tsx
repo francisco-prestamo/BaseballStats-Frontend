@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FaTimes, FaTrash, FaEdit, FaUsers } from "react-icons/fa";
 import adminPlayerService from "../../services/users/admin/adminPlayerService";
 import { Player } from "../../models/crud/Player.ts";
-import { Team } from "../../models/crud/Team.ts";
 
 const ManagePlayers: React.FC = () => {
     const [players, setPlayers] = useState<Player[]>([]);
@@ -13,13 +12,11 @@ const ManagePlayers: React.FC = () => {
         experience: 0,
         battingAverage: -1,
         positions: [],
-        teamId: 0,
     });
 
     const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<number | null>(null);
 
-    const [teamList, setTeamList] = useState<Team[]>([]);
     const [positionList] = useState<string[]>(["Pitcher", "Catcher", "First Baseman",
         "Second Baseman", "Shortstop", "Third Baseman", "Left Outfielder",
         "Center Outfielder", "Right Outfielder"]); // Lista de posiciones
@@ -31,15 +28,6 @@ const ManagePlayers: React.FC = () => {
             setPlayers(response);
         } catch (error) {
             console.error("Error fetching players:", error);
-        }
-    };
-
-    const fetchTeamList = async () => {
-        try {
-            const response = await adminPlayerService.getTeams();
-            setTeamList(response);
-        } catch (error) {
-            console.error("Error fetching teams:", error);
         }
     };
 
@@ -57,7 +45,6 @@ const ManagePlayers: React.FC = () => {
                 newPlayer.age <= 0 ||
                 newPlayer.experience <= 0 ||
                 newPlayer.battingAverage <= 0 ||
-                newPlayer.teamId <= 0 ||
                 newPlayer.positions.length === 0
             ) {
                 alert("All fields, including ID, are required to create a player.");
@@ -66,7 +53,7 @@ const ManagePlayers: React.FC = () => {
 
             await adminPlayerService.createPlayer(newPlayer as Player);
             fetchPlayers();
-            setNewPlayer({ name: "", age: 0, experience: 0, battingAverage: -1, positions: [], teamId: 0, id: 0 });
+            setNewPlayer({ name: "", age: 0, experience: 0, battingAverage: -1, positions: [], id: 0 });
         } catch (error) {
             console.error("Error creating player:", error);
         }
@@ -97,7 +84,6 @@ const ManagePlayers: React.FC = () => {
 
     useEffect(() => {
         fetchPlayers();
-        fetchTeamList();
     }, []);
 
     return (
@@ -195,23 +181,6 @@ const ManagePlayers: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Team Selection */}
-                    <div>
-                        <label htmlFor="team" className="block text-sm font-medium">Select Team:</label>
-                        <select
-                            id="team"
-                            value={newPlayer.teamId}
-                            onChange={(e) => setNewPlayer({ ...newPlayer, teamId: Number(e.target.value) })}
-                            className="w-full mb-3 p-3"
-                        >
-                            <option value={0}>Select Team</option>
-                            {teamList.map((team) => (
-                                <option key={team.id} value={team.id}>
-                                    {team.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
                     <button onClick={handleCreatePlayer} className="w-full p-3 bg-primary text-white">
                         Create Player
                     </button>
@@ -353,24 +322,6 @@ const ManagePlayers: React.FC = () => {
                                     }
                                     className="w-full p-3 border rounded-lg"
                                 />
-                            </div>
-
-                            <div>
-                                <label htmlFor="team" className="block text-sm font-medium">Select Team:</label>
-                                <select
-                                    value={editingPlayer.teamId}
-                                    onChange={(e) =>
-                                        setEditingPlayer({ ...editingPlayer, teamId: Number(e.target.value) })
-                                    }
-                                    className="w-full p-3"
-                                >
-                                    <option value={0}> None </option>
-                                    {teamList.map((team) => (
-                                        <option key={team.id} value={team.id}>
-                                            {team.name}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
 
                             {/* // Positions Section - Multiple Selection using checkboxes */}
