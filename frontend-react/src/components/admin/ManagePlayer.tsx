@@ -101,7 +101,7 @@ const ManagePlayers: React.FC = () => {
 
                     <input
                         type="number"
-                        placeholder="ID (Carné de Identidad)"
+                        placeholder="ID (Identity Document)"
                         value={newPlayer.id === 0 ? "" : newPlayer.id}
                         onChange={(e) =>
                             setNewPlayer({ ...newPlayer, id: Number(e.target.value) || 0 })
