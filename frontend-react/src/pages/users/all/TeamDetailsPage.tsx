@@ -1,7 +1,7 @@
 // TeamDetails.tsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchTeamInfo, fetchTeamGamesInThisSeries, fetchTeamStarPlayers, fetchTeamPlayersInASeason } from '../../../services/users/all/TeamService'; // Asegúrate de importar las funciones
+import { fetchTeamInfo, fetchTeamGamesInThisSeries, fetchTeamStarPlayers, fetchTeamPlayersInASerie } from '../../../services/users/all/TeamService'; // Asegúrate de importar las funciones
 import { Game } from "../../../models/Game";
 import { Player } from "../../../models/Player";
 import { Team } from "../../../models/Team";
@@ -31,7 +31,7 @@ const TeamDetails = () => {
         const teamData = await fetchTeamInfo(seasonId, seriesId, teamId);
         const gamesData = await fetchTeamGamesInThisSeries(seasonId, seriesId, teamId);
         const starPlayersData = await fetchTeamStarPlayers(seasonId, seriesId, teamId);
-        const teamsPlayersInASeasonData = await fetchTeamPlayersInASeason(seasonId, seriesId, teamId);
+        const teamsPlayersInASeasonData = await fetchTeamPlayersInASerie(seasonId, seriesId, teamId);
 
         // Actualizar el estado con los datos obtenidos
         setTeam(teamData);
