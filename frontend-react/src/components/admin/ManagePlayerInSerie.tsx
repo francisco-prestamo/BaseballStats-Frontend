@@ -14,13 +14,13 @@ const ManagePlayerInSeries: React.FC = () => {
     const [series, setSeries] = useState<Serie[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
-
     const [newPlayerInSeries, setNewPlayerInSeries] = useState<PlayerInSeries>({
         teamId: 0,
         playerId: 0,
         serieId: 0,
         seasonId: 0,
     });
+    const [editPlayerInSeries, setEditPlayerInSeries] = useState<PlayerInSeries | null>(null);
 
     const fetchPlayerInSeries = async () => {
         try {
@@ -73,6 +73,31 @@ const ManagePlayerInSeries: React.FC = () => {
         }
     };
 
+    const handleDeletePlayerInSeries = async (playerId: number, serieId: number, seasonId: number) => {
+        try {
+            await adminPlayerInSeriesService.deletePlayerInSeries(playerId, serieId, seasonId);
+            fetchPlayerInSeries(); // Refresh the list after deletion
+        } catch (error) {
+            console.error("Error deleting PlayerInSeries:", error);
+        }
+    };
+
+    const handleEditPlayerInSeries = (playerInSeries: PlayerInSeries) => {
+        setEditPlayerInSeries(playerInSeries);
+    };
+
+    const handleUpdatePlayerInSeries = async () => {
+        try {
+            if (editPlayerInSeries) {
+                await adminPlayerInSeriesService.updatePlayerInSeries(editPlayerInSeries);
+                fetchPlayerInSeries(); // Refresh the list after update
+                setEditPlayerInSeries(null); // Close the modal
+            }
+        } catch (error) {
+            console.error("Error updating PlayerInSeries:", error);
+        }
+    };
+
     useEffect(() => {
         fetchPlayerInSeries();
         fetchSeries();
@@ -93,6 +118,8 @@ const ManagePlayerInSeries: React.FC = () => {
                     <FaHandshake className="text-6xl text-text-light opacity-80" />
                 </div>
             </div>
+
+            {/* Create New PlayerInSeries */}
             <div className="bg-bg-light rounded-2xl shadow-lg p-6">
                 <h2 className="text-2xl font-semibold mb-4">Create New PlayerInSeries</h2>
 
@@ -156,18 +183,96 @@ const ManagePlayerInSeries: React.FC = () => {
             <div className="bg-bg-light rounded-2xl shadow-lg p-6">
                 <h2 className="text-2xl font-semibold mb-4">PlayerInSeries List</h2>
                 <ul className="space-y-3">
-                    {PlayerInSeries.map((PlayerInSeries, index) => (
-                        <li
-                            key={index}
-                            className="border rounded-lg p-3 flex justify-between items-center"
-                        >
+                    {PlayerInSeries.map((playerInSeries, index) => (
+                        <li key={index} className="border rounded-lg p-3 flex justify-between items-center">
                             <span>
-                                Team: {PlayerInSeries.teamId}, Player: {PlayerInSeries.playerId}, Serie: {PlayerInSeries.serieId}
+                                Team: {playerInSeries.teamId}, Player: {playerInSeries.playerId}, Serie: {playerInSeries.serieId}, Season: {playerInSeries.seasonId}
                             </span>
+                            <button
+                                onClick={() => handleEditPlayerInSeries(playerInSeries)}
+                                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700"
+                            >
+                                Edit
+                            </button>
+                            <button
+                                onClick={() => handleDeletePlayerInSeries(playerInSeries.playerId, playerInSeries.serieId, playerInSeries.seasonId)}
+                                className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700"
+                            >
+                                Delete
+                            </button>
                         </li>
                     ))}
                 </ul>
             </div>
+
+            {/* Modal for Editing */}
+            {editPlayerInSeries && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+                        <h2 className="text-2xl font-semibold mb-4">Edit PlayerInSeries</h2>
+                        {/* Select Team */}
+                        <select
+                            value={editPlayerInSeries.teamId}
+                            onChange={(e) =>
+                                setEditPlayerInSeries({ ...editPlayerInSeries, teamId: Number(e.target.value) })
+                            }
+                            className="w-full mb-3 p-3"
+                        >
+                            <option value="">Select Team</option>
+                            {teams.map((team) => (
+                                <option key={team.id} value={team.id}>
+                                    {team.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        {/* Select Player */}
+                        <select
+                            value={editPlayerInSeries.playerId}
+                            onChange={(e) =>
+                                setEditPlayerInSeries({ ...editPlayerInSeries, playerId: Number(e.target.value) })
+                            }
+                            className="w-full mb-3 p-3"
+                        >
+                            <option value="">Select Player</option>
+                            {players.map((player) => (
+                                <option key={player.id} value={player.id}>
+                                    {player.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        {/* Select Serie */}
+                        <select
+                            value={editPlayerInSeries.serieId}
+                            onChange={(e) =>
+                                setEditPlayerInSeries({ ...editPlayerInSeries, serieId: Number(e.target.value) })
+                            }
+                            className="w-full mb-3 p-3"
+                        >
+                            <option value="">Select Serie</option>
+                            {series.map((serie) => (
+                                <option key={serie.id} value={serie.id}>
+                                    {serie.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            onClick={handleUpdatePlayerInSeries}
+                            className="w-full p-3 bg-primary text-white rounded-lg"
+                        >
+                            Update PlayerInSeries
+                        </button>
+                        <button
+                            onClick={() => setEditPlayerInSeries(null)}
+                            className="w-full mt-3 p-3 bg-gray-500 text-white rounded-lg"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
