@@ -32,7 +32,7 @@ const EditAlignment: React.FC = () => {
             try {
                 const [alignmentData, players] = await Promise.all([
 
-                    fetchTeamAlignment(gameId, teamId, seasonId, serieId),
+                    fetchTeamAlignment(gameId, teamId),
                     fetchTeamPlayersInASerie(seasonId, serieId, teamId),
                 ]);
 
