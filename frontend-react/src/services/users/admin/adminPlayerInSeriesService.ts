@@ -17,10 +17,10 @@ const adminPlayerInSeriesService = {
   },
 
   deletePlayerInSeries: async (
-    playerInSerie: PlayerInSeries
+    playerInSerie: Omit<PlayerInSeries, "teamId">
   ): Promise<void> => {
     await apiClient.delete(
-      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.serieId}, /${playerInSerie.serieId}`
+      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.seasonId}/${playerInSerie.serieId}}`
     );
   },
 
@@ -28,7 +28,8 @@ const adminPlayerInSeriesService = {
     playerInSerie: PlayerInSeries
   ): Promise<void> => {
     await apiClient.put(
-      `${PlayerInSeries_URL}/${playerInSerie.teamId}/${playerInSerie.playerId}/${playerInSerie.serieId}, /${playerInSerie.serieId}`
+      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.seasonId}/${playerInSerie.serieId}}`,
+      playerInSerie
     );
   },
 };
