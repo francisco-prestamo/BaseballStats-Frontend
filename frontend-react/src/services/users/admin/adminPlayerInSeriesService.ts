@@ -2,7 +2,7 @@
 import apiClient from "../../config/apiClient";
 import { PlayerInSeries } from "../../../models/crud/PlayerInSeries";
 
-const PlayerInSeries_URL = "/PlayerInSeriess"; // Ajustar según la URL de tu backend
+const PlayerInSeries_URL = "/PlayerInSeries"; // Ajustar según la URL de tu backend
 
 const adminPlayerInSeriesService = {
   getPlayerInSeries: async (): Promise<PlayerInSeries[]> => {

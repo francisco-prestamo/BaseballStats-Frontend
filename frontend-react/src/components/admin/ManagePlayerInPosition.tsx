@@ -3,10 +3,15 @@ import adminPlayerService from "../../services/users/admin/adminPlayerService";
 import { PlayerInPosition } from "../../models/crud/PlayerInPosition";
 import { Player } from "../../models/crud/Player";
 import { positions } from "../../models/crud/positions";
-import adminPlayerInPositionService from "../../services/users/admin/adminPlayerInSeriesService";
+import adminPlayerInPositionService from "../../services/users/admin/adminPlayerInPositionService";
 import { FaHandshake } from "react-icons/fa";
 
 const ManagePlayerInPosition: React.FC = () => {
+    interface DeleteConfirmation {
+        playerId: number;
+        position: string;
+    }
+
     const [playerInPosition, setPlayerInPosition] = useState<PlayerInPosition[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
 
@@ -15,6 +20,13 @@ const ManagePlayerInPosition: React.FC = () => {
         position: "",
         efectividad: 0,
     });
+
+    const [deleteConfirmation, setDeleteConfirmation] = useState<DeleteConfirmation | null>(null);
+    const handleDeletePlayerInPosition = (playerId: number, position: string) => {
+        // Set the player and position to be deleted
+        setDeleteConfirmation({ playerId, position });
+    };
+
 
     const fetchPlayerInPosition = async () => {
         try {
@@ -54,6 +66,14 @@ const ManagePlayerInPosition: React.FC = () => {
             });
         } catch (error) {
             console.error("Error creating playerInPosition:", error);
+        }
+    };
+
+    // Handle confirming the delete action for a specific position
+    const handleConfirmDeletePlayerInPosition = () => {
+        if (deleteConfirmation) {
+            // Reset the delete confirmation state
+            setDeleteConfirmation(null);
         }
     };
 
@@ -147,6 +167,49 @@ const ManagePlayerInPosition: React.FC = () => {
                     ))}
                 </ul>
             </div>
+
+            {/* Delete PlayerInPosition Confirmation */}
+            {deleteConfirmation && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-bg-light rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
+                        <h2 className="text-xl font-semibold mb-4">Are you sure you want to delete this player in position?</h2>
+                        <div className="flex justify-between">
+                            {/* Cancel Delete */}
+                            <button
+                                onClick={() => setDeleteConfirmation(null)}
+                                className="p-3 bg-gray-500 text-white rounded-lg"
+                            >
+                                Cancel
+                            </button>
+                            {/* Confirm Delete */}
+                            <button
+                                onClick={handleConfirmDeletePlayerInPosition}
+                                className="p-3 bg-red-500 text-white rounded-lg"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Button (Example use case in list of PlayerInPosition) */}
+            {playerInPosition.map((player) => (
+                <div key={player.player.id} className="flex items-center justify-between p-4 border-b">
+                    <span>{player.player.name} - {player.position}</span>
+                    <div className="flex space-x-2">
+                        {/* Delete button */}
+                        <button
+                            onClick={() => handleDeletePlayerInPosition(player.player.id, player.position)}
+                            className="p-2 bg-red-500 text-white rounded-lg"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            ))}
+
+
         </div>
     );
 };
