@@ -8,7 +8,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) => {
-    const icons = [FaInfoCircle, FaUsers, BiCalendar, FaBaseballBall, FaUserAlt, FaListAlt];
+    const icons = [FaInfoCircle, FaUsers, BiCalendar, FaBaseballBall, FaUserAlt, FaListAlt,FaInfoCircle];
 
     return (
         <aside
