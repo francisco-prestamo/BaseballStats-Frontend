@@ -1,7 +1,7 @@
 import apiClient from '../../config/apiClient';
 import { PlayerInPosition } from '../../../models/PlayerInPosition';
 
-const ALIGNMENTS_URL = '/alignments';
+const ALIGNMENTS_URL = '/games';
 
 /**
  * Fetches team alignment for a specific game, team, season, and series.
@@ -15,12 +15,10 @@ const ALIGNMENTS_URL = '/alignments';
 export const fetchTeamAlignment = async (
     gameId: string,
     teamId: string,
-    seasonId: string,
-    serieId: string
 ): Promise<PlayerInPosition[]> => {
     try {
         const response = await apiClient.get<PlayerInPosition[]>(
-            `${ALIGNMENTS_URL}/${gameId}/${teamId}/${seasonId}/${serieId}`
+            `${ALIGNMENTS_URL}/${gameId}/alignments/${teamId}`
         );
         return response.data;
     } catch (error) {
@@ -41,13 +39,11 @@ export const fetchTeamAlignment = async (
 export const saveTeamAlignment = async (
     gameId: string,
     teamId: string,
-    seasonId: string,
-    serieId: string,
     alignment: PlayerInPosition[]
 ): Promise<void> => {
     try {
         await apiClient.put(
-            `${ALIGNMENTS_URL}/${gameId}/${teamId}/${seasonId}/${serieId}`,
+            `${ALIGNMENTS_URL}/${gameId}/alignments/${teamId}`,
             alignment
         );
     } catch (error) {
