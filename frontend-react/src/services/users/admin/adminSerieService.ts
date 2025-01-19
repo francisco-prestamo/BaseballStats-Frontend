@@ -12,20 +12,23 @@ const adminSerieService = {
   },
 
   // Create a new series
-  createSerie: async (serieData: Omit<Serie, "id">): Promise<Serie> => {
+  createSerie: async (serieData: Serie): Promise<Serie> => {
     const response = await apiClient.post(SERIES_URL, serieData);
     return response.data;
   },
 
   // Update an existing series
   updateSerie: async (serie: Serie): Promise<Serie> => {
-    const response = await apiClient.put(`${SERIES_URL}/${serie.id}`, serie);
+    const response = await apiClient.put(
+      `${SERIES_URL}/${serie.id}/${serie.idSeason}`,
+      serie
+    );
     return response.data;
   },
 
   // Delete a series
-  deleteSerie: async (serieId: number): Promise<void> => {
-    await apiClient.delete(`${SERIES_URL}/${serieId}`);
+  deleteSerie: async (serie: Serie): Promise<void> => {
+    await apiClient.delete(`${SERIES_URL}/${serie.id}/${serie.idSeason}`);
   },
 };
 
