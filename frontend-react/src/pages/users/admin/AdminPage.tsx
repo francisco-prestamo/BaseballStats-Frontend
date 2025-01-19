@@ -5,6 +5,7 @@ import ManageSeasons from "../../../components/admin/ManageSeasons.tsx";
 import ManageTeams from "../../../components/admin/ManageTeams.tsx";
 import ManagePlayers from "../../../components/admin/ManagePlayer.tsx"; // Importar ManagePlayers
 import ManageSeries from "../../../components/admin/ManageSeries.tsx";
+import ManageGames from "../../../components/admin/ManageGames.tsx";
 import ManagePlayerInSerie from "../../../components/admin/ManagePlayerInSerie.tsx";
 
 const AdminPage: React.FC = () => {
@@ -24,6 +25,7 @@ const AdminPage: React.FC = () => {
                 {activeSection === 5 && <ManagePlayers />}
                 {activeSection === 6 && <ManageSeries />}
                 {activeSection === 7 && <ManagePlayerInSerie />}
+                {activeSection === 8 && <ManageGames />}
             </main>
         </div>
     );

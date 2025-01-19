@@ -6,7 +6,8 @@ import {Dt} from "../../models/crud/Dt.ts";
 
 const ManageTeams: React.FC = () => {
     const [teams, setTeams] = useState<Team[]>([]);
-    const [newTeam, setNewTeam] = useState<Omit<Team, 'id'>>({
+    const [newTeam, setNewTeam] = useState<Team>({
+        id: 0,
         name: "",
         initials: "",
         color: "",
@@ -54,7 +55,6 @@ const ManageTeams: React.FC = () => {
         );
     }, [teams, searchTerm]);
 
-    // Filter DTs based on search term for editing
     const filteredDts = useMemo(() => {
         return dtList.filter((dt) =>
             dt.username.toLowerCase().includes(dtSearchTerm.toLowerCase())
@@ -69,7 +69,7 @@ const ManageTeams: React.FC = () => {
             }
             await adminTeamService.createTeam(newTeam);
             fetchTeams();
-            setNewTeam({ name: "", initials: "", color: "", representedIdentity: "", DtId: 0 });
+            setNewTeam({ id:0, name: "", initials: "", color: "", representedIdentity: "", DtId: 0 });
         } catch (error) {
             console.error("Error creating team:", error);
         }
@@ -105,14 +105,14 @@ const ManageTeams: React.FC = () => {
     return (
         <div className="container mx-auto p-6 space-y-10">
             {/* Header */}
-            <div className="bg-gradient-to-br from-primary to-primary-light rounded-2xl p-8 shadow-lg text-text-light">
+            <div className="bg-gradient-to-br from-primary to-primary-light rounded-2xl p-8 shadow-lg text-text-light animate-fade-in">
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-5xl font-bold">Team Management</h1>
-                        <p className="mt-2 text-lg opacity-90">
-                            Manage Teams
-                        </p>
-                        <p className="mt-1">Total Teams: {teams.length}</p>
+                        <div className="mt-2 text-lg md:text-xl opacity-90">
+                            <p>Manage Teams and Technical Directors</p>
+                            <p className="mt-1">Total Teams: {teams.length}</p>
+                        </div>
                     </div>
                     <FaUsers className="text-6xl text-text-light opacity-80"/>
                 </div>
@@ -120,48 +120,52 @@ const ManageTeams: React.FC = () => {
 
             {/* Team Creation and Search */}
             <div className="flex flex-col lg:flex-row gap-6">
-                <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
-                    <h2 className="text-2xl font-semibold mb-4">Create New Team</h2>
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        value={newTeam.name}
-                        onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
-                        className="w-full mb-3 p-3"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Initials"
-                        value={newTeam.initials}
-                        onChange={(e) => setNewTeam({ ...newTeam, initials: e.target.value })}
-                        className="w-full mb-3 p-3"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Color"
-                        value={newTeam.color}
-                        onChange={(e) => setNewTeam({ ...newTeam, color: e.target.value })}
-                        className="w-full mb-3 p-3"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Represented Identity"
-                        value={newTeam.representedIdentity}
-                        onChange={(e) => setNewTeam({ ...newTeam, representedIdentity: e.target.value })}
-                        className="w-full mb-3 p-3"
-                    />
-                    <div>
+                <div className="flex-1 bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                    <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
+                        Create New Team
+                    </h2>
+                    <div className="space-y-4">
                         <input
                             type="text"
-                            placeholder="Search DT..."
-                            value={searchDt}
-                            onChange={(e) => setSearchDt(e.target.value)}
-                            className="w-full mb-3 p-3"
+                            placeholder="Name"
+                            value={newTeam.name}
+                            onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         />
+                        <input
+                            type="text"
+                            placeholder="Initials"
+                            value={newTeam.initials}
+                            onChange={(e) => setNewTeam({ ...newTeam, initials: e.target.value })}
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <input
+                            type="color"
+                            value={newTeam.color}
+                            onChange={(e) => setNewTeam({ ...newTeam, color: e.target.value })}
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Represented Identity"
+                            value={newTeam.representedIdentity}
+                            onChange={(e) => setNewTeam({ ...newTeam, representedIdentity: e.target.value })}
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Search DT..."
+                                value={searchDt}
+                                onChange={(e) => setSearchDt(e.target.value)}
+                                className="w-full p-3 pl-10 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50"/>
+                        </div>
                         <select
                             value={newTeam.DtId}
                             onChange={(e) => setNewTeam({ ...newTeam, DtId: Number(e.target.value) })}
-                            className="w-full mb-3 p-3"
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value={0}>Select a DT</option>
                             {filteredDtList.map((dt) => (
@@ -170,46 +174,64 @@ const ManageTeams: React.FC = () => {
                                 </option>
                             ))}
                         </select>
+                        <button
+                            onClick={handleCreateTeam}
+                            className="w-full p-3 rounded-lg bg-primary text-text-light font-medium hover:bg-primary-light transition-all duration-300"
+                        >
+                            Create Team
+                        </button>
                     </div>
-                    <button onClick={handleCreateTeam} className="w-full p-3 bg-primary text-white">
-                        Create Team
-                    </button>
                 </div>
 
-                <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
-                    <h3 className="text-2xl font-semibold mb-4">Search Teams</h3>
-                    <input
-                        type="text"
-                        placeholder="Search by name or initials..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-3"
-                    />
+                <div className="flex-1 bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                    <h3 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
+                        Search Teams
+                    </h3>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search by name or initials..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full p-3 pl-10 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50"/>
+                    </div>
                 </div>
             </div>
 
             {/* Teams List */}
-            <div className="bg-bg-light rounded-2xl shadow-lg p-6">
-                <h3 className="text-2xl font-semibold mb-4">Teams List</h3>
+            <div className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20 dark:border-primary-lighter/20">
+                <h3 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4 pb-2 border-b border-primary-lighter">
+                    Teams List
+                </h3>
                 {filteredTeams.length === 0 ? (
-                    <p>No teams found.</p>
+                    <p className="text-text-dark/70 dark:text-text-light/70">No teams found.</p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredTeams.map((team) => (
-                            <div key={team.id} className="flex justify-between items-center p-4 bg-white rounded-lg shadow-lg">
-                                <p>{team.name}</p>
+                            <div
+                                key={team.id}
+                                className="group flex items-center justify-between p-4 bg-secondary-lightest dark:bg-primary rounded-lg hover:shadow-xl border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
+                            >
+                                <div>
+                                    <p className="font-semibold text-text-dark dark:text-text-light">{team.name}</p>
+                                    <p className="text-sm text-text-dark/70 dark:text-text-light/70">
+                                        {team.initials}
+                                    </p>
+                                </div>
                                 <div className="flex items-center space-x-2">
                                     <button
                                         onClick={() => setEditingTeam(team)}
-                                        className="p-2 bg-blue-500 text-white rounded-lg"
+                                        className="p-2 rounded-lg bg-primary/10 dark:bg-primary-lighter/10 hover:bg-primary/20 dark:hover:bg-primary-lighter/20 transition-all duration-300"
                                     >
-                                        <FaEdit />
+                                        <FaEdit className="text-primary dark:text-primary-lighter"/>
                                     </button>
                                     <button
                                         onClick={() => setDeleteConfirmation(team.id)}
-                                        className="p-2 bg-red-500 text-white rounded-lg"
+                                        className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-all duration-300"
                                     >
-                                        <FaTrash />
+                                        <FaTrash className="text-red-500 dark:text-red-300"/>
                                     </button>
                                 </div>
                             </div>
@@ -224,53 +246,41 @@ const ManageTeams: React.FC = () => {
                     <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light">
-                                Edit Team
+                                Edit Team: {editingTeam.name}
                             </h2>
-                            <button
+                            <FaTimes
+                                className="text-xl text-text-dark dark:text-text-light cursor-pointer"
                                 onClick={() => setEditingTeam(null)}
-                                className="p-2 rounded-lg hover:bg-secondary/30 dark:hover:bg-primary/30 transition-colors"
-                            >
-                                <FaTimes className="text-text-dark/70 dark:text-text-light/70" />
-                            </button>
+                            />
                         </div>
                         <div className="space-y-4">
                             <input
                                 type="text"
                                 placeholder="Team Name"
                                 value={editingTeam.name}
-                                onChange={(e) =>
-                                    setEditingTeam({ ...editingTeam, name: e.target.value })
-                                }
+                                onChange={(e) => setEditingTeam({ ...editingTeam, name: e.target.value })}
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="text"
                                 placeholder="Initials"
                                 value={editingTeam.initials}
-                                onChange={(e) =>
-                                    setEditingTeam({ ...editingTeam, initials: e.target.value })
-                                }
+                                onChange={(e) => setEditingTeam({ ...editingTeam, initials: e.target.value })}
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="color"
                                 value={editingTeam.color}
-                                onChange={(e) =>
-                                    setEditingTeam({ ...editingTeam, color: e.target.value })
-                                }
+                                onChange={(e) => setEditingTeam({ ...editingTeam, color: e.target.value })}
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="text"
                                 placeholder="Represented Identity"
                                 value={editingTeam.representedIdentity}
-                                onChange={(e) =>
-                                    setEditingTeam({ ...editingTeam, representedIdentity: e.target.value })
-                                }
+                                onChange={(e) => setEditingTeam({ ...editingTeam, representedIdentity: e.target.value })}
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
-
-                            {/* Dt Selector */}
                             <div className="relative">
                                 <input
                                     type="text"
@@ -279,7 +289,7 @@ const ManageTeams: React.FC = () => {
                                     onChange={(e) => setDtSearchTerm(e.target.value)}
                                     className="w-full p-3 pl-10 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                                 />
-                                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50" />
+                                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50"/>
                                 {filteredDts.length > 0 && (
                                     <div className="absolute top-full left-0 w-full bg-white dark:bg-primary shadow-lg rounded-lg max-h-40 overflow-y-auto z-10">
                                         {filteredDts.map((dt) => (
@@ -297,12 +307,20 @@ const ManageTeams: React.FC = () => {
                                     </div>
                                 )}
                             </div>
-                            <button
-                                onClick={handleUpdateTeam}
-                                className="w-full p-3 rounded-lg bg-primary text-text-light font-medium hover:bg-primary-light transition-all duration-300"
-                            >
-                                Update Team
-                            </button>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={handleUpdateTeam}
+                                    className="w-full p-3 bg-primary text-text-light rounded-lg hover:bg-primary-light transition-all duration-300"
+                                >
+                                    Update Team
+                                </button>
+                                <button
+                                    onClick={() => setEditingTeam(null)}
+                                    className="w-full p-3 bg-red-500 text-text-light rounded-lg hover:bg-red-600 transition-all duration-300"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -312,23 +330,21 @@ const ManageTeams: React.FC = () => {
             {deleteConfirmation && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
                     <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
-                        <h2 className="text-2xl font-semibold mb-4 text-text-dark dark:text-text-light">
-                            Confirm Deletion
+                        <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4">
+                            Are you sure you want to delete this team?
                         </h2>
-                        <p className="mb-6 text-text-dark/70 dark:text-text-light/70">
-                            Are you sure you want to delete the team with ID {deleteConfirmation}?
-                        </p>
-                        <div className="flex space-x-4"><button
-                            onClick={() => setDeleteConfirmation(null)}
-                            className="flex-grow p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 dark:bg-primary/30 dark:hover:bg-primary/50 transition-colors"
-                        >
-                            Cancel
-                        </button>
+                        <div className="flex gap-4">
                             <button
                                 onClick={handleDeleteTeam}
-                                className="flex-grow p-3 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
+                                className="w-full p-3 bg-red-500 text-text-light rounded-lg hover:bg-red-600 transition-all duration-300"
                             >
-                                Delete
+                                Confirm
+                            </button>
+                            <button
+                                onClick={() => setDeleteConfirmation(null)}
+                                className="w-full p-3 bg-primary text-text-light rounded-lg hover:bg-primary-light transition-all duration-300"
+                            >
+                                Cancel
                             </button>
                         </div>
                     </div>
