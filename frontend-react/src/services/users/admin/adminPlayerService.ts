@@ -1,32 +1,34 @@
 import apiClient from "../../config/apiClient";
-import { Serie } from "../../../models/crud/Series";
+import { Player } from "../../../models/crud/Player";
 
-// Define the URL for series
-const SERIES_URL = "/series";
+// Define the URLs for the player and team resources
+const PLAYERS_URL = "/players";
 
-const adminSerieService = {
-  // Get all series
-  getSeries: async (): Promise<Serie[]> => {
-    const response = await apiClient.get(SERIES_URL);
+const adminPlayerService = {
+  // Get all players
+  getPlayers: async (): Promise<Player[]> => {
+    const response = await apiClient.get(PLAYERS_URL);
     return response.data;
   },
 
-  // Create a new series
-  createSerie: async (serieData: Omit<Serie, "id">): Promise<Serie> => {
-    const response = await apiClient.post(SERIES_URL, serieData);
+  // Create a new player
+  createPlayer: async (playerData: Omit<Player, "id">): Promise<Player> => {
+    console.log(playerData);
+
+    const response = await apiClient.post(PLAYERS_URL, playerData);
     return response.data;
   },
 
-  // Update an existing series
-  updateSerie: async (serie: Serie): Promise<Serie> => {
-    const response = await apiClient.put(`${SERIES_URL}/${serie.id}`, serie);
+  // Update an existing player
+  updatePlayer: async (player: Player): Promise<Player> => {
+    const response = await apiClient.put(`${PLAYERS_URL}/${player.id}`, player);
     return response.data;
   },
 
-  // Delete a series
-  deleteSerie: async (serieId: number): Promise<void> => {
-    await apiClient.delete(`${SERIES_URL}/${serieId}`);
+  // Delete a player
+  deletePlayer: async (playerId: number): Promise<void> => {
+    await apiClient.delete(`${PLAYERS_URL}/${playerId}`);
   },
 };
 
-export default adminSerieService;
+export default adminPlayerService;
