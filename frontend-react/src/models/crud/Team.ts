@@ -4,4 +4,5 @@ export interface Team {
   initials: string;
   color: string;
   representedIdentity: string;
+  DtId: number;
 }
