@@ -2,12 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FaTrash, FaEdit, FaCalendarAlt } from "react-icons/fa";
 import adminSerieService from "../../services/users/admin/adminSerieService";
 import { Serie } from "../../models/crud/Series";
-import adminSeasonService from "../../services/users/admin/adminSeasonService";
-import { Season } from "../../models/Season";
 
 const ManageSeries: React.FC = () => {
     const [series, setSeries] = useState<Serie[]>([]);
-    const [seasons, setSeasons] = useState<Season[]>([]);
     const [newSerie, setNewSerie] = useState<Serie>({
         id: 0,
         idSeason: 0,
@@ -18,22 +15,13 @@ const ManageSeries: React.FC = () => {
     });
 
     const [editingSerie, setEditingSerie] = useState<Serie | null>(null);
-    const [deleteConfirmation, setDeleteConfirmation] = useState<Serie | null>(null);
+    const [deleteConfirmation, setDeleteConfirmation] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
 
     const fetchSeries = async () => {
         try {
             const response = await adminSerieService.getSeries();
             setSeries(response);
-        } catch (error) {
-            console.error("Error fetching series:", error);
-        }
-    };
-
-    const fetchSeasons = async () => {
-        try {
-            const response = await adminSeasonService.getSeasons();
-            setSeasons(response);
         } catch (error) {
             console.error("Error fetching series:", error);
         }
@@ -91,7 +79,6 @@ const ManageSeries: React.FC = () => {
 
     useEffect(() => {
         fetchSeries();
-        fetchSeasons();
     }, []);
 
     return (
@@ -121,24 +108,15 @@ const ManageSeries: React.FC = () => {
                         onChange={(e) => setNewSerie({ ...newSerie, id: Number(e.target.value) || 0 })}
                         className="w-full mb-3 p-3"
                     />
-                    <label htmlFor="seasonSelect" className="block mb-2">
-                        Select Season
-                    </label>
-                    <select
-                        id="seasonSelect"
-                        value={newSerie.idSeason || ""}
+                    <input
+                        type="number"
+                        placeholder="Season ID"
+                        value={newSerie.idSeason === 0 ? "" : newSerie.idSeason}
                         onChange={(e) =>
                             setNewSerie({ ...newSerie, idSeason: Number(e.target.value) || 0 })
                         }
                         className="w-full mb-3 p-3"
-                    >
-                        <option value="">Select a Season</option>
-                        {seasons.map((season) => (
-                            <option key={season.id} value={season.id}>
-                                {season.id}
-                            </option>
-                        ))}
-                    </select>
+                    />
                     <input
                         type="text"
                         placeholder="Name"
@@ -198,8 +176,8 @@ const ManageSeries: React.FC = () => {
                     <p>No series found.</p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filteredSeries.map((serie, index) => (
-                            <div key={index} className="flex justify-between items-center p-4 bg-white rounded-lg shadow-lg">
+                        {filteredSeries.map((serie) => (
+                            <div key={serie.id} className="flex justify-between items-center p-4 bg-white rounded-lg shadow-lg">
                                 <p>{serie.name}</p>
                                 <div className="flex items-center space-x-2">
                                     <button
@@ -209,7 +187,7 @@ const ManageSeries: React.FC = () => {
                                         <FaEdit />
                                     </button>
                                     <button
-                                        onClick={() => setDeleteConfirmation(serie)}
+                                        onClick={() => setDeleteConfirmation(serie.id)}
                                         className="p-2 bg-red-500 text-white rounded-lg"
                                     >
                                         <FaTrash />
