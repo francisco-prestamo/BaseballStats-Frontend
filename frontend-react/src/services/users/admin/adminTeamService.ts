@@ -14,7 +14,7 @@ const adminTeamService = {
     },
 
     // Create a new team
-    createTeam: async (teamData: Omit<Team, 'id'>): Promise<Team> => {
+    createTeam: async (teamData: Team): Promise<Team> => {
         const response = await apiClient.post(TEAMS_URL, teamData);
         return response.data;
     },
