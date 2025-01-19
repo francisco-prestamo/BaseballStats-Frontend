@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { FaTimes, FaTrash, FaEdit, FaSearch, FaCalendar } from "react-icons/fa";
 import adminSeasonService from "../../services/users/admin/adminSeasonService";
-import {Season} from "../../models/Season.ts";
+import { Season } from "../../models/Season.ts";
 
 const ManageSeasons: React.FC = () => {
     const [seasons, setSeasons] = useState<Season[]>([]);
@@ -80,7 +80,7 @@ const ManageSeasons: React.FC = () => {
                             <p className="mt-1">Total Seasons: {seasons.length}</p>
                         </div>
                     </div>
-                    <FaCalendar className="text-6xl text-text-light opacity-80"/>
+                    <FaCalendar className="text-6xl text-text-light opacity-80" />
                 </div>
             </div>
 
@@ -123,7 +123,7 @@ const ManageSeasons: React.FC = () => {
                                 className="w-full p-3 pl-10 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <FaSearch
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50"/>
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50" />
                         </div>
                     </div>
                 </div>
@@ -153,13 +153,13 @@ const ManageSeasons: React.FC = () => {
                                         onClick={() => setEditingSeason(season)}
                                         className="p-2 rounded-lg bg-primary/10 dark:bg-primary-lighter/10 hover:bg-primary/20 dark:hover:bg-primary-lighter/20 transition-all duration-300"
                                     >
-                                        <FaEdit className="text-primary dark:text-primary-lighter"/>
+                                        <FaEdit className="text-primary dark:text-primary-lighter" />
                                     </button>
                                     <button
                                         onClick={() => setDeleteConfirmation(season.id)}
                                         className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-all duration-300"
                                     >
-                                        <FaTrash className="text-red-500 dark:text-red-300"/>
+                                        <FaTrash className="text-red-500 dark:text-red-300" />
                                     </button>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@ const ManageSeasons: React.FC = () => {
                                 onClick={() => setEditingSeason(null)}
                                 className="p-2 rounded-lg hover:bg-secondary/30 dark:hover:bg-primary/30 transition-colors"
                             >
-                                <FaTimes className="text-text-dark/70 dark:text-text-light/70"/>
+                                <FaTimes className="text-text-dark/70 dark:text-text-light/70" />
                             </button>
                         </div>
                         <div className="space-y-4">
@@ -188,7 +188,7 @@ const ManageSeasons: React.FC = () => {
                                 type="number"
                                 placeholder="Season ID"
                                 value={editingSeason.id}
-                                onChange={(e) => setEditingSeason({...editingSeason, id: Number(e.target.value)})}
+                                onChange={(e) => setEditingSeason({ ...editingSeason, id: Number(e.target.value) })}
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <button

@@ -40,7 +40,7 @@ export const fetchTeamStarPlayers = async (
   return response.data;
 };
 
-export const fetchTeamPlayersInASeason = async (
+export const fetchTeamPlayersInASerie = async (
   seasonId: string,
   seriesId: string,
   teamId: string
