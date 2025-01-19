@@ -7,7 +7,7 @@ import {
 import { PlayerInPosition } from '../../../models/PlayerInPosition';
 import { Player } from '../../../models/Player';
 import { GiBaseballGlove } from 'react-icons/gi';
-import { fetchTeamPlayersInASeason } from "../../../services/users/all/TeamService";
+import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamService";
 
 const EditAlignment: React.FC = () => {
     const { gameId, teamId, seasonId, serieId } = useParams<{
@@ -32,7 +32,7 @@ const EditAlignment: React.FC = () => {
             try {
                 const [alignmentData, players] = await Promise.all([
                     fetchTeamAlignment(gameId, teamId, seasonId, serieId),
-                    fetchTeamPlayersInASeason(seasonId, serieId, teamId),
+                    fetchTeamPlayersInASerie(seasonId, serieId, teamId),
                 ]);
 
                 if (alignmentData) {
