@@ -5,7 +5,7 @@ import ManageSeasons from "../../../components/admin/ManageSeasons.tsx";
 import ManageTeams from "../../../components/admin/ManageTeams.tsx";
 import ManagePlayers from "../../../components/admin/ManagePlayer.tsx"; // Importar ManagePlayers
 import ManageSeries from "../../../components/admin/ManageSeries.tsx";
-import ManageParticipations from "../../../components/admin/ManageParticipations.tsx";
+import ManagePlayerInSerie from "../../../components/admin/ManagePlayerInSerie.tsx";
 
 const AdminPage: React.FC = () => {
     const [activeSection, setActiveSection] = useState(1);
@@ -23,7 +23,7 @@ const AdminPage: React.FC = () => {
                 {activeSection === 4 && <ManageTeams />}
                 {activeSection === 5 && <ManagePlayers />}
                 {activeSection === 6 && <ManageSeries />}
-                {activeSection === 7 && <ManageParticipations />}
+                {activeSection === 7 && <ManagePlayerInSerie />}
             </main>
         </div>
     );
