@@ -193,7 +193,7 @@ const ManagePlayerInPosition: React.FC = () => {
                 </div>
             )}
 
-            {/* Edit Button (Example use case in list of PlayerInPosition) */}
+            {/* Delete Button */}
             {playerInPosition.map((player) => (
                 <div key={player.player.id} className="flex items-center justify-between p-4 border-b">
                     <span>{player.player.name} - {player.position}</span>
