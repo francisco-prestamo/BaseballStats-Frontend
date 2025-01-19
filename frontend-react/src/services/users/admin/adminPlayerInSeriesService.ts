@@ -17,10 +17,12 @@ const adminPlayerInSeriesService = {
   },
 
   deletePlayerInSeries: async (
-    playerInSerie: Omit<PlayerInSeries, "teamId">
+    playerId: number,
+    seasonId: number,
+    serieId: number
   ): Promise<void> => {
     await apiClient.delete(
-      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.seasonId}/${playerInSerie.serieId}`
+      `${PlayerInSeries_URL}/${playerId}/${seasonId}/${serieId}`
     );
   },
 
