@@ -7,6 +7,7 @@ import ManagePlayers from "../../../components/admin/ManagePlayer.tsx"; // Impor
 import ManageSeries from "../../../components/admin/ManageSeries.tsx";
 import ManageGames from "../../../components/admin/ManageGames.tsx";
 import ManagePlayerInSerie from "../../../components/admin/ManagePlayerInSerie.tsx";
+import ManagePlayerInPosition from "../../../components/admin/ManagePlayerInPosition.tsx";
 
 const AdminPage: React.FC = () => {
     const [activeSection, setActiveSection] = useState(1);
@@ -26,6 +27,7 @@ const AdminPage: React.FC = () => {
                 {activeSection === 6 && <ManageSeries />}
                 {activeSection === 7 && <ManagePlayerInSerie />}
                 {activeSection === 8 && <ManageGames />}
+                {activeSection === 9 && <ManagePlayerInPosition />}
             </main>
         </div>
     );

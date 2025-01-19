@@ -20,7 +20,7 @@ const adminSerieService = {
   // Update an existing series
   updateSerie: async (serie: Serie): Promise<Serie> => {
     const response = await apiClient.put(
-      `${SERIES_URL}/${serie.id}/${serie.idSeason}`,
+      `${SERIES_URL}/${serie.idSeason}/${serie.id}`,
       serie
     );
     return response.data;
@@ -28,7 +28,7 @@ const adminSerieService = {
 
   // Delete a series
   deleteSerie: async (serie: Serie): Promise<void> => {
-    await apiClient.delete(`${SERIES_URL}/${serie.id}/${serie.idSeason}`);
+    await apiClient.delete(`${SERIES_URL}/${serie.idSeason}/${serie.id}`);
   },
 };
 
