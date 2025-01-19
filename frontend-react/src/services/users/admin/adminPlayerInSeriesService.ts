@@ -1,40 +1,37 @@
+// src/services/users/admin/adminPlayerInSeriesService.ts
 import apiClient from "../../config/apiClient";
-import { PlayerInPosition } from "../../../models/crud/PlayerInPosition";
+import { PlayerInSeries } from "../../../models/crud/PlayerInSeries";
 
-const PlayerInPosition_URL = "/PlayerInPositions"; // Ajustar según la URL de tu backend
+const PlayerInSeries_URL = "/PlayerInSeriess"; // Ajustar según la URL de tu backend
 
-const adminPlayerInPositionService = {
-  // Obtener todos los PlayerInPosition
-  getPlayerInPositions: async (): Promise<PlayerInPosition[]> => {
-    const response = await apiClient.get(PlayerInPosition_URL);
+const adminPlayerInSeriesService = {
+  getPlayerInSeries: async (): Promise<PlayerInSeries[]> => {
+    const response = await apiClient.get(PlayerInSeries_URL);
     return response.data;
   },
 
-  // Crear un nuevo PlayerInPosition
-  createPlayerInPosition: async (
-    playerInPosition: PlayerInPosition
+  createPlayerInSeries: async (
+    PlayerInSerie: PlayerInSeries
   ): Promise<void> => {
-    await apiClient.post(PlayerInPosition_URL, playerInPosition);
+    await apiClient.post(PlayerInSeries_URL, PlayerInSerie);
   },
 
-  // Eliminar un PlayerInPosition (por ID del jugador y posición)
-  deletePlayerInPosition: async (
-    playerInPosition: Pick<PlayerInPosition, "player" | "position">
+  deletePlayerInSeries: async (
+    playerInSerie: Omit<PlayerInSeries, "teamId">
   ): Promise<void> => {
-    const { player, position } = playerInPosition;
-    await apiClient.delete(`${PlayerInPosition_URL}/${player.id}/${position}`);
+    await apiClient.delete(
+      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.seasonId}/${playerInSerie.serieId}`
+    );
   },
 
-  // Actualizar un PlayerInPosition existente
-  updatePlayerInPosition: async (
-    playerInPosition: PlayerInPosition
+  updatePlayerInSeries: async (
+    playerInSerie: PlayerInSeries
   ): Promise<void> => {
-    const { player, position } = playerInPosition;
     await apiClient.put(
-      `${PlayerInPosition_URL}/${player.id}/${position}`,
-      playerInPosition
+      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.seasonId}/${playerInSerie.serieId}`,
+      playerInSerie
     );
   },
 };
 
-export default adminPlayerInPositionService;
+export default adminPlayerInSeriesService;
