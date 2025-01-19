@@ -1,42 +1,32 @@
 import apiClient from "../../config/apiClient";
-import { Player } from "../../../models/crud/Player";
-import { Team } from "../../../models/crud/Team";
+import { Serie } from "../../../models/crud/Series";
 
-// Define the URLs for the player and team resources
-const PLAYERS_URL = "/players";
-const TEAMS_URL = "/teams";
+// Define the URL for series
+const SERIES_URL = "/series";
 
-const adminPlayerService = {
-  // Get all players
-  getPlayers: async (): Promise<Player[]> => {
-    const response = await apiClient.get(PLAYERS_URL);
+const adminSerieService = {
+  // Get all series
+  getSeries: async (): Promise<Serie[]> => {
+    const response = await apiClient.get(SERIES_URL);
     return response.data;
   },
 
-  // Create a new player
-  createPlayer: async (playerData: Omit<Player, "id">): Promise<Player> => {
-    console.log(playerData);
-
-    const response = await apiClient.post(PLAYERS_URL, playerData);
+  // Create a new series
+  createSerie: async (serieData: Omit<Serie, "id">): Promise<Serie> => {
+    const response = await apiClient.post(SERIES_URL, serieData);
     return response.data;
   },
 
-  // Update an existing player
-  updatePlayer: async (player: Player): Promise<Player> => {
-    const response = await apiClient.put(`${PLAYERS_URL}/${player.id}`, player);
+  // Update an existing series
+  updateSerie: async (serie: Serie): Promise<Serie> => {
+    const response = await apiClient.put(`${SERIES_URL}/${serie.id}`, serie);
     return response.data;
   },
 
-  // Delete a player
-  deletePlayer: async (playerId: number): Promise<void> => {
-    await apiClient.delete(`${PLAYERS_URL}/${playerId}`);
-  },
-
-  // Get all teams
-  getTeams: async (): Promise<Team[]> => {
-    const response = await apiClient.get(TEAMS_URL);
-    return response.data;
+  // Delete a series
+  deleteSerie: async (serieId: number): Promise<void> => {
+    await apiClient.delete(`${SERIES_URL}/${serieId}`);
   },
 };
 
-export default adminPlayerService;
+export default adminSerieService;

@@ -4,5 +4,5 @@ export interface Player {
   name: string;
   age: number;
   experience: number;
-  battingAverage: number;
+  battingAverage?: number;
 }

@@ -39,7 +39,7 @@ const ManagePlayers: React.FC = () => {
                 !newPlayer.name ||
                 newPlayer.age <= 0 ||
                 newPlayer.experience <= 0 ||
-                newPlayer.battingAverage <= 0
+                newPlayer.battingAverage
             ) {
                 alert("All fields, including ID, are required to create a player.");
                 return;

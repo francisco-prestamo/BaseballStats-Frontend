@@ -1,49 +1,39 @@
-import axios from "axios";
+import apiClient from "../../config/apiClient";
 import { Serie } from "../../../models/crud/Series";
 
-const API_BASE_URL = "http://your-api-endpoint.com/api/series"; // Replace with your actual API endpoint
+// Define the base URL for series
+const SERIES_URL = "/series";
 
 const adminSerieService = {
   /**
-   * Fetch all series from the server.
-   * @returns {Promise<Serie[]>} A list of series.
+   * @returns {Promise<Serie[]>}
    */
-  async getSeries(): Promise<Serie[]> {
-    try {
-      const response = await axios.get<Serie[]>(API_BASE_URL);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching series:", error);
-      throw error;
-    }
+  getSeries: async (): Promise<Serie[]> => {
+    const response = await apiClient.get(SERIES_URL);
+    return response.data;
   },
 
   /**
    * Create a new series.
    * @param {Serie} newSerie - The new series to create.
-   * @returns {Promise<void>}
+   * @returns {Promise<Serie>} The created series.
    */
-  async createSerie(newSerie: Serie): Promise<void> {
-    try {
-      await axios.post(API_BASE_URL, newSerie);
-    } catch (error) {
-      console.error("Error creating series:", error);
-      throw error;
-    }
+  createSerie: async (newSerie: Omit<Serie, "id">): Promise<Serie> => {
+    const response = await apiClient.post(SERIES_URL, newSerie);
+    return response.data;
   },
 
   /**
    * Update an existing series.
    * @param {Serie} updatedSerie - The series with updated data.
-   * @returns {Promise<void>}
+   * @returns {Promise<Serie>} The updated series.
    */
-  async updateSerie(updatedSerie: Serie): Promise<void> {
-    try {
-      await axios.put(`${API_BASE_URL}/${updatedSerie.id}`, updatedSerie);
-    } catch (error) {
-      console.error("Error updating series:", error);
-      throw error;
-    }
+  updateSerie: async (updatedSerie: Serie): Promise<Serie> => {
+    const response = await apiClient.put(
+      `${SERIES_URL}/${updatedSerie.id}`,
+      updatedSerie
+    );
+    return response.data;
   },
 
   /**
@@ -51,13 +41,8 @@ const adminSerieService = {
    * @param {number} serieId - The ID of the series to delete.
    * @returns {Promise<void>}
    */
-  async deleteSerie(serieId: number): Promise<void> {
-    try {
-      await axios.delete(`${API_BASE_URL}/${serieId}`);
-    } catch (error) {
-      console.error("Error deleting series:", error);
-      throw error;
-    }
+  deleteSerie: async (serieId: number): Promise<void> => {
+    await apiClient.delete(`${SERIES_URL}/${serieId}`);
   },
 };
 
