@@ -1,11 +1,11 @@
 export const positions = [
   "Pitcher",
   "Catcher",
-  "First Baseman",
-  "Second Baseman",
-  "Third Baseman",
-  "Left Fielder",
-  "Center Fielder",
-  "Right Fielder",
+  "First-Base",
+  "Second-Base",
+  "Third-Base",
   "Shortstop",
+  "Left-Field",
+  "Center-Field",
+  "Right-Field",
 ] as const; // Esto asegura que las posiciones sean literales readonly.
