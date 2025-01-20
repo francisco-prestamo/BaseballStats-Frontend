@@ -33,7 +33,8 @@ const ManageDirects: React.FC = () => {
 
     const fetchMembersAndTeams = async () => {
         try {
-            const members = await adminDirectService.getDirectionMembers();
+            // const members = await adminDirectService.getDirectionMembers();
+            const members = [{ id: 5, name: "Francisco" }]
             const teams = await adminTeamService.getTeams();
             setDirectionMembers(members);
             setTeams(teams);
