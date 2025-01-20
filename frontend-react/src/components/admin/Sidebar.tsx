@@ -1,5 +1,5 @@
 import React from "react";
-import { FaInfoCircle, FaUsers, FaBaseballBall, FaUserAlt, FaListAlt, FaHandshake } from "react-icons/fa";
+import { FaInfoCircle, FaUsers, FaBaseballBall, FaUserAlt, FaListAlt, FaHandshake, FaArrowRight, FaUserTie } from "react-icons/fa";
 import { GiPositionMarker } from "react-icons/gi";
 import { BiCalendar } from "react-icons/bi";
 
@@ -9,7 +9,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) => {
-    const icons = [FaInfoCircle, FaUsers, BiCalendar, FaBaseballBall, FaUserAlt, FaListAlt, FaHandshake, FaInfoCircle, GiPositionMarker];
+    const icons = [FaInfoCircle, FaUsers, BiCalendar, FaBaseballBall, FaUserAlt,
+        FaListAlt, FaHandshake, FaInfoCircle, GiPositionMarker, FaArrowRight, FaUserTie];
 
     return (
         <aside
