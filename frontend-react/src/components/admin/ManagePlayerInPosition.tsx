@@ -16,7 +16,7 @@ const ManagePlayerInPosition: React.FC = () => {
     const [players, setPlayers] = useState<Player[]>([]);
 
     const [newPlayerInPosition, setNewPlayerInPosition] = useState<PlayerInPosition>({
-        player: { id: 0, name: "", age: 0, experience: 0, battingAverage: 0 },
+        playerId: 0,
         position: "",
         efectividad: 0,
     });
@@ -48,19 +48,19 @@ const ManagePlayerInPosition: React.FC = () => {
 
     const handleCreatePlayerInPosition = async () => {
         try {
-            const { player, position, efectividad } = newPlayerInPosition;
-            if (!player.id || !position) {
+            const { playerId, position, efectividad } = newPlayerInPosition;
+            if (!playerId || !position) {
                 alert("Player and position fields are required.");
                 return;
             }
             await adminPlayerInPositionService.createPlayerInPosition({
-                player,
+                playerId,
                 position,
                 efectividad,
             });
             fetchPlayerInPosition();
             setNewPlayerInPosition({
-                player: { id: 0, name: "", age: 0, experience: 0, battingAverage: 0 },
+                playerId: 0,
                 position: "",
                 efectividad: 0,
             });
@@ -99,24 +99,35 @@ const ManagePlayerInPosition: React.FC = () => {
             <div className="bg-bg-light rounded-2xl shadow-lg p-6">
                 <h2 className="text-2xl font-semibold mb-4">Create New Player in Position</h2>
 
-                {/* Select Player */}
+                {/* Select PlayerId */}
                 <select
-                    value={newPlayerInPosition.player.id || ""}
-                    onChange={(e) =>
+                    value={newPlayerInPosition.playerId || ""}
+                    onChange={(e) => {
+                        const selectedPlayerId = players.find((p) => p.id === Number(e.target.value))?.id;
                         setNewPlayerInPosition({
                             ...newPlayerInPosition,
-                            player: players.find((p) => p.id === Number(e.target.value)) || newPlayerInPosition.player,
-                        })
-                    }
-                    className="w-full mb-3 p-3"
+                            playerId: selectedPlayerId || newPlayerInPosition.playerId,
+                        });
+                    }}
+                    className="w-full mb-3 p-3 border border-gray-300 rounded-lg"
+                    defaultValue=""
                 >
-                    <option value="">Select Player</option>
-                    {players.map((player) => (
-                        <option key={player.id} value={player.id}>
-                            {player.name} (CI: {player.id})
+                    <option value="" disabled>
+                        Select Player
+                    </option>
+                    {players.length > 0 ? (
+                        players.map((player) => (
+                            <option key={player.id} value={player.id}>
+                                {player.name} (CI: {player.id})
+                            </option>
+                        ))
+                    ) : (
+                        <option value="" disabled>
+                            No players available
                         </option>
-                    ))}
+                    )}
                 </select>
+
 
                 {/* Select Position */}
                 <select
@@ -157,14 +168,19 @@ const ManagePlayerInPosition: React.FC = () => {
             <div className="bg-bg-light rounded-2xl shadow-lg p-6">
                 <h2 className="text-2xl font-semibold mb-4">Player in Position List</h2>
                 <ul className="space-y-3">
-                    {playerInPosition.map((item, index) => (
-                        <li key={index} className="border rounded-lg p-3 flex justify-between items-center">
-                            <span>
-                                Player: {item.player.name} (CI: {item.player.id}), Position: {item.position}
-                                {item.efectividad ? `, Efectividad: ${item.efectividad}` : ""}
-                            </span>
-                        </li>
-                    ))}
+                    {playerInPosition.map((item, index) => {
+                        const player = players.find((p) => p.id === item.playerId);
+                        return (
+                            <li key={index} className="border rounded-lg p-3 flex justify-between items-center">
+                                <span>
+                                    Player: {player ? `${player.name} (CI: ${player.id})` : "Unknown Player"}, Position: {item.position}
+                                    {item.efectividad ? `, Efectividad: ${item.efectividad}` : ""}
+                                </span>
+                            </li>
+                        )
+                    }
+                    )
+                    }
                 </ul>
             </div>
 
@@ -194,22 +210,25 @@ const ManagePlayerInPosition: React.FC = () => {
             )}
 
             {/* Delete Button */}
-            {playerInPosition.map((player) => (
-                <div key={player.player.id} className="flex items-center justify-between p-4 border-b">
-                    <span>{player.player.name} - {player.position}</span>
-                    <div className="flex space-x-2">
-                        {/* Delete button */}
-                        <button
-                            onClick={() => handleDeletePlayerInPosition(player.player.id, player.position)}
-                            className="p-2 bg-red-500 text-white rounded-lg"
-                        >
-                            Delete
-                        </button>
+            {playerInPosition.map((player) => {
+                const matchedPlayer = players.find((p) => p.id === player.playerId);
+
+                return (
+                    <div key={player.playerId} className="flex items-center justify-between p-4 border-b">
+                        <span>
+                            {matchedPlayer ? `${matchedPlayer.name} (CI: ${matchedPlayer.id})` : "Unknown Player"} - {player.position}
+                        </span>
+                        <div className="flex space-x-2">
+                            <button
+                                onClick={() => handleDeletePlayerInPosition(player.playerId, player.position)}
+                                className="p-2 bg-red-500 text-white rounded-lg"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ))}
-
-
+                );
+            })}
         </div>
     );
 };
