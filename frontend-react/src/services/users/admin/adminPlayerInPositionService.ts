@@ -19,10 +19,12 @@ const adminPlayerInPositionService = {
 
   // Eliminar un PlayerInPosition (por ID del jugador y posición)
   deletePlayerInPosition: async (
-    playerInPosition: Pick<PlayerInPosition, "player" | "position">
+    playerInPositionId: number,
+    position: string
   ): Promise<void> => {
-    const { player, position } = playerInPosition;
-    await apiClient.delete(`${PlayerInPosition_URL}/${player.id}/${position}`);
+    await apiClient.delete(
+      `${PlayerInPosition_URL}/${playerInPositionId}/${position}`
+    );
   },
 
   // Actualizar un PlayerInPosition existente
