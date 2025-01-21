@@ -22,7 +22,7 @@ const PlayerDetailsPage: React.FC = () => {
         const getPlayerDetails = async () => {
             try {
                 if (playerId && seasonId && serieId) {
-                    const data = await fetchPlayerDetailsForSeasonAndSeries(playerId, seasonId, serieId);
+                    const data = await fetchPlayerDetailsForSeasonAndSeries(playerId);
                     setPlayerData(data);
                 }
             } catch (error) {
