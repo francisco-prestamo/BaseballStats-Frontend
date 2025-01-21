@@ -93,6 +93,13 @@ const ManagePlayerInPosition: React.FC = () => {
         fetchPlayers();
     }, []);
 
+    useEffect(() => {
+        const filtered = playerInPosition.filter((item) =>
+            item.player.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setPlayerInPosition(filtered);
+    }, [searchQuery, playerInPosition]);
+
     return (
         <div className="container mx-auto p-6 space-y-10">
             {/* Header */}
@@ -178,18 +185,6 @@ const ManagePlayerInPosition: React.FC = () => {
                             placeholder="Search Player Name"
                             className="p-3 w-full"
                         />
-                        {/* Search Button */}
-                        <button
-                            onClick={() => {
-                                const filtered = playerInPosition.filter((item) =>
-                                    item.player.name.toLowerCase().includes(searchQuery.toLowerCase())
-                                );
-                                setPlayerInPosition(filtered);
-                            }}
-                            className="p-3 bg-primary text-white rounded-lg"
-                        >
-                            Search
-                        </button>
                     </div>
                 </div>
             </div>
