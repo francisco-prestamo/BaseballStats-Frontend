@@ -2,7 +2,7 @@
 import apiClient from "../../config/apiClient";
 import { PlayerInSeries } from "../../../models/crud/PlayerInSeries";
 
-const PlayerInSeries_URL = "/PlayerInSeriess"; // Ajustar según la URL de tu backend
+const PlayerInSeries_URL = "/PlayerInSeries"; // Ajustar según la URL de tu backend
 
 const adminPlayerInSeriesService = {
   getPlayerInSeries: async (): Promise<PlayerInSeries[]> => {
@@ -17,10 +17,12 @@ const adminPlayerInSeriesService = {
   },
 
   deletePlayerInSeries: async (
-    playerInSerie: PlayerInSeries
+    playerId: number,
+    seasonId: number,
+    serieId: number
   ): Promise<void> => {
     await apiClient.delete(
-      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.serieId}, /${playerInSerie.serieId}`
+      `${PlayerInSeries_URL}/${playerId}/${seasonId}/${serieId}`
     );
   },
 
@@ -28,7 +30,8 @@ const adminPlayerInSeriesService = {
     playerInSerie: PlayerInSeries
   ): Promise<void> => {
     await apiClient.put(
-      `${PlayerInSeries_URL}/${playerInSerie.teamId}/${playerInSerie.playerId}/${playerInSerie.serieId}, /${playerInSerie.serieId}`
+      `${PlayerInSeries_URL}/${playerInSerie.playerId}/${playerInSerie.seasonId}/${playerInSerie.serieId}`,
+      playerInSerie
     );
   },
 };

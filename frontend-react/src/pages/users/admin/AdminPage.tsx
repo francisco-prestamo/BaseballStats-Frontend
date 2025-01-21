@@ -7,6 +7,9 @@ import ManagePlayers from "../../../components/admin/ManagePlayer.tsx"; // Impor
 import ManageSeries from "../../../components/admin/ManageSeries.tsx";
 import ManageGames from "../../../components/admin/ManageGames.tsx";
 import ManagePlayerInSerie from "../../../components/admin/ManagePlayerInSerie.tsx";
+import ManagePlayerInPosition from "../../../components/admin/ManagePlayerInPosition.tsx";
+import ManageDirectionMembers from "../../../components/admin/ManageDirectionMember.tsx";
+import ManageDirects from "../../../components/admin/ManageTeamDirectionMember.tsx";
 
 const AdminPage: React.FC = () => {
     const [activeSection, setActiveSection] = useState(1);
@@ -26,6 +29,10 @@ const AdminPage: React.FC = () => {
                 {activeSection === 6 && <ManageSeries />}
                 {activeSection === 7 && <ManagePlayerInSerie />}
                 {activeSection === 8 && <ManageGames />}
+                {activeSection === 9 && <ManagePlayerInPosition />}
+                {activeSection === 10 && <ManageDirectionMembers />}
+                {activeSection === 11 && <ManageDirects />}
+
             </main>
         </div>
     );
