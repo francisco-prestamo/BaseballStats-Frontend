@@ -17,7 +17,7 @@ export const fetchTeamGamesInThisSeries = async (
   teamId: string
 ): Promise<Game[]> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/team/${teamId}/serie/${seasonId}/${seriesId}/games`
+    `${TEAMS_URL}/${teamId}/serie/${seasonId}/${seriesId}/games`
   );
   return response.data;
 };
@@ -28,7 +28,7 @@ export const fetchTeamStarPlayers = async (
   teamId: string
 ): Promise<PlayerInPosition[]> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/team/${teamId}/serie/${seasonId}/${seriesId}/star-players`
+    `${TEAMS_URL}/${teamId}/serie/${seasonId}/${seriesId}/star-players`
   );
 
   return response.data;
@@ -40,7 +40,7 @@ export const fetchTeamPlayersInASerie = async (
   teamId: string
 ): Promise<Player[]> => {
   const response = await apiClient.get(
-    `${TEAMS_URL}/team/${teamId}/serie/${seasonId}/${seriesId}/players`
+    `${TEAMS_URL}/${teamId}/serie/${seasonId}/${seriesId}/players`
   );
 
   return response.data;
