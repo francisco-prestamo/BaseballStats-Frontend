@@ -6,9 +6,7 @@ import {IsPitcher} from "../../../models/IsPitcher.ts";
 const PLAYERS_URL = '/players';
 
 export const fetchPlayerDetailsForSeasonAndSeries = async (
-    playerId: string,
-    seasonId: string,
-    serieId: string
+    playerId: string
 ): Promise<IsPitcher> => {
     const response = await apiClient.get(
         `${PLAYERS_URL}/${playerId}`
