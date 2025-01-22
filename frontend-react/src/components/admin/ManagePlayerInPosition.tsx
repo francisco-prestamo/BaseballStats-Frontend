@@ -15,19 +15,14 @@ const ManagePlayerInPosition: React.FC = () => {
     const [playerInPosition, setPlayerInPosition] = useState<PlayerInPosition[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
-
     const [newPlayerInPosition, setNewPlayerInPosition] = useState<PlayerInPosition>({
-        player: { id: 0, name: "", age: 0, experience: 0, battingAverage: 0 },
+        playerId: 0,
         position: "",
         efectividad: 0,
     });
-
     const [deleteConfirmation, setDeleteConfirmation] = useState<DeleteConfirmation | null>(null);
 
-    const handleDeletePlayerInPosition = (playerId: number, position: string) => {
-        setDeleteConfirmation({ playerId, position });
-    };
-
+    // Fetch player-in-position data
     const fetchPlayerInPosition = async () => {
         try {
             const response = await adminPlayerInPositionService.getPlayerInPositions();
@@ -37,6 +32,7 @@ const ManagePlayerInPosition: React.FC = () => {
         }
     };
 
+    // Fetch players data
     const fetchPlayers = async () => {
         try {
             const response = await adminPlayerService.getPlayers();
@@ -46,21 +42,22 @@ const ManagePlayerInPosition: React.FC = () => {
         }
     };
 
+    // Create a new player-in-position entry
     const handleCreatePlayerInPosition = async () => {
+        const { playerId, position, efectividad } = newPlayerInPosition;
+        if (!playerId || !position) {
+            alert("Player and position fields are required.");
+            return;
+        }
         try {
-            const { player, position, efectividad } = newPlayerInPosition;
-            if (!player.id || !position) {
-                alert("Player and position fields are required.");
-                return;
-            }
             await adminPlayerInPositionService.createPlayerInPosition({
-                player,
+                playerId,
                 position,
                 efectividad,
             });
             fetchPlayerInPosition();
             setNewPlayerInPosition({
-                player: { id: 0, name: "", age: 0, experience: 0, battingAverage: 0 },
+                playerId: 0,
                 position: "",
                 efectividad: 0,
             });
@@ -69,6 +66,7 @@ const ManagePlayerInPosition: React.FC = () => {
         }
     };
 
+    // Delete player-in-position entry
     const handleConfirmDeletePlayerInPosition = async () => {
         if (deleteConfirmation) {
             try {
@@ -76,16 +74,12 @@ const ManagePlayerInPosition: React.FC = () => {
                     deleteConfirmation.playerId,
                     deleteConfirmation.position
                 );
-                fetchPlayerInPosition(); // Refresh the list after deletion
-                setDeleteConfirmation(null); // Close the confirmation dialog
+                fetchPlayerInPosition();
+                setDeleteConfirmation(null);
             } catch (error) {
                 console.error("Error deleting playerInPosition:", error);
             }
         }
-    };
-
-    const handleCancelDelete = () => {
-        setDeleteConfirmation(null); // Close the confirmation dialog
     };
 
     useEffect(() => {
@@ -93,12 +87,11 @@ const ManagePlayerInPosition: React.FC = () => {
         fetchPlayers();
     }, []);
 
-    useEffect(() => {
-        const filtered = playerInPosition.filter((item) =>
-            item.player.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setPlayerInPosition(filtered);
-    }, [searchQuery, playerInPosition]);
+    const filteredPlayerInPosition = playerInPosition.filter((item) =>
+        players.find((player) => player.id === item.playerId)?.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="container mx-auto p-6 space-y-10">
@@ -113,22 +106,22 @@ const ManagePlayerInPosition: React.FC = () => {
                     <FaHandshake className="text-6xl text-text-light opacity-80" />
                 </div>
             </div>
-            {/* Content Layout: Create PlayerInPosition & Search */}
+
+            {/* Create PlayerInPosition & Search */}
             <div className="flex space-x-6">
-                {/* Create PlayerInPosition Section */}
+                {/* Create Section */}
                 <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
                     <h2 className="text-2xl font-semibold mb-4">Create New Player in Position</h2>
-
-                    {/* Select Player */}
                     <select
-                        value={newPlayerInPosition.player.id || ""}
+                        value={newPlayerInPosition.playerId || ""}
                         onChange={(e) =>
                             setNewPlayerInPosition({
                                 ...newPlayerInPosition,
-                                player: players.find((p) => p.id === Number(e.target.value)) || newPlayerInPosition.player,
+                                playerId: Number(e.target.value),
                             })
                         }
                         className="w-full mb-3 p-3"
+                        aria-label="Select Player"
                     >
                         <option value="">Select Player</option>
                         {players.map((player) => (
@@ -137,14 +130,13 @@ const ManagePlayerInPosition: React.FC = () => {
                             </option>
                         ))}
                     </select>
-
-                    {/* Select Position */}
                     <select
                         value={newPlayerInPosition.position || ""}
                         onChange={(e) =>
                             setNewPlayerInPosition({ ...newPlayerInPosition, position: e.target.value })
                         }
                         className="w-full mb-3 p-3"
+                        aria-label="Select Position"
                     >
                         <option value="">Select Position</option>
                         {positions.map((position, index) => (
@@ -153,8 +145,6 @@ const ManagePlayerInPosition: React.FC = () => {
                             </option>
                         ))}
                     </select>
-
-                    {/* Set Efectividad */}
                     <input
                         type="number"
                         value={newPlayerInPosition.efectividad || ""}
@@ -163,8 +153,8 @@ const ManagePlayerInPosition: React.FC = () => {
                         }
                         placeholder="Efectividad (Optional)"
                         className="w-full mb-3 p-3"
+                        aria-label="Set Efectividad"
                     />
-
                     <button
                         onClick={handleCreatePlayerInPosition}
                         className="w-full p-3 bg-primary text-white rounded-lg"
@@ -176,55 +166,55 @@ const ManagePlayerInPosition: React.FC = () => {
                 {/* Search Section */}
                 <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
                     <h2 className="text-2xl font-semibold mb-4">Search Player in Position</h2>
-                    <div className="flex space-x-4">
-                        {/* Search Input */}
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search Player Name"
-                            className="p-3 w-full"
-                        />
-                    </div>
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search Player Name"
+                        className="p-3 w-full"
+                        aria-label="Search Player Name"
+                    />
                 </div>
             </div>
 
-            {/* PlayerInPosition List */}
+            {/* List Section */}
             <div className="bg-bg-light rounded-2xl shadow-lg p-6 mt-6">
                 <h2 className="text-2xl font-semibold mb-4">Player in Position List</h2>
-                <ul className="space-y-3">
-                    {playerInPosition.map((item, index) => (
-                        <li key={index} className="border rounded-lg p-3 flex justify-between items-center">
-                            <span>
-                                Player: {item.player.name} (CI: {item.player.id}), Position: {item.position}
-                                {item.efectividad ? `, Efectividad: ${item.efectividad}` : ""}
-                            </span>
-                            {/* Delete Button */}
-                            <button
-                                onClick={() => handleDeletePlayerInPosition(item.player.id, item.position)}
-                                className="bg-red-500 text-white p-2 rounded-lg"
-                            >
-                                Delete
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                {filteredPlayerInPosition.length > 0 ? (
+                    <ul className="space-y-3">
+                        {filteredPlayerInPosition.map((item, index) => (
+                            <li key={index} className="border rounded-lg p-3 flex justify-between items-center">
+                                <span>
+                                    Player: {players.find((p) => p.id === item.playerId)?.name} (CI: {item.playerId}),
+                                    Position: {item.position}
+                                    {item.efectividad ? `, Efectividad: ${item.efectividad}` : ""}
+                                </span>
+                                <button
+                                    onClick={() => setDeleteConfirmation({ playerId: item.playerId, position: item.position })}
+                                    className="bg-red-500 text-white p-2 rounded-lg"
+                                >
+                                    Delete
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text">No player in position found.</p>
+                )}
             </div>
 
-            {/* Delete PlayerInPosition Confirmation */}
+            {/* Delete Confirmation */}
             {deleteConfirmation && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-bg-light rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
                         <h2 className="text-xl font-semibold mb-4">Are you sure you want to delete this player in position?</h2>
                         <div className="flex justify-between">
-                            {/* Cancel Delete */}
                             <button
-                                onClick={handleCancelDelete}
+                                onClick={() => setDeleteConfirmation(null)}
                                 className="p-3 bg-gray-500 text-white rounded-lg"
                             >
                                 Cancel
                             </button>
-                            {/* Confirm Delete */}
                             <button
                                 onClick={handleConfirmDeletePlayerInPosition}
                                 className="p-3 bg-red-500 text-white rounded-lg"

@@ -1,7 +1,5 @@
-import { Player } from "./Player";
-
 export interface PlayerInPosition {
-  player: Player;
+  playerId: number;
   position: string;
   efectividad?: number;
 }
