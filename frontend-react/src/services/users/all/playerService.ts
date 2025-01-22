@@ -9,7 +9,7 @@ export const fetchPlayerDetailsForSeasonAndSeries = async (
     playerId: string
 ): Promise<IsPitcher> => {
     const response = await apiClient.get(
-        `${PLAYERS_URL}/${playerId}`
+        `${PLAYERS_URL}/orPitchers/${playerId}`
     );
     return response.data;
 };
