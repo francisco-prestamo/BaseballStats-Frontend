@@ -19,7 +19,7 @@ const ManagePlayerInPosition: React.FC = () => {
     const [newPlayerInPosition, setNewPlayerInPosition] = useState<PlayerInPosition>({
         player: { id: 0, name: "", age: 0, experience: 0, battingAverage: 0 },
         position: "",
-        efectividad: 0,
+        effectiveness: 0,
     });
 
     const [deleteConfirmation, setDeleteConfirmation] = useState<DeleteConfirmation | null>(null);
@@ -48,7 +48,7 @@ const ManagePlayerInPosition: React.FC = () => {
 
     const handleCreatePlayerInPosition = async () => {
         try {
-            const { player, position, efectividad } = newPlayerInPosition;
+            const { player, position, effectiveness } = newPlayerInPosition;
             if (!player.id || !position) {
                 alert("Player and position fields are required.");
                 return;
@@ -56,13 +56,13 @@ const ManagePlayerInPosition: React.FC = () => {
             await adminPlayerInPositionService.createPlayerInPosition({
                 player,
                 position,
-                efectividad,
+                effectiveness,
             });
             fetchPlayerInPosition();
             setNewPlayerInPosition({
                 player: { id: 0, name: "", age: 0, experience: 0, battingAverage: 0 },
                 position: "",
-                efectividad: 0,
+                effectiveness: 0,
             });
         } catch (error) {
             console.error("Error creating playerInPosition:", error);
@@ -154,14 +154,14 @@ const ManagePlayerInPosition: React.FC = () => {
                         ))}
                     </select>
 
-                    {/* Set Efectividad */}
+                    {/* Set effectiveness */}
                     <input
                         type="number"
-                        value={newPlayerInPosition.efectividad || ""}
+                        value={newPlayerInPosition.effectiveness || ""}
                         onChange={(e) =>
-                            setNewPlayerInPosition({ ...newPlayerInPosition, efectividad: Number(e.target.value) })
+                            setNewPlayerInPosition({ ...newPlayerInPosition, effectiveness: Number(e.target.value) })
                         }
-                        placeholder="Efectividad (Optional)"
+                        placeholder="effectiveness (Optional)"
                         className="w-full mb-3 p-3"
                     />
 
@@ -197,7 +197,7 @@ const ManagePlayerInPosition: React.FC = () => {
                         <li key={index} className="border rounded-lg p-3 flex justify-between items-center">
                             <span>
                                 Player: {item.player.name} (CI: {item.player.id}), Position: {item.position}
-                                {item.efectividad ? `, Efectividad: ${item.efectividad}` : ""}
+                                {item.effectiveness ? `, effectiveness: ${item.effectiveness}` : ""}
                             </span>
                             {/* Delete Button */}
                             <button

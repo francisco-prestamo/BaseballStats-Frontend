@@ -4,8 +4,8 @@ import {
     fetchPlayerDetailsForSeasonAndSeries,
     fetchPlayerPositionsForSeasonAndSeries,
 } from '../../../services/users/all/playerService';
-import {IsPitcher} from "../../../models/IsPitcher.ts";
-import {PlayerInPosition} from "../../../models/PlayerInPosition.ts";
+import { IsPitcher } from "../../../models/IsPitcher.ts";
+import { PlayerInPosition } from "../../../models/PlayerInPosition.ts";
 
 
 const PlayerDetailsPage: React.FC = () => {
@@ -107,7 +107,7 @@ const PlayerDetailsPage: React.FC = () => {
                         {positions.map((position, index) => (
                             <li key={index} className="flex justify-between items-center border-b border-primary-light pb-2">
                                 <span>Position: {position.position}</span>
-                                <span>Efectividad: {position.efectividad.toFixed(2)}</span>
+                                <span>Effectiveness: {position.effectiveness.toFixed(2)}</span>
                             </li>
                         ))}
                     </ul>
