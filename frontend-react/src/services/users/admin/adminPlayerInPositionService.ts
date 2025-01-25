@@ -1,7 +1,7 @@
 import apiClient from "../../config/apiClient";
 import { PlayerInPosition } from "../../../models/crud/PlayerInPosition";
 
-const PlayerInPosition_URL = "/PlayerInPositions"; // Ajustar según la URL de tu backend
+const PlayerInPosition_URL = "/playerInPositions";
 
 const adminPlayerInPositionService = {
   // Obtener todos los PlayerInPosition

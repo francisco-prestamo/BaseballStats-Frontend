@@ -1,7 +1,7 @@
 import apiClient from "../../config/apiClient";
 import { DirectionMember } from "../../../models/crud/DirectionMember";
 
-const DIRECTIONMEMBERS_URL = "/DirectionMembers"; // Cambiar a la URL correspondiente de tu API
+const DIRECTIONMEMBERS_URL = "/directionMembers";
 
 class DirectionMemberService {
   async getDirectionMembers(): Promise<DirectionMember[]> {
