@@ -31,9 +31,8 @@ const adminPlayerInPositionService = {
   updatePlayerInPosition: async (
     playerInPosition: PlayerInPosition
   ): Promise<void> => {
-    const { player, position } = playerInPosition;
     await apiClient.put(
-      `${PlayerInPosition_URL}/${player.id}/${position}`,
+      `${PlayerInPosition_URL}/${playerInPosition.playerId}/${playerInPosition.position}`,
       playerInPosition
     );
   },
