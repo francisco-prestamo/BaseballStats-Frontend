@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FaTimes, FaTrash, FaEdit, FaUsers } from "react-icons/fa";
+import { FaTrash, FaUsers } from "react-icons/fa";
 import adminDirectService from "../../services/users/admin/adminDirectService";
 import { DirectionMember } from "../../models/crud/DirectionMember";
 import { Team } from "../../models/Team";
@@ -18,7 +18,6 @@ const ManageDirects: React.FC = () => {
         directionMemberId: 0,
         teamId: 0,
     });
-    const [editingDirect, setEditingDirect] = useState<Direct | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<Direct | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -66,17 +65,6 @@ const ManageDirects: React.FC = () => {
             setNewDirect({ directionMemberId: 0, teamId: 0 });
         } catch (error) {
             console.error("Error creating direct:", error);
-        }
-    };
-
-    const handleUpdateDirect = async () => {
-        try {
-            if (!editingDirect) return;
-            await adminDirectService.updateDirect(editingDirect);
-            fetchDirects();
-            setEditingDirect(null);
-        } catch (error) {
-            console.error("Error updating direct:", error);
         }
     };
 
@@ -178,12 +166,6 @@ const ManageDirects: React.FC = () => {
                                 </p>
                                 <div className="flex items-center space-x-2">
                                     <button
-                                        onClick={() => setEditingDirect(direct)}
-                                        className="p-2 bg-blue-500 text-white rounded-lg"
-                                    >
-                                        <FaEdit />
-                                    </button>
-                                    <button
                                         onClick={() => setDeleteConfirmation(direct)}
                                         className="p-2 bg-red-500 text-white rounded-lg"
                                     >
@@ -196,77 +178,6 @@ const ManageDirects: React.FC = () => {
                 )}
             </div>
 
-            {/* Edit Direct Modal */}
-            {editingDirect && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-                    <div className="bg-bg-light rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-semibold text-text-dark">Edit Direct</h2>
-                            <button
-                                onClick={() => setEditingDirect(null)}
-                                className="p-2 text-text-dark hover:text-red-500"
-                            >
-                                <FaTimes />
-                            </button>
-                        </div>
-
-                        {/* Select Direction Member */}
-                        <div className="mb-4">
-                            <label htmlFor="editDirectionMember" className="block text-sm font-medium mb-2">
-                                Direction Member
-                            </label>
-                            <select
-                                id="editDirectionMember"
-                                value={editingDirect.directionMemberId}
-                                onChange={(e) =>
-                                    setEditingDirect({
-                                        ...editingDirect,
-                                        directionMemberId: Number(e.target.value),
-                                    })
-                                }
-                                className="w-full p-3 border rounded-lg focus:ring focus:ring-primary"
-                            >
-                                <option value={0}>Select Direction Member</option>
-                                {directionMembers.map((member) => (
-                                    <option key={member.id} value={member.id}>
-                                        {member.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Select Team */}
-                        <div className="mb-4">
-                            <label htmlFor="editTeam" className="block text-sm font-medium mb-2">
-                                Team
-                            </label>
-                            <select
-                                id="editTeam"
-                                value={editingDirect.teamId}
-                                onChange={(e) =>
-                                    setEditingDirect({ ...editingDirect, teamId: Number(e.target.value) })
-                                }
-                                className="w-full p-3 border rounded-lg focus:ring focus:ring-primary"
-                            >
-                                <option value={0}>Select Team</option>
-                                {teams.map((team) => (
-                                    <option key={team.id} value={team.id}>
-                                        {team.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Update Button */}
-                        <button
-                            onClick={handleUpdateDirect}
-                            className="w-full p-3 bg-primary text-white rounded-lg hover:bg-primary-dark"
-                        >
-                            Save Changes
-                        </button>
-                    </div>
-                </div>
-            )}
 
             {/* Delete Confirmation */}
             {deleteConfirmation && (

@@ -21,18 +21,6 @@ const adminDirectService = {
     return response.data;
   },
 
-  // Update an existing direct
-  updateDirect: async (direct: {
-    teamId: number;
-    directionMemberId: number;
-  }): Promise<{ teamId: number; directionMemberId: number }> => {
-    const response = await apiClient.put(
-      `${DIRECT_URL}/${direct.teamId}/${direct.directionMemberId}`,
-      direct
-    );
-    return response.data;
-  },
-
   // Delete a direct
   deleteDirect: async (direct: {
     teamId: number;
