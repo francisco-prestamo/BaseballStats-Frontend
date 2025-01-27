@@ -3,15 +3,6 @@ import { PlayerInPosition } from '../../../models/PlayerInPosition';
 
 const ALIGNMENTS_URL = '/games';
 
-/**
- * Fetches team alignment for a specific game, team, season, and series.
- *
- * @param gameId - The ID of the game.
- * @param teamId - The ID of the team.
- * @param seasonId - The ID of the season.
- * @param serieId - The ID of the series.
- * @returns Promise<PlayerInPosition[]> - The alignment data.
- */
 export const fetchTeamAlignment = async (
     gameId: string,
     teamId: string,
@@ -27,15 +18,22 @@ export const fetchTeamAlignment = async (
     }
 };
 
-/**
- * Saves the team alignment for a specific game, team, season, and series.
- *
- * @param gameId - The ID of the game.
- * @param teamId - The ID of the team.
- * @param seasonId - The ID of the season.
- * @param serieId - The ID of the series.
- * @param alignment - The alignment data to save.
- */
+export const fetchAllTeamPlayerInPositions = async (
+    seasonId: string,
+    serieId: string,
+    teamId: string
+): Promise<PlayerInPosition[]> => {
+    try {
+        const response = await apiClient.get<PlayerInPosition[]>(
+            `playerspositions/${seasonId}/${serieId}/${teamId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch all team player positions:', error);
+        throw new Error('Unable to fetch all team player positions. Please try again later.');
+    }
+};
+
 export const saveTeamAlignment = async (
     gameId: string,
     teamId: string,
