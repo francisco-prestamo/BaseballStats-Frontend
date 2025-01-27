@@ -3,11 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
     fetchTeamAlignment,
     saveTeamAlignment,
+    fetchAllTeamPlayerInPositions,
 } from '../../../services/users/dt/alignmentService';
 import { PlayerInPosition } from '../../../models/PlayerInPosition';
 import { Player } from '../../../models/Player';
 import { GiBaseballGlove } from 'react-icons/gi';
-import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamService";
 
 const EditAlignment: React.FC = () => {
     const { gameId, teamId, seasonId, serieId } = useParams<{
@@ -18,7 +18,8 @@ const EditAlignment: React.FC = () => {
     }>();
     const navigate = useNavigate();
     const [alignment, setAlignment] = useState<PlayerInPosition[]>([]);
-    const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
+    const [playerPool, setPlayerPool] = useState<{ [position: string]: Player[] }>({});
+    const [selectedPlayers, setSelectedPlayers] = useState<Set<number>>(new Set());
     const [error, setError] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -30,20 +31,22 @@ const EditAlignment: React.FC = () => {
             }
 
             try {
-                const [alignmentData, players] = await Promise.all([
-
+                const [alignmentData, playersByPosition] = await Promise.all([
                     fetchTeamAlignment(gameId, teamId),
-                    fetchTeamPlayersInASerie(seasonId, serieId, teamId),
+                    fetchAllTeamPlayerInPositions(seasonId, serieId, teamId),
                 ]);
 
-                if (alignmentData) {
-                    setAlignment(alignmentData);
-                } else {
-                    setError("No alignment data available.");
-                }
+                if (alignmentData) setAlignment(alignmentData);
+                else setError("No alignment data available.");
 
-                if (players) {
-                    setTeamPlayers(players);
+                if (playersByPosition) {
+                    const groupedPlayers: { [position: string]: Player[] } = {};
+                    playersByPosition.forEach((playerInPosition) => {
+                        const position = playerInPosition.position;
+                        if (!groupedPlayers[position]) groupedPlayers[position] = [];
+                        groupedPlayers[position].push(playerInPosition.player);
+                    });
+                    setPlayerPool(groupedPlayers);
                 } else {
                     setError("No players data available.");
                 }
@@ -56,15 +59,30 @@ const EditAlignment: React.FC = () => {
     }, [gameId, teamId, seasonId, serieId]);
 
     const handlePlayerChange = (index: number, newPlayerId: number) => {
-        setAlignment(prevAlignment => {
+        setAlignment((prevAlignment) => {
             const updatedAlignment = [...prevAlignment];
-            const selectedPlayer = teamPlayers.find((player) => player.id === newPlayerId);
+            const oldPlayerId = updatedAlignment[index]?.player?.id;
+
+            // Remove old player ID from selectedPlayers
+            setSelectedPlayers((prev) => {
+                const newSet = new Set(prev);
+                if (oldPlayerId) newSet.delete(oldPlayerId);
+                newSet.add(newPlayerId);
+                return newSet;
+            });
+
+            // Update alignment with the new player
+            const selectedPlayer = Object.values(playerPool)
+                .flat()
+                .find((p) => p.id === newPlayerId);
+
             if (selectedPlayer) {
                 updatedAlignment[index] = {
                     ...updatedAlignment[index],
-                    player: selectedPlayer
+                    player: selectedPlayer,
                 };
             }
+
             return updatedAlignment;
         });
     };
@@ -87,7 +105,7 @@ const EditAlignment: React.FC = () => {
         }
     };
 
-    if (!alignment.length || !teamPlayers.length) {
+    if (!alignment.length || !Object.keys(playerPool).length) {
         return (
             <div className="container mx-auto p-6">
                 <div className="text-center">
@@ -120,15 +138,22 @@ const EditAlignment: React.FC = () => {
                         className="flex items-center space-x-4"
                     >
                         <select
-                            value={playerInPosition.player.id}
+                            value={playerInPosition.player?.id || ''}
                             onChange={(e) => handlePlayerChange(index, parseInt(e.target.value))}
                             className="border rounded-lg px-4 py-2 w-64"
                         >
-                            {teamPlayers.map((player) => (
-                                <option key={player.id} value={player.id}>
-                                    {player.name}
-                                </option>
-                            ))}
+                            <option value="">Select a player</option>
+                            {(playerPool[playerInPosition.position] || [])
+                                .filter(
+                                    (player) =>
+                                        !selectedPlayers.has(player.id) ||
+                                        player.id === playerInPosition.player?.id
+                                )
+                                .map((player) => (
+                                    <option key={player.id} value={player.id}>
+                                        {player.name}
+                                    </option>
+                                ))}
                         </select>
                         <span className="font-medium w-24">{playerInPosition.position}</span>
                         <GiBaseballGlove className="text-2xl text-blue-600" />
