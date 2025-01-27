@@ -63,10 +63,19 @@ const EditAlignment: React.FC = () => {
             const updatedAlignment = [...prevAlignment];
             const oldPlayerId = updatedAlignment[index]?.player?.id;
 
-            if (oldPlayerId) selectedPlayers.delete(oldPlayerId);
-            selectedPlayers.add(newPlayerId);
+            // Remove old player ID from selectedPlayers
+            setSelectedPlayers((prev) => {
+                const newSet = new Set(prev);
+                if (oldPlayerId) newSet.delete(oldPlayerId);
+                newSet.add(newPlayerId);
+                return newSet;
+            });
 
-            const selectedPlayer = Object.values(playerPool).flat().find((p) => p.id === newPlayerId);
+            // Update alignment with the new player
+            const selectedPlayer = Object.values(playerPool)
+                .flat()
+                .find((p) => p.id === newPlayerId);
+
             if (selectedPlayer) {
                 updatedAlignment[index] = {
                     ...updatedAlignment[index],
@@ -135,7 +144,11 @@ const EditAlignment: React.FC = () => {
                         >
                             <option value="">Select a player</option>
                             {(playerPool[playerInPosition.position] || [])
-                                .filter((player) => !selectedPlayers.has(player.id) || player.id === playerInPosition.player?.id)
+                                .filter(
+                                    (player) =>
+                                        !selectedPlayers.has(player.id) ||
+                                        player.id === playerInPosition.player?.id
+                                )
                                 .map((player) => (
                                     <option key={player.id} value={player.id}>
                                         {player.name}
