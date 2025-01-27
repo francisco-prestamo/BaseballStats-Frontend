@@ -133,7 +133,7 @@ const ManageUsers: React.FC = () => {
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value="admin">Admin</option>
-                            <option value="technicalDirector">Technical Director</option>
+                            <option value="dt">Technical Director</option>
                             <option value="journalist">Journalist</option>
                         </select>
                         <button
@@ -169,7 +169,7 @@ const ManageUsers: React.FC = () => {
                         >
                             <option value="">All User Types</option>
                             <option value="admin">Admin</option>
-                            <option value="technicalDirector">Technical Director</option>
+                            <option value="dt">Technical Director</option>
                             <option value="journalist">Journalist</option>
                         </select>
                     </div>
@@ -271,7 +271,7 @@ const ManageUsers: React.FC = () => {
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             >
                                 <option value="admin">Admin</option>
-                                <option value="technicalDirector">Technical Director</option>
+                                <option value="dt">Technical Director</option>
                                 <option value="journalist">Journalist</option>
                             </select>
                             <div className="flex gap-4">

@@ -28,7 +28,7 @@ const TeamDetails = () => {
       try {
 
         // Llamar a las API para obtener los datos
-        const teamData = await fetchTeamInfo(seasonId, seriesId, teamId);
+        const teamData = await fetchTeamInfo(teamId);
         const gamesData = await fetchTeamGamesInThisSeries(seasonId, seriesId, teamId);
         const starPlayersData = await fetchTeamStarPlayers(seasonId, seriesId, teamId);
         const teamsPlayersInASeasonData = await fetchTeamPlayersInASerie(seasonId, seriesId, teamId);

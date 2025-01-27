@@ -44,7 +44,11 @@ export const saveTeamAlignment = async (
     try {
         await apiClient.put(
             `${ALIGNMENTS_URL}/${gameId}/alignments/${teamId}`,
-            alignment
+            {
+                gameId: gameId,
+                teamId: teamId,
+                alignment: alignment
+            } 
         );
     } catch (error) {
         console.error('Failed to save team alignment:', error);
