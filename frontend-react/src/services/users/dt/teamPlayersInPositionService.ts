@@ -8,7 +8,7 @@ export const fetchAllTeamPlayerInPositions = async (
 ): Promise<PlayerInPosition[]> => {
     try {
         const response = await apiClient.get<PlayerInPosition[]>(
-            `playerspositions/${seasonId}/${serieId}/${teamId}`
+            `playerInPositions/series/${seasonId}/${serieId}/team/${teamId}`
         );
         return response.data;
     } catch (error) {

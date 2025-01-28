@@ -11,8 +11,8 @@ const ManageTeams: React.FC = () => {
         name: "",
         initials: "",
         color: "",
-        representedIdentity: "",
-        DtId: 0,
+        representedEntity: "",
+        dtId: 0,
     });
     const [editingTeam, setEditingTeam] = useState<Team | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<number | null>(null);
@@ -63,13 +63,13 @@ const ManageTeams: React.FC = () => {
 
     const handleCreateTeam = async () => {
         try {
-            if (!newTeam.name || !newTeam.initials || !newTeam.color || !newTeam.representedIdentity || newTeam.DtId <= 0) {
+            if (!newTeam.name || !newTeam.initials || !newTeam.color || !newTeam.representedEntity || newTeam.dtId <= 0) {
                 alert("All fields are required to create a team");
                 return;
             }
             await adminTeamService.createTeam(newTeam);
             fetchTeams();
-            setNewTeam({ id:0, name: "", initials: "", color: "", representedIdentity: "", DtId: 0 });
+            setNewTeam({ id:0, name: "", initials: "", color: "", representedEntity: "", dtId: 0 });
         } catch (error) {
             console.error("Error creating team:", error);
         }
@@ -148,8 +148,8 @@ const ManageTeams: React.FC = () => {
                         <input
                             type="text"
                             placeholder="Represented Identity"
-                            value={newTeam.representedIdentity}
-                            onChange={(e) => setNewTeam({ ...newTeam, representedIdentity: e.target.value })}
+                            value={newTeam.representedEntity}
+                            onChange={(e) => setNewTeam({ ...newTeam, representedEntity: e.target.value })}
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                         <div className="relative">
@@ -163,8 +163,8 @@ const ManageTeams: React.FC = () => {
                             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50"/>
                         </div>
                         <select
-                            value={newTeam.DtId}
-                            onChange={(e) => setNewTeam({ ...newTeam, DtId: Number(e.target.value) })}
+                            value={newTeam.dtId}
+                            onChange={(e) => setNewTeam({ ...newTeam, dtId: Number(e.target.value) })}
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value={0}>Select a DT</option>
@@ -277,8 +277,8 @@ const ManageTeams: React.FC = () => {
                             <input
                                 type="text"
                                 placeholder="Represented Identity"
-                                value={editingTeam.representedIdentity}
-                                onChange={(e) => setEditingTeam({ ...editingTeam, representedIdentity: e.target.value })}
+                                value={editingTeam.representedEntity}
+                                onChange={(e) => setEditingTeam({ ...editingTeam, representedEntity: e.target.value })}
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <div className="relative">
@@ -296,7 +296,7 @@ const ManageTeams: React.FC = () => {
                                             <div
                                                 key={dt.id}
                                                 onClick={() => {
-                                                    setEditingTeam({ ...editingTeam, DtId: dt.id });
+                                                    setEditingTeam({ ...editingTeam, dtId: dt.id });
                                                     setDtSearchTerm(dt.username);
                                                 }}
                                                 className="p-2 hover:bg-primary/10 dark:hover:bg-primary-lighter cursor-pointer"
