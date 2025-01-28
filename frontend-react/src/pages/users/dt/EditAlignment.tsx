@@ -20,7 +20,7 @@ const EditAlignment: React.FC = () => {
     serieId: string;
   }>();
   const navigate = useNavigate();
-  const [alignment, setAlignment] = useState<CrudPlayerInPosition[]>([]);
+  const [alignment, setAlignment] = useState<PlayerInPosition[]>([]);
   const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -34,28 +34,22 @@ const EditAlignment: React.FC = () => {
       }
 
       try {
-        const [alignmentData, crudPositions, players] = await Promise.all([
-          fetchTeamAlignment(gameId, teamId),
+        const [crudPositions, players] = await Promise.all([
           fetchAllTeamPlayerInPositions(seasonId, serieId, teamId),
-          fetchTeamPlayersInASerie(seasonId, serieId, teamId),
+          fetchTeamPlayersInASerie(seasonId, serieId, teamId), 
         ]);
 
-        if (crudPositions) {
-          setAlignment(
-            crudPositions.map((pos) => ({
-              playerId: pos.playerId,
-              position: pos.position,
-              efectividad: pos.efectividad || 0,
-            }))
-          );
+        if (crudPositions && players) {
+          const alignmentWithPlayers = crudPositions.map((pos) => ({
+            position: pos.position,
+            efectividad: pos.efectividad || 0,
+            player: players.find((p) => p.id === pos.playerId) || null,
+          }));
 
+          setAlignment(alignmentWithPlayers);
           setSelectedPlayers(new Set(crudPositions.map((pos) => pos.playerId)));
-        }
-
-        if (players) {
-          setTeamPlayers(players);
         } else {
-          setError("No player data available.");
+          setError("Failed to load player or position data.");
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -69,7 +63,7 @@ const EditAlignment: React.FC = () => {
   const handlePlayerChange = (index: number, newPlayerId: number) => {
     setAlignment((prevAlignment) => {
       const updatedAlignment = [...prevAlignment];
-      const oldPlayerId = updatedAlignment[index]?.playerId;
+      const oldPlayerId = updatedAlignment[index]?.player?.id;
 
       // Update selected players to avoid duplication
       setSelectedPlayers((prev) => {
@@ -82,7 +76,7 @@ const EditAlignment: React.FC = () => {
       // Update the alignment array
       updatedAlignment[index] = {
         ...updatedAlignment[index],
-        playerId: newPlayerId,
+        player: teamPlayers.find((player) => player.id === newPlayerId) || null,
       };
 
       return updatedAlignment;
@@ -97,7 +91,11 @@ const EditAlignment: React.FC = () => {
 
     try {
       setIsSaving(true);
-      await saveTeamAlignment(gameId, teamId, alignment); // Save using playerId
+      const alignmentToSave = alignment.map((pos) => ({
+        position: pos.position,
+        playerId: pos.player?.id || null,
+      }));
+      await saveTeamAlignment(gameId, teamId, alignmentToSave);
       navigate(`/games/${gameId}/${seasonId}/${serieId}`);
     } catch (err) {
       console.error("Error saving alignment:", err);
@@ -140,7 +138,7 @@ const EditAlignment: React.FC = () => {
             className="flex items-center space-x-4"
           >
             <select
-              value={playerInPosition.playerId || ""}
+              value={playerInPosition.player?.id || ""}
               onChange={(e) => handlePlayerChange(index, parseInt(e.target.value))}
               className="border rounded-lg px-4 py-2 w-64"
             >
@@ -148,7 +146,7 @@ const EditAlignment: React.FC = () => {
               {teamPlayers
                 .filter(
                   (player) =>
-                    !selectedPlayers.has(player.id) || player.id === playerInPosition.playerId
+                    !selectedPlayers.has(player.id) || player.id === playerInPosition.player?.id
                 )
                 .map((player) => (
                   <option key={player.id} value={player.id}>
