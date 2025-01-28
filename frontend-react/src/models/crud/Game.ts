@@ -1,9 +1,9 @@
 export interface Game {
     id: number;
-    idTeam1: number;
-    idTeam2: number;
-    idSeason: number;
-    idSerie: number;
+    team1Id: number;
+    team2Id: number;
+    seasonId: number;
+    seriesId: number;
     date: Date;
     winTeam: boolean;
     team1Runs: number;
