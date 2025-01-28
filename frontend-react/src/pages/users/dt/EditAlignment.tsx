@@ -20,6 +20,8 @@ const EditAlignment: React.FC = () => {
     serieId: string;
   }>();
   const navigate = useNavigate();
+  
+  // Updated type to match PlayerInPosition
   const [alignment, setAlignment] = useState<PlayerInPosition[]>([]);
   const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
   const [availablePositions, setAvailablePositions] = useState<
@@ -45,16 +47,17 @@ const EditAlignment: React.FC = () => {
 
         const playersMap = new Map(players.map((player) => [player.id, player]));
 
-        const populatedAlignment = defaultAlignment.map((item) => ({
-          ...item,
+        // Ensure we're creating objects that match PlayerInPosition interface
+        const populatedAlignment: PlayerInPosition[] = defaultAlignment.map((item) => ({
+          position: item.position,
           player: playersMap.get(item.player?.id || 0) || null,
+          efectividad: item.efectividad || 0
         }));
 
         setAlignment(populatedAlignment);
         setAvailablePositions(pairs);
         setTeamPlayers(players);
         
-        // Update selected players based on populated alignment
         const selectedPlayerIds = new Set(
           populatedAlignment
             .map((item) => item.player?.id)
@@ -74,13 +77,11 @@ const EditAlignment: React.FC = () => {
     if (!newPlayerId) {
       setAlignment((prevAlignment) => {
         const updatedAlignment = [...prevAlignment];
-        // Remove player from position
         updatedAlignment[index] = {
           ...updatedAlignment[index],
           player: null,
         };
         
-        // Update selected players
         const newSelectedPlayers = new Set(selectedPlayers);
         const oldPlayerId = prevAlignment[index].player?.id;
         if (oldPlayerId) {
@@ -105,13 +106,11 @@ const EditAlignment: React.FC = () => {
       const updatedAlignment = [...prevAlignment];
       const oldPlayerId = prevAlignment[index].player?.id;
       
-      // Update the alignment
       updatedAlignment[index] = {
         ...updatedAlignment[index],
         player: selectedPlayer,
       };
 
-      // Update selected players
       const newSelectedPlayers = new Set(selectedPlayers);
       if (oldPlayerId) {
         newSelectedPlayers.delete(oldPlayerId);
@@ -136,6 +135,7 @@ const EditAlignment: React.FC = () => {
       const alignmentToSave = alignment.map((pos) => ({
         position: pos.position,
         playerId: pos.player?.id || null,
+        efectividad: pos.efectividad
       }));
 
       await saveTeamAlignment(gameId, teamId, alignmentToSave);
