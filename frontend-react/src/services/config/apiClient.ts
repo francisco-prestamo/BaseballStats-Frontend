@@ -27,7 +27,8 @@ apiClient.interceptors.response.use(
         window.location.href = "/session-expired";
     }
     if (error.response?.status === 400) {
-        alert("There was an issue with your request. Please check the input or try again.");
+        const errorMessage = error.response?.data?.message || "There was an issue with your request. Please check the input or try again.";
+        alert(errorMessage);
     }
     return Promise.reject(error);
   }
