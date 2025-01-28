@@ -67,26 +67,32 @@ const EditAlignment: React.FC = () => {
   }, [gameId, teamId, seasonId, serieId]);
 
   const handlePlayerChange = (index: number, newPlayerId: number) => {
-    setAlignment((prevAlignment) => {
-      const updatedAlignment = [...prevAlignment];
-      const oldPlayerId = updatedAlignment[index]?.player?.id;
-
-      // Update selected players to avoid duplication
-      setSelectedPlayers((prev) => {
-        const updatedSet = new Set(prev);
-        if (oldPlayerId) updatedSet.delete(oldPlayerId); // Remove old player
-        updatedSet.add(newPlayerId); // Add new player
-        return updatedSet;
+      setAlignment((prevAlignment) => {
+          const updatedAlignment = [...prevAlignment];
+  
+          // Retrieve the selected player
+          const selectedPlayer = teamPlayers.find((player) => player.id === newPlayerId);
+  
+          if (!selectedPlayer) return prevAlignment; // If no player is found, return the previous state
+  
+          const oldPlayerId = updatedAlignment[index]?.player?.id;
+  
+          // Update selected players to avoid duplication
+          setSelectedPlayers((prev) => {
+              const updatedSet = new Set(prev);
+              if (oldPlayerId) updatedSet.delete(oldPlayerId); // Remove old player
+              updatedSet.add(newPlayerId); // Add new player
+              return updatedSet;
+          });
+  
+          // Update the alignment array with the selected player
+          updatedAlignment[index] = {
+              ...updatedAlignment[index],
+              player: selectedPlayer, // Set the full player object
+          };
+  
+          return updatedAlignment as PlayerInPosition[]; // Explicitly cast to match the type
       });
-
-      // Update the alignment array
-      updatedAlignment[index] = {
-        ...updatedAlignment[index],
-        player: teamPlayers.find((player) => player.id === newPlayerId) || null,
-      };
-
-      return updatedAlignment;
-    });
   };
 
   const handleSaveAlignment = async () => {
