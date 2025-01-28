@@ -1,5 +1,5 @@
 import { PlayerInPosition } from '../../../models/crud/PlayerInPosition';
-
+import apiClient from '../../config/apiClient';
 
 export const fetchAllTeamPlayerInPositions = async (
     seasonId: string,
