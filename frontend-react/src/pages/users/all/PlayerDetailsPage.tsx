@@ -107,7 +107,7 @@ const PlayerDetailsPage: React.FC = () => {
                         {positions.map((position, index) => (
                             <li key={index} className="flex justify-between items-center border-b border-primary-light pb-2">
                                 <span>Position: {position.position}</span>
-                                <span>Efectividad: {position.efectividad.toFixed(2)}</span>
+                                <span>Effectiveness: {position.effectiveness.toFixed(2)}</span>
                             </li>
                         ))}
                     </ul>

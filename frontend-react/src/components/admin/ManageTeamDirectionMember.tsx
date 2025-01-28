@@ -4,13 +4,13 @@ import adminDirectService from "../../services/users/admin/adminDirectService";
 import { DirectionMember } from "../../models/crud/DirectionMember";
 import { Team } from "../../models/Team";
 import adminTeamService from "../../services/users/admin/adminTeamService";
-
+import adminDirectionMemberService from "../../services/users/admin/adminDirectionMemberService";
 interface Direct {
     directionMemberId: number;
     teamId: number;
 }
 
-const ManageDirects: React.FC = () => {
+const ManageTeamDirectionMembers: React.FC = () => {
     const [directs, setDirects] = useState<Direct[]>([]);
     const [directionMembers, setDirectionMembers] = useState<DirectionMember[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
@@ -32,8 +32,8 @@ const ManageDirects: React.FC = () => {
 
     const fetchMembersAndTeams = async () => {
         try {
-            // const members = await adminDirectService.getDirectionMembers();
-            const members = [{ id: 5, name: "Francisco" }]
+            const members = await adminDirectionMemberService.getDirectionMembers();
+            // const members = [{ id: 5, name: "Francisco" }]
             const teams = await adminTeamService.getTeams();
             setDirectionMembers(members);
             setTeams(teams);
@@ -207,4 +207,4 @@ const ManageDirects: React.FC = () => {
     );
 };
 
-export default ManageDirects;
+export default ManageTeamDirectionMembers;

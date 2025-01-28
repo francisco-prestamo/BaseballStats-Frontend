@@ -3,5 +3,5 @@ import { Player } from "./Player";
 export interface PlayerInPosition {
   player: Player;
   position: string;
-  efectividad: number;
+  effectiveness: number;
 }

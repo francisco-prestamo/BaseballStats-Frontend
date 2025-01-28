@@ -26,18 +26,18 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
     ];
 
     const sectionNames = [
-        "Info Section",
-        "Manage Users",
-        "Manage Seasons",
-        "Manage Teams",
-        "Manage Players",
-        "Manage Series",
-        "Manage Player in Serie",
-        "Manage Games",
-        "Manage Player in Position",
-        "Manage Direction Members",
-        "Manage Directs",
-        "Manage Pitchers"
+        "",
+        "Usr",
+        "Ssn",
+        "Team",
+        " Plr",
+        " Srs",
+        " PiS",
+        "Gms",
+        "PiP",
+        "DM",
+        "DMiT",
+        "Ptch"
     ];
 
     return (

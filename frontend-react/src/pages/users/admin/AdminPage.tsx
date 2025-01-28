@@ -9,7 +9,7 @@ import ManageGames from "../../../components/admin/ManageGames.tsx";
 import ManagePlayerInSerie from "../../../components/admin/ManagePlayerInSerie.tsx";
 import ManagePlayerInPosition from "../../../components/admin/ManagePlayerInPosition.tsx";
 import ManageDirectionMembers from "../../../components/admin/ManageDirectionMember.tsx";
-import ManageDirects from "../../../components/admin/ManageTeamDirectionMember.tsx";
+import ManageTeamDirectionMembers from "../../../components/admin/ManageTeamDirectionMember.tsx";
 import ManagePitchers from "../../../components/admin/ManagePitchers.tsx";
 
 const AdminPage: React.FC = () => {
@@ -32,7 +32,7 @@ const AdminPage: React.FC = () => {
                 {activeSection === 8 && <ManageGames />}
                 {activeSection === 9 && <ManagePlayerInPosition />}
                 {activeSection === 10 && <ManageDirectionMembers />}
-                {activeSection === 11 && <ManageDirects />}
+                {activeSection === 11 && <ManageTeamDirectionMembers />}
                 {activeSection === 12 && <ManagePitchers />}
 
             </main>

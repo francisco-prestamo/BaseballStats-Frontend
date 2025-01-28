@@ -18,7 +18,7 @@ const ManagePlayerInPosition: React.FC = () => {
     const [newPlayerInPosition, setNewPlayerInPosition] = useState<PlayerInPosition>({
         playerId: 0,
         position: "",
-        efectividad: 0,
+        effectiveness: 0,
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<DeleteConfirmation | null>(null);
 
@@ -44,7 +44,7 @@ const ManagePlayerInPosition: React.FC = () => {
 
     // Create a new player-in-position entry
     const handleCreatePlayerInPosition = async () => {
-        const { playerId, position, efectividad } = newPlayerInPosition;
+        const { playerId, position, effectiveness } = newPlayerInPosition;
         if (!playerId || !position) {
             alert("Player and position fields are required.");
             return;
@@ -53,13 +53,13 @@ const ManagePlayerInPosition: React.FC = () => {
             await adminPlayerInPositionService.createPlayerInPosition({
                 playerId,
                 position,
-                efectividad,
+                effectiveness,
             });
             fetchPlayerInPosition();
             setNewPlayerInPosition({
                 playerId: 0,
                 position: "",
-                efectividad: 0,
+                effectiveness: 0,
             });
         } catch (error) {
             console.error("Error creating playerInPosition:", error);
@@ -147,13 +147,13 @@ const ManagePlayerInPosition: React.FC = () => {
                     </select>
                     <input
                         type="number"
-                        value={newPlayerInPosition.efectividad || ""}
+                        value={newPlayerInPosition.effectiveness || ""}
                         onChange={(e) =>
-                            setNewPlayerInPosition({ ...newPlayerInPosition, efectividad: Number(e.target.value) })
+                            setNewPlayerInPosition({ ...newPlayerInPosition, effectiveness: Number(e.target.value) })
                         }
-                        placeholder="Efectividad (Optional)"
+                        placeholder="Effectiveness (Optional)"
                         className="w-full mb-3 p-3"
-                        aria-label="Set Efectividad"
+                        aria-label="Set Effectiveness"
                     />
                     <button
                         onClick={handleCreatePlayerInPosition}
@@ -187,7 +187,7 @@ const ManagePlayerInPosition: React.FC = () => {
                                 <span>
                                     Player: {players.find((p) => p.id === item.playerId)?.name} (CI: {item.playerId}),
                                     Position: {item.position}
-                                    {item.efectividad ? `, Efectividad: ${item.efectividad}` : ""}
+                                    {item.effectiveness ? `, Effectiveness: ${item.effectiveness}` : ""}
                                 </span>
                                 <button
                                     onClick={() => setDeleteConfirmation({ playerId: item.playerId, position: item.position })}

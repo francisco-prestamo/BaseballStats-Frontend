@@ -52,13 +52,13 @@ const EditAlignment: React.FC = () => {
                 console.warn(`Player ${pos.player.id} not found, using default player`);
                 return {
                   position: pos.position,
-                  efectividad: pos.efectividad || 0,
+                  effectiveness: pos.effectiveness || 0,
                   player: players[0], // Use first player as default
                 };
               }
               return {
                 position: pos.position,
-                efectividad: pos.efectividad || 0,
+                effectiveness: pos.effectiveness || 0,
                 player: player,
               };
             });
@@ -66,7 +66,7 @@ const EditAlignment: React.FC = () => {
             // Create default alignment from crudPositions with first player as default
             initialAlignment = crudPositions.map(pos => ({
               position: pos.position,
-              efectividad: pos.efectividad || 0,
+              effectiveness: pos.effectiveness || 0,
               player: players[0], // Use first player as default
             }));
           }
@@ -127,7 +127,7 @@ const EditAlignment: React.FC = () => {
       const alignmentToSave = alignment.map((pos) => ({
         position: pos.position,
         player: pos.player,
-        efectividad: pos.efectividad,
+        effectiveness: pos.effectiveness,
       }));
 
       await saveTeamAlignment(gameId, teamId, alignmentToSave);
