@@ -8,7 +8,7 @@ import {
   fetchAllTeamPlayerInPositions,
 } from "../../../services/users/dt/teamPlayersInPositionService";
 import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamService";
-import { PlayerInPosition as CrudPlayerInPosition } from "../../../models/PlayerInPosition";
+import { PlayerInPosition } from "../../../models/PlayerInPosition";
 import { Player } from "../../../models/Player";
 import { GiBaseballGlove } from "react-icons/gi";
 
@@ -29,25 +29,54 @@ const EditAlignment: React.FC = () => {
   useEffect(() => {
     const loadAlignmentAndPlayers = async () => {
       if (!gameId || !teamId || !seasonId || !serieId) {
-        setError("Missing required parameters");
+        setError("Missing required parameters.");
         return;
       }
 
       try {
-        const [crudPositions, players] = await Promise.all([
+        const [existingAlignment, crudPositions, players] = await Promise.all([
+          fetchTeamAlignment(gameId, teamId),
           fetchAllTeamPlayerInPositions(seasonId, serieId, teamId),
-          fetchTeamPlayersInASerie(seasonId, serieId, teamId), 
+          fetchTeamPlayersInASerie(seasonId, serieId, teamId),
         ]);
 
         if (crudPositions && players) {
-          const alignmentWithPlayers = crudPositions.map((pos) => ({
-            position: pos.position,
-            efectividad: pos.efectividad || 0,
-            player: players.find((p) => p.id === pos.playerId) || null,
-          }));
+          let initialAlignment: PlayerInPosition[];
 
-          setAlignment(alignmentWithPlayers);
-          setSelectedPlayers(new Set(crudPositions.map((pos) => pos.playerId)));
+          if (existingAlignment && existingAlignment.length > 0) {
+            // Use existing alignment if available
+            initialAlignment = existingAlignment.map(pos => {
+              const player = players.find(p => p.id === pos.player.id);
+              if (!player) {
+                // If somehow the player is not found, use the first available player
+                console.warn(`Player ${pos.player.id} not found, using default player`);
+                return {
+                  position: pos.position,
+                  efectividad: pos.efectividad || 0,
+                  player: players[0], // Use first player as default
+                };
+              }
+              return {
+                position: pos.position,
+                efectividad: pos.efectividad || 0,
+                player: player,
+              };
+            });
+          } else {
+            // Create default alignment from crudPositions with first player as default
+            initialAlignment = crudPositions.map(pos => ({
+              position: pos.position,
+              efectividad: pos.efectividad || 0,
+              player: players[0], // Use first player as default
+            }));
+          }
+
+          setAlignment(initialAlignment);
+          setTeamPlayers(players);
+
+          // Update selected players set
+          const selectedPlayerIds = initialAlignment.map(pos => pos.player.id);
+          setSelectedPlayers(new Set(selectedPlayerIds));
         } else {
           setError("Failed to load player or position data.");
         }
@@ -63,20 +92,24 @@ const EditAlignment: React.FC = () => {
   const handlePlayerChange = (index: number, newPlayerId: number) => {
     setAlignment((prevAlignment) => {
       const updatedAlignment = [...prevAlignment];
-      const oldPlayerId = updatedAlignment[index]?.player?.id;
+      const oldPlayerId = updatedAlignment[index].player.id;
+      const newPlayer = teamPlayers.find((player) => player.id === newPlayerId);
 
-      // Update selected players to avoid duplication
+      if (!newPlayer) {
+        console.error("New player not found");
+        return prevAlignment;
+      }
+
       setSelectedPlayers((prev) => {
         const updatedSet = new Set(prev);
-        if (oldPlayerId) updatedSet.delete(oldPlayerId);
+        updatedSet.delete(oldPlayerId);
         updatedSet.add(newPlayerId);
         return updatedSet;
       });
 
-      // Update the alignment array
       updatedAlignment[index] = {
         ...updatedAlignment[index],
-        player: teamPlayers.find((player) => player.id === newPlayerId) || null,
+        player: newPlayer,
       };
 
       return updatedAlignment;
@@ -85,7 +118,7 @@ const EditAlignment: React.FC = () => {
 
   const handleSaveAlignment = async () => {
     if (!gameId || !teamId) {
-      setError("Missing required parameters");
+      setError("Missing required parameters.");
       return;
     }
 
@@ -93,8 +126,10 @@ const EditAlignment: React.FC = () => {
       setIsSaving(true);
       const alignmentToSave = alignment.map((pos) => ({
         position: pos.position,
-        playerId: pos.player?.id || null,
+        player: pos.player,
+        efectividad: pos.efectividad,
       }));
+
       await saveTeamAlignment(gameId, teamId, alignmentToSave);
       navigate(`/games/${gameId}/${seasonId}/${serieId}`);
     } catch (err) {
@@ -107,67 +142,66 @@ const EditAlignment: React.FC = () => {
 
   if (!alignment.length || !teamPlayers.length) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">
-          {error ? (
-            <div className="bg-red-500 text-white p-4 rounded-lg">
-              <p>{error}</p>
-            </div>
-          ) : (
-            <p>Loading...</p>
-          )}
+        <div className="container mx-auto p-6">
+          <div className="text-center">
+            {error ? (
+                <div className="bg-red-500 text-white p-4 rounded-lg">
+                  <p>{error}</p>
+                </div>
+            ) : (
+                <p>Loading...</p>
+            )}
+          </div>
         </div>
-      </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {error && (
-        <div className="bg-red-500 text-white p-4 rounded-lg">
-          <p>{error}</p>
+      <div className="container mx-auto p-6 space-y-6">
+        {error && (
+            <div className="bg-red-500 text-white p-4 rounded-lg">
+              <p>{error}</p>
+            </div>
+        )}
+
+        <h1 className="text-3xl font-bold">Edit Team Alignment</h1>
+
+        <div className="space-y-4">
+          {alignment.map((playerInPosition, index) => (
+              <div
+                  key={`${playerInPosition.position}-${index}`}
+                  className="flex items-center space-x-4"
+              >
+                <select
+                    value={playerInPosition.player.id}
+                    onChange={(e) => handlePlayerChange(index, parseInt(e.target.value))}
+                    className="border rounded-lg px-4 py-2 w-64"
+                >
+                  {teamPlayers
+                      .filter(
+                          (player) =>
+                              !selectedPlayers.has(player.id) || player.id === playerInPosition.player.id
+                      )
+                      .map((player) => (
+                          <option key={player.id} value={player.id}>
+                            {player.name}
+                          </option>
+                      ))}
+                </select>
+                <span className="font-medium w-24">{playerInPosition.position}</span>
+                <GiBaseballGlove className="text-2xl text-blue-600" />
+              </div>
+          ))}
         </div>
-      )}
 
-      <h1 className="text-3xl font-bold">Edit Team Alignment</h1>
-
-      <div className="space-y-4">
-        {alignment.map((playerInPosition, index) => (
-          <div
-            key={`${playerInPosition.position}-${index}`}
-            className="flex items-center space-x-4"
-          >
-            <select
-              value={playerInPosition.player?.id || ""}
-              onChange={(e) => handlePlayerChange(index, parseInt(e.target.value))}
-              className="border rounded-lg px-4 py-2 w-64"
-            >
-              <option value="">Select a player</option>
-              {teamPlayers
-                .filter(
-                  (player) =>
-                    !selectedPlayers.has(player.id) || player.id === playerInPosition.player?.id
-                )
-                .map((player) => (
-                  <option key={player.id} value={player.id}>
-                    {player.name}
-                  </option>
-                ))}
-            </select>
-            <span className="font-medium w-24">{playerInPosition.position}</span>
-            <GiBaseballGlove className="text-2xl text-blue-600" />
-          </div>
-        ))}
+        <button
+            onClick={handleSaveAlignment}
+            disabled={isSaving}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSaving ? "Saving..." : "Save Alignment"}
+        </button>
       </div>
-
-      <button
-        onClick={handleSaveAlignment}
-        disabled={isSaving}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isSaving ? "Saving..." : "Save Alignment"}
-      </button>
-    </div>
   );
 };
 
