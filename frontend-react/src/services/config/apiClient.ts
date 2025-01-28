@@ -25,6 +25,8 @@ apiClient.interceptors.response.use(
       console.warn("Expired or Invalid Token");
 
       window.location.href = "/session-expired";
+    if (error.response?.status === 400) {
+        alert("There was an issue with your request. Please check the input or try again.");
     }
     return Promise.reject(error);
   }
