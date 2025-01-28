@@ -4,7 +4,7 @@ import {Dt} from "../../../models/crud/Dt.ts";
 
 
 const TEAMS_URL = "/teams";
-const DT_URL = "/dt";
+const DT_URL = "/technicalDirectors";
 
 const adminTeamService = {
     // Get all teams
