@@ -3,5 +3,5 @@ export interface Team {
   name: string;
   initials: string;
   color: string;
-  representedIdentity: string;
+  representedEntity: string;
 }
