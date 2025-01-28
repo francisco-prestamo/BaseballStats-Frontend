@@ -66,32 +66,36 @@ const EditAlignment: React.FC = () => {
     loadAlignmentAndPlayers();
   }, [gameId, teamId, seasonId, serieId]);
 
-  const handlePlayerChange = (index: number, newPlayerId: number) => {
+    const handlePlayerChange = (index: number, newPlayerId: number) => {
       setAlignment((prevAlignment) => {
+          // Clone the existing alignment
           const updatedAlignment = [...prevAlignment];
   
-          // Retrieve the selected player
+          // Find the selected player based on the newPlayerId
           const selectedPlayer = teamPlayers.find((player) => player.id === newPlayerId);
   
-          if (!selectedPlayer) return prevAlignment; // If no player is found, return the previous state
+          if (!selectedPlayer) {
+              console.error(`Player with ID ${newPlayerId} not found`);
+              return prevAlignment; // Return the previous state if player is not found
+          }
   
-          const oldPlayerId = updatedAlignment[index]?.player?.id;
+          // Prevent duplication: Remove the player from other positions
+          const playerAlreadySelected = updatedAlignment.some(
+              (item, idx) => item.player?.id === newPlayerId && idx !== index
+          );
   
-          // Update selected players to avoid duplication
-          setSelectedPlayers((prev) => {
-              const updatedSet = new Set(prev);
-              if (oldPlayerId) updatedSet.delete(oldPlayerId); // Remove old player
-              updatedSet.add(newPlayerId); // Add new player
-              return updatedSet;
-          });
+          if (playerAlreadySelected) {
+              console.error(`Player with ID ${newPlayerId} is already assigned to another position`);
+              return prevAlignment; // Return the previous state if the player is already selected
+          }
   
-          // Update the alignment array with the selected player
+          // Update the alignment for the specified index
           updatedAlignment[index] = {
               ...updatedAlignment[index],
-              player: selectedPlayer, // Set the full player object
+              player: selectedPlayer, // Ensure this is a valid Player object
           };
   
-          return updatedAlignment as PlayerInPosition[]; // Explicitly cast to match the type
+          return updatedAlignment; // Return the updated alignment
       });
   };
 
