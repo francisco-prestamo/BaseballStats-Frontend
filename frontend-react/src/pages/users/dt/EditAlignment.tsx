@@ -9,9 +9,14 @@ import {
 } from "../../../services/users/dt/teamPlayersInPositionService";
 import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamService";
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
-import { PlayerInPosition as PlayerInPositionCrud } from "../../../models/crud/PlayerInPosition"; // Added import for CRUD model
+import { PlayerInPosition as PlayerInPositionCrud } from "../../../models/crud/PlayerInPosition";
 import { Player } from "../../../models/Player";
 import { GiBaseballGlove } from "react-icons/gi";
+
+// Type guard to check if an object is PlayerInPositionCrud
+const isPlayerInPositionCrud = (obj: any): obj is PlayerInPositionCrud => {
+  return 'playerId' in obj && 'position' in obj && 'efectividad' in obj;
+};
 
 const EditAlignment: React.FC = () => {
   const { gameId, teamId, seasonId, serieId } = useParams<{
@@ -22,7 +27,6 @@ const EditAlignment: React.FC = () => {
   }>();
   const navigate = useNavigate();
   
-  // Using the view model type (with player)
   const [alignment, setAlignment] = useState<PlayerInPosition[]>([]);
   const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
   const [availablePositions, setAvailablePositions] = useState<
@@ -48,12 +52,21 @@ const EditAlignment: React.FC = () => {
 
         const playersMap = new Map(players.map((player) => [player.id, player]));
 
-        // Convert from CRUD model to view model
-        const populatedAlignment: PlayerInPosition[] = defaultAlignment.map((item: PlayerInPositionCrud) => ({
-          position: item.position,
-          player: playersMap.get(item.playerId || 0) || null,
-          efectividad: item.efectividad || 0
-        }));
+        // Ensure we're working with the correct type
+        const alignmentData = Array.isArray(defaultAlignment) ? defaultAlignment : [];
+        
+        // Convert CRUD model to view model with type assertion
+        const populatedAlignment = alignmentData.map((item): PlayerInPosition => {
+          const playerId = isPlayerInPositionCrud(item) ? item.playerId : null;
+          return {
+            id: item.id,
+            position: item.position,
+            player: playerId ? playersMap.get(playerId) || null : null,
+            efectividad: item.efectividad || 0,
+            created_at: item.created_at || new Date().toISOString(),
+            updated_at: item.updated_at || new Date().toISOString()
+          };
+        });
 
         setAlignment(populatedAlignment);
         setAvailablePositions(pairs);
@@ -110,6 +123,7 @@ const EditAlignment: React.FC = () => {
       updatedAlignment[index] = {
         ...updatedAlignment[index],
         player: selectedPlayer,
+        updated_at: new Date().toISOString()
       };
 
       const newSelectedPlayers = new Set(selectedPlayers);
@@ -133,11 +147,14 @@ const EditAlignment: React.FC = () => {
       setIsSaving(true);
       setError(null);
 
-      // Convert back to CRUD model for saving
+      // Convert to CRUD model for saving
       const alignmentToSave: PlayerInPositionCrud[] = alignment.map((pos) => ({
+        id: pos.id,
         position: pos.position,
         playerId: pos.player?.id || null,
-        efectividad: pos.efectividad
+        efectividad: pos.efectividad,
+        created_at: pos.created_at,
+        updated_at: new Date().toISOString()
       }));
 
       await saveTeamAlignment(gameId, teamId, alignmentToSave);
