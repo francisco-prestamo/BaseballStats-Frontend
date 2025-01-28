@@ -9,7 +9,7 @@ import {
 } from "../../../services/users/dt/teamPlayersInPositionService";
 import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamService";
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
-import { PlayerInPositionCrud } from "../../../models/crud/PlayerInPosition"; // Added import for CRUD model
+import { PlayerInPosition as PlayerInPositionCrud } from "../../../models/crud/PlayerInPosition"; // Added import for CRUD model
 import { Player } from "../../../models/Player";
 import { GiBaseballGlove } from "react-icons/gi";
 
