@@ -7,7 +7,6 @@ import {
 import {
   fetchAllTeamPlayerInPositions,
 } from "../../../services/users/dt/teamPlayersInPositionService";
-
 import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamService";
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
 import { Player } from "../../../models/Player";
@@ -39,24 +38,29 @@ const EditAlignment: React.FC = () => {
 
       try {
         const [defaultAlignment, pairs, players] = await Promise.all([
-          fetchTeamAlignment(gameId, teamId), // Fetch the default alignment
-          fetchAllTeamPlayerInPositions(seasonId, serieId, teamId), // Fetch playerId-position pairs
-          fetchTeamPlayersInASerie(seasonId, serieId, teamId), // Fetch full player details
+          fetchTeamAlignment(gameId, teamId),
+          fetchAllTeamPlayerInPositions(seasonId, serieId, teamId),
+          fetchTeamPlayersInASerie(seasonId, serieId, teamId),
         ]);
 
-        // Map pairs to full players
         const playersMap = new Map(players.map((player) => [player.id, player]));
 
-        // Populate alignment with full player data
         const populatedAlignment = defaultAlignment.map((item) => ({
           ...item,
-          player: playersMap.get(item.player.id) || null,
+          player: playersMap.get(item.player?.id || 0) || null,
         }));
 
         setAlignment(populatedAlignment);
         setAvailablePositions(pairs);
         setTeamPlayers(players);
-        setSelectedPlayers(new Set(populatedAlignment.map((item) => item.player?.id).filter(Boolean)));
+        
+        // Update selected players based on populated alignment
+        const selectedPlayerIds = new Set(
+          populatedAlignment
+            .map((item) => item.player?.id)
+            .filter((id): id is number => id !== undefined && id !== null)
+        );
+        setSelectedPlayers(selectedPlayerIds);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load data. Please try again.");
@@ -66,37 +70,57 @@ const EditAlignment: React.FC = () => {
     loadAlignmentAndPlayers();
   }, [gameId, teamId, seasonId, serieId]);
 
-    const handlePlayerChange = (index: number, newPlayerId: number) => {
+  const handlePlayerChange = (index: number, newPlayerId: string) => {
+    if (!newPlayerId) {
       setAlignment((prevAlignment) => {
-          // Clone the existing alignment
-          const updatedAlignment = [...prevAlignment];
-  
-          // Find the selected player based on the newPlayerId
-          const selectedPlayer = teamPlayers.find((player) => player.id === newPlayerId);
-  
-          if (!selectedPlayer) {
-              console.error(`Player with ID ${newPlayerId} not found`);
-              return prevAlignment; // Return the previous state if player is not found
-          }
-  
-          // Prevent duplication: Remove the player from other positions
-          const playerAlreadySelected = updatedAlignment.some(
-              (item, idx) => item.player?.id === newPlayerId && idx !== index
-          );
-  
-          if (playerAlreadySelected) {
-              console.error(`Player with ID ${newPlayerId} is already assigned to another position`);
-              return prevAlignment; // Return the previous state if the player is already selected
-          }
-  
-          // Update the alignment for the specified index
-          updatedAlignment[index] = {
-              ...updatedAlignment[index],
-              player: selectedPlayer, // Ensure this is a valid Player object
-          };
-  
-          return updatedAlignment; // Return the updated alignment
+        const updatedAlignment = [...prevAlignment];
+        // Remove player from position
+        updatedAlignment[index] = {
+          ...updatedAlignment[index],
+          player: null,
+        };
+        
+        // Update selected players
+        const newSelectedPlayers = new Set(selectedPlayers);
+        const oldPlayerId = prevAlignment[index].player?.id;
+        if (oldPlayerId) {
+          newSelectedPlayers.delete(oldPlayerId);
+        }
+        setSelectedPlayers(newSelectedPlayers);
+        
+        return updatedAlignment;
       });
+      return;
+    }
+
+    const playerIdNumber = parseInt(newPlayerId, 10);
+    const selectedPlayer = teamPlayers.find((player) => player.id === playerIdNumber);
+
+    if (!selectedPlayer) {
+      console.error(`Player with ID ${playerIdNumber} not found`);
+      return;
+    }
+
+    setAlignment((prevAlignment) => {
+      const updatedAlignment = [...prevAlignment];
+      const oldPlayerId = prevAlignment[index].player?.id;
+      
+      // Update the alignment
+      updatedAlignment[index] = {
+        ...updatedAlignment[index],
+        player: selectedPlayer,
+      };
+
+      // Update selected players
+      const newSelectedPlayers = new Set(selectedPlayers);
+      if (oldPlayerId) {
+        newSelectedPlayers.delete(oldPlayerId);
+      }
+      newSelectedPlayers.add(playerIdNumber);
+      setSelectedPlayers(newSelectedPlayers);
+
+      return updatedAlignment;
+    });
   };
 
   const handleSaveAlignment = async () => {
@@ -107,10 +131,13 @@ const EditAlignment: React.FC = () => {
 
     try {
       setIsSaving(true);
+      setError(null);
+
       const alignmentToSave = alignment.map((pos) => ({
         position: pos.position,
-        playerId: pos.player?.id || null, // Use playerId for saving
+        playerId: pos.player?.id || null,
       }));
+
       await saveTeamAlignment(gameId, teamId, alignmentToSave);
       navigate(`/games/${gameId}/${seasonId}/${serieId}`);
     } catch (err) {
@@ -140,7 +167,7 @@ const EditAlignment: React.FC = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {error && (
-        <div className="bg-red-500 text-white p-4 rounded-lg">
+        <div className="bg-red-500 text-white p-4 rounded-lg mb-4">
           <p>{error}</p>
         </div>
       )}
@@ -155,14 +182,15 @@ const EditAlignment: React.FC = () => {
           >
             <select
               value={playerInPosition.player?.id || ""}
-              onChange={(e) => handlePlayerChange(index, parseInt(e.target.value))}
+              onChange={(e) => handlePlayerChange(index, e.target.value)}
               className="border rounded-lg px-4 py-2 w-64"
             >
               <option value="">Select a player</option>
               {teamPlayers
                 .filter(
                   (player) =>
-                    !selectedPlayers.has(player.id) || player.id === playerInPosition.player?.id
+                    !selectedPlayers.has(player.id) ||
+                    player.id === playerInPosition.player?.id
                 )
                 .map((player) => (
                   <option key={player.id} value={player.id}>
