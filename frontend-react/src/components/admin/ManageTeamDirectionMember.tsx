@@ -4,6 +4,7 @@ import adminDirectService from "../../services/users/admin/adminDirectService";
 import { DirectionMember } from "../../models/crud/DirectionMember";
 import { Team } from "../../models/Team";
 import adminTeamService from "../../services/users/admin/adminTeamService";
+import adminDirectionMemberService from "../../services/users/admin/adminDirectionMemberService";
 
 interface Direct {
     directionMemberId: number;
@@ -32,8 +33,7 @@ const ManageDirects: React.FC = () => {
 
     const fetchMembersAndTeams = async () => {
         try {
-            // const members = await adminDirectService.getDirectionMembers();
-            const members = [{ id: 5, name: "Francisco" }]
+            const members = await adminDirectionMemberService.getDirectionMembers();
             const teams = await adminTeamService.getTeams();
             setDirectionMembers(members);
             setTeams(teams);
