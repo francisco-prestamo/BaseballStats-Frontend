@@ -7,8 +7,9 @@ import {
 import {
   fetchAllTeamPlayerInPositions,
 } from "../../../services/users/dt/teamPlayersInPositionService";
+
 import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamService";
-import { PlayerInPosition as CrudPlayerInPosition } from "../../../models/PlayerInPosition";
+import { PlayerInPosition } from "../../../models/PlayerInPosition";
 import { Player } from "../../../models/Player";
 import { GiBaseballGlove } from "react-icons/gi";
 
@@ -22,6 +23,9 @@ const EditAlignment: React.FC = () => {
   const navigate = useNavigate();
   const [alignment, setAlignment] = useState<PlayerInPosition[]>([]);
   const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
+  const [availablePositions, setAvailablePositions] = useState<
+    { playerId: number; position: string }[]
+  >([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,23 +38,25 @@ const EditAlignment: React.FC = () => {
       }
 
       try {
-        const [crudPositions, players] = await Promise.all([
-          fetchAllTeamPlayerInPositions(seasonId, serieId, teamId),
-          fetchTeamPlayersInASerie(seasonId, serieId, teamId), 
+        const [defaultAlignment, pairs, players] = await Promise.all([
+          fetchTeamAlignment(gameId, teamId), // Fetch the default alignment
+          fetchAllTeamPlayerInPositions(seasonId, serieId, teamId), // Fetch playerId-position pairs
+          fetchTeamPlayersInASerie(seasonId, serieId, teamId), // Fetch full player details
         ]);
 
-        if (crudPositions && players) {
-          const alignmentWithPlayers = crudPositions.map((pos) => ({
-            position: pos.position,
-            efectividad: pos.efectividad || 0,
-            player: players.find((p) => p.id === pos.playerId) || null,
-          }));
+        // Map pairs to full players
+        const playersMap = new Map(players.map((player) => [player.id, player]));
 
-          setAlignment(alignmentWithPlayers);
-          setSelectedPlayers(new Set(crudPositions.map((pos) => pos.playerId)));
-        } else {
-          setError("Failed to load player or position data.");
-        }
+        // Populate alignment with full player data
+        const populatedAlignment = defaultAlignment.map((item) => ({
+          ...item,
+          player: playersMap.get(item.player.id) || null,
+        }));
+
+        setAlignment(populatedAlignment);
+        setAvailablePositions(pairs);
+        setTeamPlayers(players);
+        setSelectedPlayers(new Set(populatedAlignment.map((item) => item.player?.id).filter(Boolean)));
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load data. Please try again.");
@@ -68,8 +74,8 @@ const EditAlignment: React.FC = () => {
       // Update selected players to avoid duplication
       setSelectedPlayers((prev) => {
         const updatedSet = new Set(prev);
-        if (oldPlayerId) updatedSet.delete(oldPlayerId);
-        updatedSet.add(newPlayerId);
+        if (oldPlayerId) updatedSet.delete(oldPlayerId); // Remove old player
+        updatedSet.add(newPlayerId); // Add new player
         return updatedSet;
       });
 
@@ -93,7 +99,7 @@ const EditAlignment: React.FC = () => {
       setIsSaving(true);
       const alignmentToSave = alignment.map((pos) => ({
         position: pos.position,
-        playerId: pos.player?.id || null,
+        playerId: pos.player?.id || null, // Use playerId for saving
       }));
       await saveTeamAlignment(gameId, teamId, alignmentToSave);
       navigate(`/games/${gameId}/${seasonId}/${serieId}`);
@@ -105,7 +111,7 @@ const EditAlignment: React.FC = () => {
     }
   };
 
-  if (!alignment.length || !teamPlayers.length) {
+  if (!alignment.length || !teamPlayers.length || !availablePositions.length) {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center">
