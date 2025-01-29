@@ -91,7 +91,7 @@ const ManageTeamDirectionMembers: React.FC = () => {
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-5xl font-bold">Manage Directs</h1>
-                        <p className="mt-2 text-lg opacity-90">Manage directs between Direction Members and Teams</p>
+                        <p className="mt-2 text-lg opacity-90">Manage Direction Members assignments to Teams</p>
                         <p className="mt-1">Total Directs: {directs.length}</p>
                     </div>
                     <FaUsers className="text-6xl text-text-light opacity-80" />
