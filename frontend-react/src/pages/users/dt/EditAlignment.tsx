@@ -11,6 +11,7 @@ import { fetchTeamPlayersInASerie } from "../../../services/users/all/TeamServic
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
 import { Player } from "../../../models/Player";
 import { GiBaseballGlove } from "react-icons/gi";
+import { positions } from "../../../models/crud/positions";
 
 const EditAlignment: React.FC = () => {
   const { gameId, teamId, seasonId, serieId } = useParams<{
@@ -23,6 +24,7 @@ const EditAlignment: React.FC = () => {
   const [alignment, setAlignment] = useState<PlayerInPosition[]>([]);
   const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Set<number>>(new Set());
+  const [availablePositions, setAvailablePositions] = useState<{[key: number]: Set<string>} | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -41,20 +43,32 @@ const EditAlignment: React.FC = () => {
         ]);
 
         if (crudPositions && players) {
+          const availablePositions: {[key: number]: Set<string>} = {};
+          for (var crudPosition of crudPositions) {
+
+            console.log(crudPosition.playerId, crudPosition.position)
+            if (!availablePositions[crudPosition.playerId]) {
+              availablePositions[crudPosition.playerId] = new Set();
+            }
+            availablePositions[crudPosition.playerId].add(crudPosition.position);
+          }
+
+          setAvailablePositions(availablePositions);
+
           let initialAlignment: PlayerInPosition[];
 
           if (existingAlignment && existingAlignment.length > 0) {
             // Use existing alignment if available
             initialAlignment = existingAlignment.map(pos => {
               const player = players.find(p => p.id === pos.player.id);
-              if (!player) {
-                // If somehow the player is not found, use the first available player
-                console.warn(`Player ${pos.player.id} not found, using default player`);
-                return {
-                  position: pos.position,
-                  effectiveness: pos.effectiveness || 0,
-                  player: players[0], // Use first player as default
-                };
+              // if (!player) {
+              //   // If somehow the player is not found, use the first available player
+              //   console.warn(`Player ${pos.player.id} not found, using default player`);
+              //   return {
+              //     position: pos.position,
+              //     effectiveness: pos.effectiveness || 0,
+              //     player: players[0], // Use first player as default
+              //   };
               }
               return {
                 position: pos.position,
@@ -167,20 +181,20 @@ const EditAlignment: React.FC = () => {
         <h1 className="text-3xl font-bold">Edit Team Alignment</h1>
 
         <div className="space-y-4">
-          {alignment.map((playerInPosition, index) => (
+          {positions.map((position, index) => (
               <div
-                  key={`${playerInPosition.position}-${index}`}
+                  key={`${position}-${index}`}
                   className="flex items-center space-x-4"
               >
                 <select
-                    value={playerInPosition.player.id}
+                    value={alignment.find(x => x.position === position)?.player.id || undefined}
                     onChange={(e) => handlePlayerChange(index, parseInt(e.target.value))}
                     className="border rounded-lg px-4 py-2 w-64"
                 >
                   {teamPlayers
                       .filter(
                           (player) =>
-                              !selectedPlayers.has(player.id) || player.id === playerInPosition.player.id
+                              !selectedPlayers.has(player.id) && (availablePositions && availablePositions[player.id] && availablePositions[player.id].has(position))  // || player.id === playerInPosition.player.id
                       )
                       .map((player) => (
                           <option key={player.id} value={player.id}>
@@ -188,7 +202,7 @@ const EditAlignment: React.FC = () => {
                           </option>
                       ))}
                 </select>
-                <span className="font-medium w-24">{playerInPosition.position}</span>
+                <span className="font-medium w-24">{position}</span>
                 <GiBaseballGlove className="text-2xl text-blue-600" />
               </div>
           ))}
