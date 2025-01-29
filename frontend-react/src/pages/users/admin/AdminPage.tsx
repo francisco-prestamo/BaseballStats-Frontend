@@ -18,7 +18,7 @@ const AdminPage: React.FC = () => {
     return (
         <div className="flex flex-col md:flex-row min-h-screen">
             {/* Sidebar */}
-            <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} className="w-full md:w-1/4 lg:w-1/5" />
+            <Sidebar activeSection={activeSection} setActiveSection={setActiveSection}/>
 
             {/* Main Content */}
             <main className="flex-1 p-4 mx-auto md:ml-16 w-full md:w-3/4 lg:w-4/5">
