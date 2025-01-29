@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaExchangeAlt, FaTrash, FaEdit } from "react-icons/fa";
+import { FaExchangeAlt, FaTrash } from "react-icons/fa";
 import adminSubstitutionService from "../../services/users/admin/adminSubstitutionService";
 import { fetchAllSeries, fetchGamesInSeries } from "../../services/users/all/serieService";
 import { fetchTeamPlayersInASerie } from "../../services/users/all/TeamService";
@@ -9,7 +9,6 @@ import { Player } from "../../models/Player";
 import { Substitution } from "../../models/crud/Substitution";
 
 const ManageSubstitutions: React.FC = () => {
-    // State declarations (same as before)
     const [series, setSeries] = useState<Serie[]>([]);
     const [games, setGames] = useState<Game[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
@@ -25,10 +24,8 @@ const ManageSubstitutions: React.FC = () => {
         playerOutId: 0,
         date: new Date(),
     });
-    const [editingSubstitution, setEditingSubstitution] = useState<Substitution | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
-    
     useEffect(() => {
         const loadSeries = async () => {
             try {
@@ -41,13 +38,12 @@ const ManageSubstitutions: React.FC = () => {
         loadSeries();
     }, []);
 
-        // Load games when a series is selected
     useEffect(() => {
         if (selectedSerie) {
             const loadGames = async () => {
                 try {
                     const gamesData = await fetchGamesInSeries(
-                        selectedSerie.idSeason.toString(), // FIXED: Using idSeason instead of seasonId
+                        selectedSerie.idSeason.toString(), 
                         selectedSerie.id.toString()
                     );
                     setGames(gamesData);
@@ -58,14 +54,13 @@ const ManageSubstitutions: React.FC = () => {
             loadGames();
         }
     }, [selectedSerie]);
-    
-        // Load players when a team is selected
+
     useEffect(() => {
         if (selectedSerie && selectedTeam) {
             const loadPlayers = async () => {
                 try {
                     const playersData = await fetchTeamPlayersInASerie(
-                        selectedSerie.idSeason.toString(), // FIXED: Using idSeason instead of seasonId
+                        selectedSerie.idSeason.toString(),
                         selectedSerie.id.toString(),
                         selectedTeam.toString()
                     );
@@ -77,7 +72,7 @@ const ManageSubstitutions: React.FC = () => {
             loadPlayers();
         }
     }, [selectedSerie, selectedTeam]);
-        // Load substitutions
+
     useEffect(() => {
         const loadSubstitutions = async () => {
             try {
@@ -106,7 +101,7 @@ const ManageSubstitutions: React.FC = () => {
             console.error("Error creating substitution:", error);
         }
     };
-    
+
     const handleDeleteSubstitution = async (id: number) => {
         try {
             await adminSubstitutionService.deleteSubstitution(id);
@@ -116,23 +111,9 @@ const ManageSubstitutions: React.FC = () => {
             console.error("Error deleting substitution:", error);
         }
     };
-    const handleUpdateSubstitution = async () => {
-        try {
-            if (!editingSubstitution) return;
-            const updatedSub = await adminSubstitutionService.updateSubstitution(editingSubstitution);
-            setSubstitutions(substitutions.map(sub => 
-                sub.id === updatedSub.id ? updatedSub : sub
-            ));
-            setEditingSubstitution(null);
-        } catch (error) {
-            console.error("Error updating substitution:", error);
-        }
-    };
-    
 
     return (
         <div className="container mx-auto p-6 space-y-10">
-            {/* Header */}
             <div className="bg-gradient-to-br from-primary to-primary-light rounded-2xl p-8 shadow-lg text-text-light">
                 <div className="flex justify-between items-center">
                     <div>
@@ -146,7 +127,6 @@ const ManageSubstitutions: React.FC = () => {
                 </div>
             </div>
 
-            {/* Substitution Form */}
             <div className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20">
                 <h2 className="text-2xl font-semibold mb-4 pb-2 border-b border-primary-lighter">
                     New Substitution
@@ -216,7 +196,6 @@ const ManageSubstitutions: React.FC = () => {
                 </div>
             </div>
 
-            {/* Substitutions List */}
             <div className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20">
                 <h2 className="text-2xl font-semibold mb-4 pb-2 border-b border-primary-lighter">
                     Substitutions List
@@ -237,12 +216,6 @@ const ManageSubstitutions: React.FC = () => {
                             </div>
                             <div className="flex space-x-2">
                                 <button 
-                                    onClick={() => setEditingSubstitution(sub)}
-                                    className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-all"
-                                >
-                                    <FaEdit className="text-primary" />
-                                </button>
-                                <button 
                                     onClick={() => setDeleteConfirmation(sub)}
                                     className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-all"
                                 >
@@ -253,62 +226,6 @@ const ManageSubstitutions: React.FC = () => {
                     ))}
                 </div>
             </div>
-            {editingSubstitution && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-                    <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
-                        <h2 className="text-2xl font-semibold mb-4">Edit Substitution</h2>
-            
-                        {/* Game Info */}
-                        <p className="mb-2 text-sm">Game ID: {editingSubstitution.gameId}</p>
-            
-                        {/* Player Out Selection */}
-                        <select 
-                            value={editingSubstitution.playerOutId}
-                            onChange={(e) => setEditingSubstitution({
-                                ...editingSubstitution,
-                                playerOutId: Number(e.target.value)
-                            })}
-                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
-                        >
-                            <option value="">Select Player Out</option>
-                            {players.map((p) => (
-                                <option key={p.id} value={p.id}>{p.name}</option>
-                            ))}
-                        </select>
-            
-                        {/* Player In Selection */}
-                        <select 
-                            value={editingSubstitution.playerInId}
-                            onChange={(e) => setEditingSubstitution({
-                                ...editingSubstitution,
-                                playerInId: Number(e.target.value)
-                            })}
-                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 mt-4"
-                        >
-                            <option value="">Select Player In</option>
-                            {players.map((p) => (
-                                <option key={p.id} value={p.id}>{p.name}</option>
-                            ))}
-                        </select>
-            
-                        {/* Action Buttons */}
-                        <div className="flex gap-4 mt-6">
-                            <button
-                                onClick={handleUpdateSubstitution}
-                                className="flex-1 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
-                            >
-                                Update
-                            </button>
-                            <button
-                                onClick={() => setEditingSubstitution(null)}
-                                className="flex-1 p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Delete Confirmation Modal */}
             {deleteConfirmation && (
