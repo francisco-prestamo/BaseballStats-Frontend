@@ -1,6 +1,5 @@
-// ManagePitchers.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import {FaEdit, FaTrash, FaUsers} from "react-icons/fa";
+import { FaEdit, FaTrash, FaUsers } from "react-icons/fa";
 import adminPitcherService from "../../services/users/admin/adminPitcherService";
 import { Pitcher } from "../../models/crud/Pitcher";
 
@@ -12,6 +11,7 @@ const ManagePitchers: React.FC = () => {
         gamesLostNumber: 0,
         rightHanded: true,
         allowedRunsAvg: 0,
+        effectiveness: 0,
     });
 
     const [editingPitcher, setEditingPitcher] = useState<Pitcher | null>(null);
@@ -29,7 +29,7 @@ const ManagePitchers: React.FC = () => {
 
     const filteredPitchers = useMemo(() => {
         return pitchers.filter((pitcher) =>
-            pitcher.playerId.toString().includes(searchTerm) // or search by other attributes like name if available
+            pitcher.playerId.toString().includes(searchTerm)
         );
     }, [pitchers, searchTerm]);
 
@@ -48,6 +48,7 @@ const ManagePitchers: React.FC = () => {
                 gamesLostNumber: 0,
                 rightHanded: true,
                 allowedRunsAvg: 0,
+                effectiveness: 0,
             });
         } catch (error) {
             console.error("Error creating pitcher:", error);
@@ -99,7 +100,6 @@ const ManagePitchers: React.FC = () => {
                 <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
                     <h2 className="text-2xl font-semibold mb-4">Create New Pitcher</h2>
 
-                    {/* Player ID */}
                     <input
                         type="number"
                         placeholder="Player ID"
@@ -108,7 +108,6 @@ const ManagePitchers: React.FC = () => {
                         className="w-full mb-3 p-3"
                     />
 
-                    {/* Games Won */}
                     <input
                         type="number"
                         placeholder="Games Won"
@@ -117,7 +116,6 @@ const ManagePitchers: React.FC = () => {
                         className="w-full mb-3 p-3"
                     />
 
-                    {/* Games Lost */}
                     <input
                         type="number"
                         placeholder="Games Lost"
@@ -126,8 +124,7 @@ const ManagePitchers: React.FC = () => {
                         className="w-full mb-3 p-3"
                     />
 
-                    {/* Right Handed */}
-                    <label>
+                    <label className="block mb-3">
                         Right-Handed:
                         <input
                             type="checkbox"
@@ -137,22 +134,29 @@ const ManagePitchers: React.FC = () => {
                         />
                     </label>
 
-                    {/* Allowed Runs Average */}
                     <input
                         type="number"
-                        placeholder="Allowed Runs Avg"
+                        placeholder="Allowed Runs Average"
                         step="0.01"
                         value={newPitcher.allowedRunsAvg}
                         onChange={(e) => setNewPitcher({ ...newPitcher, allowedRunsAvg: Number(e.target.value) })}
                         className="w-full mb-3 p-3"
                     />
 
-                    <button onClick={handleCreatePitcher} className="w-full p-3 bg-primary text-white">
+                    <input
+                        type="number"
+                        placeholder="Effectiveness"
+                        step="0.01"
+                        value={newPitcher.effectiveness}
+                        onChange={(e) => setNewPitcher({ ...newPitcher, effectiveness: Number(e.target.value) })}
+                        className="w-full mb-3 p-3"
+                    />
+
+                    <button onClick={handleCreatePitcher} className="w-full p-3 bg-primary text-white rounded-lg">
                         Create Pitcher
                     </button>
                 </div>
 
-                {/* Search Pitchers Section */}
                 <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
                     <h3 className="text-2xl font-semibold mb-4">Search Pitchers</h3>
                     <input
@@ -160,7 +164,7 @@ const ManagePitchers: React.FC = () => {
                         placeholder="Search by Player ID..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-3"
+                        className="w-full p-3 rounded-lg"
                     />
                 </div>
             </div>
@@ -173,22 +177,29 @@ const ManagePitchers: React.FC = () => {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredPitchers.map((pitcher) => (
-                            <div key={pitcher.playerId} className="flex justify-between items-center p-4 bg-white rounded-lg shadow-lg">
-                                <p>Player ID: {pitcher.playerId}</p>
-                                <div className="flex items-center space-x-2">
-                                    <button
-                                        onClick={() => setEditingPitcher(pitcher)}
-                                        className="p-2 bg-blue-500 text-white rounded-lg"
-                                    >
-                                        <FaEdit />
-                                    </button>
-                                    <button
-                                        onClick={() => setDeleteConfirmation(pitcher.playerId)}
-                                        className="p-2 bg-red-500 text-white rounded-lg"
-                                    >
-                                        <FaTrash />
-                                    </button>
+                            <div key={pitcher.playerId} className="flex flex-col p-4 bg-white rounded-lg shadow-lg">
+                                <div className="flex justify-between items-center mb-2">
+                                    <h4 className="font-semibold">Player ID: {pitcher.playerId}</h4>
+                                    <div className="flex items-center space-x-2">
+                                        <button
+                                            onClick={() => setEditingPitcher(pitcher)}
+                                            className="p-2 bg-blue-500 text-white rounded-lg"
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                        <button
+                                            onClick={() => setDeleteConfirmation(pitcher.playerId)}
+                                            className="p-2 bg-red-500 text-white rounded-lg"
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    </div>
                                 </div>
+                                <p>Games Won: {pitcher.gamesWonNumber}</p>
+                                <p>Games Lost: {pitcher.gamesLostNumber}</p>
+                                <p>Right-Handed: {pitcher.rightHanded ? "Yes" : "No"}</p>
+                                <p>Allowed Runs Avg: {pitcher.allowedRunsAvg}</p>
+                                <p>Effectiveness: {pitcher.effectiveness}</p>
                             </div>
                         ))}
                     </div>
@@ -199,12 +210,12 @@ const ManagePitchers: React.FC = () => {
             {editingPitcher && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
-                        <h2 className="text-2xl font-semibold">Update Pitcher</h2>
+                        <h2 className="text-2xl font-semibold mb-4">Update Pitcher</h2>
                         <input
                             type="number"
                             value={editingPitcher.playerId}
                             readOnly
-                            className="w-full mb-3 p-3"
+                            className="w-full mb-3 p-3 bg-gray-100"
                         />
                         <input
                             type="number"
@@ -218,7 +229,7 @@ const ManagePitchers: React.FC = () => {
                             onChange={(e) => setEditingPitcher({ ...editingPitcher, gamesLostNumber: Number(e.target.value) })}
                             className="w-full mb-3 p-3"
                         />
-                        <label>
+                        <label className="block mb-3">
                             Right-Handed:
                             <input
                                 type="checkbox"
@@ -232,6 +243,13 @@ const ManagePitchers: React.FC = () => {
                             value={editingPitcher.allowedRunsAvg}
                             step="0.01"
                             onChange={(e) => setEditingPitcher({ ...editingPitcher, allowedRunsAvg: Number(e.target.value) })}
+                            className="w-full mb-3 p-3"
+                        />
+                        <input
+                            type="number"
+                            value={editingPitcher.effectiveness}
+                            step="0.01"
+                            onChange={(e) => setEditingPitcher({ ...editingPitcher, effectiveness: Number(e.target.value) })}
                             className="w-full mb-3 p-3"
                         />
                         <div className="flex justify-end space-x-2">
@@ -252,7 +270,7 @@ const ManagePitchers: React.FC = () => {
                 </div>
             )}
 
-            {/* Delete Confirmation */}
+            {/* Delete Confirmation Modal */}
             {deleteConfirmation && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
