@@ -100,7 +100,7 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: new Date().toISOString(),
+                date: new Date(),
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
