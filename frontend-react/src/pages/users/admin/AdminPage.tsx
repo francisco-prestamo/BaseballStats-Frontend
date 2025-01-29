@@ -3,7 +3,7 @@ import Sidebar from "../../../components/admin/Sidebar.tsx";
 import ManageUsers from "../../../components/admin/ManageUsers.tsx";
 import ManageSeasons from "../../../components/admin/ManageSeasons.tsx";
 import ManageTeams from "../../../components/admin/ManageTeams.tsx";
-import ManagePlayers from "../../../components/admin/ManagePlayer.tsx"; // Importar ManagePlayers
+import ManagePlayers from "../../../components/admin/ManagePlayer.tsx"; 
 import ManageSeries from "../../../components/admin/ManageSeries.tsx";
 import ManageGames from "../../../components/admin/ManageGames.tsx";
 import ManagePlayerInSerie from "../../../components/admin/ManagePlayerInSerie.tsx";
@@ -16,12 +16,12 @@ const AdminPage: React.FC = () => {
     const [activeSection, setActiveSection] = useState(1);
 
     return (
-        <div className="flex">
+        <div className="flex flex-col md:flex-row min-h-screen">
             {/* Sidebar */}
-            <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+            <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} className="w-full md:w-1/4 lg:w-1/5" />
 
             {/* Main Content */}
-            <main className="flex-1 p-4 mx-auto ml-16">
+            <main className="flex-1 p-4 mx-auto md:ml-16 w-full md:w-3/4 lg:w-4/5">
                 {activeSection === 1 && <h1 className="text-2xl font-bold">Info Section</h1>}
                 {activeSection === 2 && <ManageUsers />}
                 {activeSection === 3 && <ManageSeasons />}
@@ -34,7 +34,6 @@ const AdminPage: React.FC = () => {
                 {activeSection === 10 && <ManageDirectionMembers />}
                 {activeSection === 11 && <ManageTeamDirectionMembers />}
                 {activeSection === 12 && <ManagePitchers />}
-
             </main>
         </div>
     );
