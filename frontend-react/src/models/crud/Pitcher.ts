@@ -4,4 +4,5 @@ export interface Pitcher {
     gamesLostNumber: number;
     rightHanded: boolean;
     allowedRunsAvg: number;
+    effectiveness: number;
 }
