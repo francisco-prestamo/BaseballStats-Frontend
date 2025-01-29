@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FaExchangeAlt, FaTrash, FaEdit, FaTimes } from "react-icons/fa";
-import adminSubstitutionService from "../../services/adminSubstitutionService";
-import { fetchAllSeries, fetchGamesInSeries } from "../../services/seriesService";
-import { fetchTeamPlayersInASerie } from "../../services/teamService";
+import { FaExchangeAlt, FaTrash, FaEdit } from "react-icons/fa";
+import adminSubstitutionService from "../../services/users/admin/adminSubstitutionService";
+import { fetchAllSeries, fetchGamesInSeries } from "../../services/users/all/seriesService";
+import { fetchTeamPlayersInASerie } from "../../services/users/all/teamService";
 import { Serie } from "../../models/Serie";
 import { Game } from "../../models/Game";
 import { Player } from "../../models/Player";
-import { Substitution } from "../../models/Substitution";
+import { Substitution } from "../../models/crud/Substitution";
 
 const ManageSubstitutions: React.FC = () => {
     // State declarations (same as before)
