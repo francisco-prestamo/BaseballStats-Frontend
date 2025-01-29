@@ -9,7 +9,7 @@ const ManagePlayers: React.FC = () => {
         id: 0,
         name: "",
         age: 0,
-        experience: 0,
+        yearsOfExperience: 0,
         battingAverage: -1,
     });
 
@@ -65,12 +65,12 @@ const ManagePlayers: React.FC = () => {
                 return;
             }
 
-            if (!newPlayer.experience){
+            if (!newPlayer.yearsOfExperience){
                 alert("Years of experience are required to create a player.");
                 return;
             }
 
-            if (newPlayer.experience <= 0){
+            if (newPlayer.yearsOfExperience <= 0){
                 alert("Years of experience must be positive.");
                 return;
             }
@@ -82,7 +82,7 @@ const ManagePlayers: React.FC = () => {
 
             await adminPlayerService.createPlayer(newPlayer as Player);
             fetchPlayers();
-            setNewPlayer({ name: "", age: 0, experience: 0, battingAverage: -1, id: 0 });
+            setNewPlayer({ name: "", age: 0, yearsOfExperience: 0, battingAverage: -1, id: 0 });
         } catch (error) {
             console.error("Error creating player:", error);
         }
@@ -166,9 +166,9 @@ const ManagePlayers: React.FC = () => {
                     {/* Experience Input */}
                     <input
                         type="number"
-                        placeholder={newPlayer.experience === 0 ? "Experience (Years)" : ""}
-                        value={newPlayer.experience === 0 ? "" : newPlayer.experience}
-                        onChange={(e) => setNewPlayer({ ...newPlayer, experience: Number(e.target.value) })}
+                        placeholder={newPlayer.yearsOfExperience === 0 ? "Experience (Years)" : ""}
+                        value={newPlayer.yearsOfExperience === 0 ? "" : newPlayer.yearsOfExperience}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, yearsOfExperience: Number(e.target.value) })}
                         className="w-full mb-3 p-3"
                     />
 
@@ -301,9 +301,9 @@ const ManagePlayers: React.FC = () => {
                                     id="experience"
                                     type="number"
                                     placeholder="Experience"
-                                    value={editingPlayer.experience}
+                                    value={editingPlayer.yearsOfExperience}
                                     onChange={(e) =>
-                                        setEditingPlayer({ ...editingPlayer, experience: Number(e.target.value) })
+                                        setEditingPlayer({ ...editingPlayer, yearsOfExperience: Number(e.target.value) })
                                     }
                                     className="w-full p-3 border rounded-lg"
                                 />
