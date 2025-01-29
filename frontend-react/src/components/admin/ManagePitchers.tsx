@@ -6,7 +6,7 @@ import { Pitcher } from "../../models/crud/Pitcher";
 const ManagePitchers: React.FC = () => {
     const [pitchers, setPitchers] = useState<Pitcher[]>([]);
     const [newPitcher, setNewPitcher] = useState<Pitcher>({
-        playerId: 0,
+        id: 0,
         gamesWonNumber: 0,
         gamesLostNumber: 0,
         rightHanded: true,
@@ -29,13 +29,13 @@ const ManagePitchers: React.FC = () => {
 
     const filteredPitchers = useMemo(() => {
         return pitchers.filter((pitcher) =>
-            pitcher.playerId.toString().includes(searchTerm)
+            pitcher.id.toString().includes(searchTerm)
         );
     }, [pitchers, searchTerm]);
 
     const handleCreatePitcher = async () => {
         try {
-            if (!newPitcher.playerId || newPitcher.gamesWonNumber < 0 || newPitcher.gamesLostNumber < 0) {
+            if (!newPitcher.id || newPitcher.gamesWonNumber < 0 || newPitcher.gamesLostNumber < 0) {
                 alert("All fields are required to create a pitcher.");
                 return;
             }
@@ -43,7 +43,7 @@ const ManagePitchers: React.FC = () => {
             await adminPitcherService.createPitcher(newPitcher);
             fetchPitchers();
             setNewPitcher({
-                playerId: 0,
+                id: 0,
                 gamesWonNumber: 0,
                 gamesLostNumber: 0,
                 rightHanded: true,
@@ -103,8 +103,8 @@ const ManagePitchers: React.FC = () => {
                     <input
                         type="number"
                         placeholder="Player ID"
-                        value={newPitcher.playerId === 0 ? "" : newPitcher.playerId}
-                        onChange={(e) => setNewPitcher({ ...newPitcher, playerId: Number(e.target.value) })}
+                        value={newPitcher.id === 0 ? "" : newPitcher.id}
+                        onChange={(e) => setNewPitcher({ ...newPitcher, id: Number(e.target.value) })}
                         className="w-full mb-3 p-3"
                     />
 
@@ -177,9 +177,9 @@ const ManagePitchers: React.FC = () => {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredPitchers.map((pitcher) => (
-                            <div key={pitcher.playerId} className="flex flex-col p-4 bg-white rounded-lg shadow-lg">
+                            <div key={pitcher.id} className="flex flex-col p-4 bg-white rounded-lg shadow-lg">
                                 <div className="flex justify-between items-center mb-2">
-                                    <h4 className="font-semibold">Player ID: {pitcher.playerId}</h4>
+                                    <h4 className="font-semibold">Player ID: {pitcher.id}</h4>
                                     <div className="flex items-center space-x-2">
                                         <button
                                             onClick={() => setEditingPitcher(pitcher)}
@@ -188,7 +188,7 @@ const ManagePitchers: React.FC = () => {
                                             <FaEdit />
                                         </button>
                                         <button
-                                            onClick={() => setDeleteConfirmation(pitcher.playerId)}
+                                            onClick={() => setDeleteConfirmation(pitcher.id)}
                                             className="p-2 bg-red-500 text-white rounded-lg"
                                         >
                                             <FaTrash />
@@ -213,7 +213,7 @@ const ManagePitchers: React.FC = () => {
                         <h2 className="text-2xl font-semibold mb-4">Update Pitcher</h2>
                         <input
                             type="number"
-                            value={editingPitcher.playerId}
+                            value={editingPitcher.id}
                             readOnly
                             className="w-full mb-3 p-3 bg-gray-100"
                         />

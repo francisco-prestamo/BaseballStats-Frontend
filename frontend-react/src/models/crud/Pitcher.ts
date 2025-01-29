@@ -1,5 +1,5 @@
 export interface Pitcher {
-    playerId: number;
+    id: number;
     gamesWonNumber: number;
     gamesLostNumber: number;
     rightHanded: boolean;

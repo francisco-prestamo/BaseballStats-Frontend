@@ -19,7 +19,7 @@ const adminPitcherService = {
 
     // Update an existing pitcher
     updatePitcher: async (pitcher: Pitcher): Promise<Pitcher> => {
-        const response = await apiClient.put(`${PITCHERS_URL}/${pitcher.playerId}`, pitcher);
+        const response = await apiClient.put(`${PITCHERS_URL}/${pitcher.id}`, pitcher);
         return response.data;
     },
 
