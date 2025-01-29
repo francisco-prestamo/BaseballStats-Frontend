@@ -45,7 +45,7 @@ const ManageSeasons: React.FC = () => {
     const handleUpdateSeason = async () => {
         try {
             if (!editingSeason) return;
-            await adminSeasonService.updateSeason(editingSeason);
+            await adminSeasonService.updateSeason(editingSeason.id,editingSeason);
             fetchSeasons();
             setEditingSeason(null);
         } catch (error) {
