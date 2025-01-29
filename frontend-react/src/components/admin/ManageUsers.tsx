@@ -7,7 +7,7 @@ const ManageUsers: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [newUser, setNewUser] = useState<User>({id: 0, username: "", userType: "admin" });
     const [editingUser, setEditingUser] = useState<User | null>(null);
-    const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(null);
+    const [deleteConfirmation, setDeleteConfirmation] = useState<number | null>(null);
 
     // Filtering states
     const [searchTerm, setSearchTerm] = useState("");
@@ -204,7 +204,7 @@ const ManageUsers: React.FC = () => {
                                                 <FaEdit className="text-primary dark:text-primary-lighter"/>
                                             </button>
                                             <button
-                                                onClick={() => setDeleteConfirmation(user.username)}
+                                                onClick={() => setDeleteConfirmation(user.id)}
                                                 className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-all duration-300"
                                             >
                                                 <FaTrash className="text-red-500 dark:text-red-300"/>
@@ -283,7 +283,7 @@ const ManageUsers: React.FC = () => {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
                     <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
                         <h2 className="text-2xl font-semibold text-text-dark dark:text-text-light mb-4">
-                            Are you sure you want to delete {deleteConfirmation}?
+                            Are you sure you want to delete {users.find(u => u.id === deleteConfirmation)!.username}?
                         </h2>
                         <div className="flex gap-4">
                             <button
