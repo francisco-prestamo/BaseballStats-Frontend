@@ -5,7 +5,7 @@ import { User } from "../../models/User.ts";
 
 const ManageUsers: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
-    const [newUser, setNewUser] = useState<User>({id: -1, username: "", userType: "admin" });
+    const [newUser, setNewUser] = useState<User>({id: 0, username: "", userType: "admin" });
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(null);
 
@@ -50,7 +50,7 @@ const ManageUsers: React.FC = () => {
             }
             await adminUserService.registerUser(newUser);
             fetchUsers();
-            setNewUser({id: -1, username: "", userType: "admin"});
+            setNewUser({id: 0, username: "", userType: "admin"});
         } catch (error) {
             console.error("Error registering user:", error);
         }
@@ -106,13 +106,6 @@ const ManageUsers: React.FC = () => {
                         Register New User
                     </h2>
                     <div className="space-y-4">
-                        <input
-                            type="number"
-                            placeholder="User ID (Optional)"
-                            value={newUser.id !== -1 ? newUser.id : ''}
-                            onChange={(e) => setNewUser({...newUser, id: Number(e.target.value)})}
-                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
                         <input
                             type="text"
                             placeholder="Username"
@@ -239,14 +232,6 @@ const ManageUsers: React.FC = () => {
                             />
                         </div>
                         <div className="space-y-4">
-                            <input
-                                type="number"
-                                value={editingUser.id || ''}
-                                onChange={(e) =>
-                                    setEditingUser({...editingUser, id: Number(e.target.value)})
-                                }
-                                className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
                             <input
                                 type="text"
                                 value={editingUser.username}
