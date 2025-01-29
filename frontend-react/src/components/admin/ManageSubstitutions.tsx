@@ -253,6 +253,62 @@ const ManageSubstitutions: React.FC = () => {
                     ))}
                 </div>
             </div>
+            {editingSubstitution && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
+                        <h2 className="text-2xl font-semibold mb-4">Edit Substitution</h2>
+            
+                        {/* Game Info */}
+                        <p className="mb-2 text-sm">Game ID: {editingSubstitution.gameId}</p>
+            
+                        {/* Player Out Selection */}
+                        <select 
+                            value={editingSubstitution.playerOutId}
+                            onChange={(e) => setEditingSubstitution({
+                                ...editingSubstitution,
+                                playerOutId: Number(e.target.value)
+                            })}
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
+                        >
+                            <option value="">Select Player Out</option>
+                            {players.map((p) => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                        </select>
+            
+                        {/* Player In Selection */}
+                        <select 
+                            value={editingSubstitution.playerInId}
+                            onChange={(e) => setEditingSubstitution({
+                                ...editingSubstitution,
+                                playerInId: Number(e.target.value)
+                            })}
+                            className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 mt-4"
+                        >
+                            <option value="">Select Player In</option>
+                            {players.map((p) => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                        </select>
+            
+                        {/* Action Buttons */}
+                        <div className="flex gap-4 mt-6">
+                            <button
+                                onClick={handleUpdateSubstitution}
+                                className="flex-1 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                            >
+                                Update
+                            </button>
+                            <button
+                                onClick={() => setEditingSubstitution(null)}
+                                className="flex-1 p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Delete Confirmation Modal */}
             {deleteConfirmation && (
