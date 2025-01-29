@@ -34,14 +34,49 @@ const ManagePlayers: React.FC = () => {
 
     const handleCreatePlayer = async () => {
         try {
-            if (
-                !newPlayer.id ||
-                !newPlayer.name ||
-                newPlayer.age <= 0 ||
-                newPlayer.experience <= 0 ||
-                newPlayer.battingAverage
-            ) {
-                alert("All fields, including ID, are required to create a player.");
+            // if (
+            //     !newPlayer.id ||
+            //     !newPlayer.name ||
+            //     newPlayer.age <= 0 ||
+            //     newPlayer.experience <= 0 ||
+            //     newPlayer.battingAverage
+            // ) {
+            //     alert("All fields, including ID, are required to create a player.");
+            //     return;
+            // }
+
+            if (!newPlayer.id){
+                alert("ID is required to create a player.");
+                return;
+            }
+
+            if (!newPlayer.name){
+                alert("Name is required to create a player.");
+                return;
+            }
+
+            if (!newPlayer.age){
+                alert("Age is required to create a player.");
+                return;
+            }
+
+            if (newPlayer.age <= 0){
+                alert("Age must be positive.");
+                return;
+            }
+
+            if (!newPlayer.experience){
+                alert("Years of experience are required to create a player.");
+                return;
+            }
+
+            if (newPlayer.experience <= 0){
+                alert("Years of experience must be positive.");
+                return;
+            }
+
+            if (newPlayer.battingAverage != undefined && (newPlayer.battingAverage < 0 || newPlayer.battingAverage > 1)){
+                alert("Batting average must be between 0 and 1.");
                 return;
             }
 
