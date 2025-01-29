@@ -23,7 +23,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: new Date().toISOString(),
+        date: new Date(),
     });
     const [editingSubstitution, setEditingSubstitution] = useState<Substitution | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
@@ -43,38 +43,39 @@ const ManageSubstitutions: React.FC = () => {
 
         // Load games when a series is selected
     useEffect(() => {
-    if (selectedSerie) {
-    const loadGames = async () => {
-    try {
-    const gamesData = await fetchGamesInSeries(
-    selectedSerie.seasonId.toString(),
-    selectedSerie.id.toString()
-    );
-    setGames(gamesData);
-    } catch (error) {
-    console.error("Error loading games:", error);
-    }
-    };
-    loadGames();
-    }
+        if (selectedSerie) {
+            const loadGames = async () => {
+                try {
+                    const gamesData = await fetchGamesInSeries(
+                        selectedSerie.idSeason.toString(), // FIXED: Using idSeason instead of seasonId
+                        selectedSerie.id.toString()
+                    );
+                    setGames(gamesData);
+                } catch (error) {
+                    console.error("Error loading games:", error);
+                }
+            };
+            loadGames();
+        }
     }, [selectedSerie]);
+    
         // Load players when a team is selected
     useEffect(() => {
-    if (selectedSerie && selectedTeam) {
-    const loadPlayers = async () => {
-    try {
-    const playersData = await fetchTeamPlayersInASerie(
-    selectedSerie.seasonId.toString(),
-    selectedSerie.id.toString(),
-    selectedTeam.toString()
-    );
-    setPlayers(playersData);
-    } catch (error) {
-    console.error("Error loading players:", error);
-    }
-    };
-    loadPlayers();
-    }
+        if (selectedSerie && selectedTeam) {
+            const loadPlayers = async () => {
+                try {
+                    const playersData = await fetchTeamPlayersInASerie(
+                        selectedSerie.idSeason.toString(), // FIXED: Using idSeason instead of seasonId
+                        selectedSerie.id.toString(),
+                        selectedTeam.toString()
+                    );
+                    setPlayers(playersData);
+                } catch (error) {
+                    console.error("Error loading players:", error);
+                }
+            };
+            loadPlayers();
+        }
     }, [selectedSerie, selectedTeam]);
         // Load substitutions
     useEffect(() => {
