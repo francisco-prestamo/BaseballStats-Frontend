@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaExchangeAlt, FaTrash, FaEdit } from "react-icons/fa";
 import adminSubstitutionService from "../../services/users/admin/adminSubstitutionService";
 import { fetchAllSeries, fetchGamesInSeries } from "../../services/users/all/seriesService";
-import { fetchTeamPlayersInASerie } from "../../services/users/all/teamService";
+import { fetchTeamPlayersInASerie } from "../../services/users/all/TeamService";
 import { Serie } from "../../models/Serie";
 import { Game } from "../../models/Game";
 import { Player } from "../../models/Player";
