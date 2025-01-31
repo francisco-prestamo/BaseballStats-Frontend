@@ -77,7 +77,7 @@ const ManagePlayerInSeries: React.FC = () => {
 
     const handleDeletePlayerInSeries = async (playerId: number, serieId: number, seasonId: number) => {
         try {
-            await adminPlayerInSeriesService.deletePlayerInSeries(playerId, serieId, seasonId);
+            await adminPlayerInSeriesService.deletePlayerInSeries(playerId, seasonId, serieId);
             fetchPlayerInSeries(); // Refresh the list after deletion
         } catch (error) {
             console.error("Error deleting PlayerInSeries:", error);
