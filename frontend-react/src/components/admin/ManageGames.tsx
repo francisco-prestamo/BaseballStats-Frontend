@@ -13,10 +13,10 @@ const ManageGames: React.FC = () => {
     const [series, setSeries] = useState<Serie[]>([]);
     const [newGame, setNewGame] = useState<Game>({
         id: 0,
-        idTeam1: 0,
-        idTeam2: 0,
-        idSeason: 0,
-        idSerie: 0,
+        team1Id: 0,
+        team2Id: 0,
+        seasonId: 0,
+        seriesId: 0,
         date: new Date(),
         winTeam: false,
         team1Runs: 0,
@@ -64,7 +64,7 @@ const ManageGames: React.FC = () => {
             searchTerm
                 ? teams.some(
                     (team) =>
-                        (team.id === game.idTeam1 || team.id === game.idTeam2) &&
+                        (team.id === game.team1Id || team.id === game.team2Id) &&
                         team.name.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 : true
@@ -73,7 +73,7 @@ const ManageGames: React.FC = () => {
 
     const handleCreateGame = async () => {
         try {
-            if (newGame.idTeam1 <= 0 || newGame.idTeam2 <= 0 || newGame.idSerie <= 0) {
+            if (newGame.team1Id <= 0 || newGame.team2Id <= 0 || newGame.seriesId <= 0) {
                 alert("All fields must be selected to create a game");
                 return;
             }
@@ -81,10 +81,10 @@ const ManageGames: React.FC = () => {
             fetchGames();
             setNewGame({
                 id: 0,
-                idTeam1: 0,
-                idTeam2: 0,
-                idSeason: 0,
-                idSerie: 0,
+                team1Id: 0,
+                team2Id: 0,
+                seasonId: 0,
+                seriesId: 0,
                 date: new Date(),
                 winTeam: false,
                 team1Runs: 0,
@@ -142,8 +142,8 @@ const ManageGames: React.FC = () => {
                     </h2>
                     <div className="space-y-4">
                         <select
-                            value={newGame.idTeam1}
-                            onChange={(e) => setNewGame({ ...newGame, idTeam1: Number(e.target.value) })}
+                            value={newGame.team1Id}
+                            onChange={(e) => setNewGame({ ...newGame, team1Id: Number(e.target.value) })}
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value={0}>Select Team 1</option>
@@ -154,8 +154,8 @@ const ManageGames: React.FC = () => {
                             ))}
                         </select>
                         <select
-                            value={newGame.idTeam2}
-                            onChange={(e) => setNewGame({ ...newGame, idTeam2: Number(e.target.value) })}
+                            value={newGame.team2Id}
+                            onChange={(e) => setNewGame({ ...newGame, team2Id: Number(e.target.value) })}
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value={0}>Select Team 2</option>
@@ -166,8 +166,8 @@ const ManageGames: React.FC = () => {
                             ))}
                         </select>
                         <select
-                            value={newGame.idSerie}
-                            onChange={(e) => setNewGame({ ...newGame, idSerie: Number(e.target.value) })}
+                            value={newGame.seriesId}
+                            onChange={(e) => setNewGame({ ...newGame, seriesId: Number(e.target.value) })}
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value={0}>Select Series</option>
@@ -178,8 +178,8 @@ const ManageGames: React.FC = () => {
                             ))}
                         </select>
                         <input
-                            type="datetime-local"
-                            value={newGame.date.toISOString().substring(0, 16)}
+                            type="date"
+                            value={newGame.date.toISOString().split('T')[0]}
                             onChange={(e) => setNewGame({ ...newGame, date: new Date(e.target.value) })}
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         />
@@ -226,10 +226,10 @@ const ManageGames: React.FC = () => {
                             >
                                 <div>
                                     <p className="font-semibold text-text-dark dark:text-text-light">
-                                        {teams.find((t) => t.id === game.idTeam1)?.name} vs {teams.find((t) => t.id === game.idTeam2)?.name}
+                                        {teams.find((t) => t.id === game.team1Id)?.name} vs {teams.find((t) => t.id === game.team2Id)?.name}
                                     </p>
                                     <p className="text-sm text-text-dark/70 dark:text-text-light/70">
-                                        {new Date(game.date).toLocaleString()} (Series: {series.find((s) => s.id === game.idSerie)?.name})
+                                        {new Date(game.date).toLocaleDateString()} (Series: {series.find((s) => s.id === game.seriesId)?.name})
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
@@ -267,9 +267,9 @@ const ManageGames: React.FC = () => {
                         </div>
                         <div className="space-y-4">
                             <select
-                                value={editingGame.idTeam1}
+                                value={editingGame.team1Id}
                                 onChange={(e) =>
-                                setEditingGame({ ...editingGame, idTeam1: Number(e.target.value) })
+                                setEditingGame({ ...editingGame, team1Id: Number(e.target.value) })
                             }
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             >
@@ -281,9 +281,9 @@ const ManageGames: React.FC = () => {
                                 ))}
                             </select>
                             <select
-                                value={editingGame.idTeam2}
+                                value={editingGame.team2Id}
                                 onChange={(e) =>
-                                    setEditingGame({ ...editingGame, idTeam2: Number(e.target.value) })
+                                    setEditingGame({ ...editingGame, team2Id: Number(e.target.value) })
                                 }
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             >
@@ -295,9 +295,9 @@ const ManageGames: React.FC = () => {
                                 ))}
                             </select>
                             <select
-                                value={editingGame.idSerie}
+                                value={editingGame.seriesId}
                                 onChange={(e) =>
-                                    setEditingGame({ ...editingGame, idSerie: Number(e.target.value) })
+                                    setEditingGame({ ...editingGame, seriesId: Number(e.target.value) })
                                 }
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             >

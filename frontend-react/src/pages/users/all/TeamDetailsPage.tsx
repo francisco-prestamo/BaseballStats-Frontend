@@ -49,6 +49,10 @@ const TeamDetails = () => {
     fetchData();
   }, [seasonId, seriesId, teamId]);
 
+  const navigateToPlayerDetails = (playerId: number) => {
+    navigate(`/players/${playerId}/${seasonId}/${seriesId}`);
+  };
+
   const handleGameClick = (gameId: number) => {
     navigate(`/games/${gameId}/${seasonId}/${seriesId}`);
   };
@@ -77,6 +81,7 @@ const TeamDetails = () => {
             players.map((player) => (
               <div
                 key={player.id}
+                onClick={()=>navigateToPlayerDetails(player.id)}
                 className="group bg-secondary-lightest dark:bg-primary rounded-lg p-5 shadow-lg hover:shadow-2xl transition-transform duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
               >
                 <div className="flex items-center space-x-4">
@@ -107,6 +112,7 @@ const TeamDetails = () => {
             starPlayers.map(({ player, position }) => (
               <div
                 key={player.id}
+                onClick={()=>navigateToPlayerDetails(player.id)}
                 className="group bg-secondary-lightest dark:bg-primary rounded-lg p-5 shadow-lg hover:shadow-2xl transition-transform duration-300 transform hover:scale-105 border border-primary/20 dark:border-primary-lighter/20 hover:border-primary/40 dark:hover:border-primary-lighter/40"
               >
                 <div className="flex items-center space-x-4">

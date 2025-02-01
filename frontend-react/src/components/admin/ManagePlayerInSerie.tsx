@@ -66,6 +66,7 @@ const ManagePlayerInSeries: React.FC = () => {
                 alert("All fields are required.");
                 return;
             }
+            newPlayerInSeries.seasonId = series.find(s => s.id === serieId)!.idSeason;
             await adminPlayerInSeriesService.createPlayerInSeries(newPlayerInSeries);
             fetchPlayerInSeries();
             setNewPlayerInSeries({ teamId: 0, playerId: 0, serieId: 0, seasonId: 0 });
@@ -76,7 +77,7 @@ const ManagePlayerInSeries: React.FC = () => {
 
     const handleDeletePlayerInSeries = async (playerId: number, serieId: number, seasonId: number) => {
         try {
-            await adminPlayerInSeriesService.deletePlayerInSeries(playerId, serieId, seasonId);
+            await adminPlayerInSeriesService.deletePlayerInSeries(playerId, seasonId, serieId);
             fetchPlayerInSeries(); // Refresh the list after deletion
         } catch (error) {
             console.error("Error deleting PlayerInSeries:", error);
@@ -151,7 +152,7 @@ const ManagePlayerInSeries: React.FC = () => {
                         className="w-full mb-3 p-3"
                     >
                         <option value="">Select Player</option>
-                        {players.map((player) => (
+                        {players.sort((x1, x2) => x1.name < x2.name ? -1 : 1).map((player) => (
                             <option key={player.id} value={player.id}>
                                 {player.name}
                             </option>

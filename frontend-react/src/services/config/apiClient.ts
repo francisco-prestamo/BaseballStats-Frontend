@@ -22,9 +22,13 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      console.warn("Expired or Invalid Token");
+        console.warn("Expired or Invalid Token");
 
-      window.location.href = "/session-expired";
+        window.location.href = "/session-expired";
+    }
+    if (error.response?.status === 400) {
+        const errorMessage = error.response?.data?.message || "There was an issue with your request. Please check the input or try again.";
+        alert(errorMessage);
     }
     return Promise.reject(error);
   }

@@ -24,13 +24,13 @@ const adminUserService = {
         if (!userData.username) {
             throw new Error('Username is required for updating a user');
         }
-        const response = await apiClient.put(`${USERS_URL}/${userData.username}`, userData);
+        const response = await apiClient.put(`${USERS_URL}/${userData.id}`, userData);
         return response.data; // Adjust if API response structure differs
     },
 
     // Delete User
-    deleteUser: async (username: string) => {
-        const response = await apiClient.delete(`${USERS_URL}/${username}`);
+    deleteUser: async (id: number) => {
+        const response = await apiClient.delete(`${USERS_URL}/${id}`);
         return response.data; // Adjust if API response structure differs
     },
 };
