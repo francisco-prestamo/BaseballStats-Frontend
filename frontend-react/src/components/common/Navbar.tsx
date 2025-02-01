@@ -49,7 +49,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                                     to="/reports"
                                     className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                                 >
-                                    Seasons
+                                    Reports
                                 </Link>
                             </li>
                             <li>
@@ -149,7 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
                                     onClick={toggleMenu}
                                     className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                                 >
-                                    Seasons
+                                    Reports
                                 </Link>
                             </li>
                             <li>
