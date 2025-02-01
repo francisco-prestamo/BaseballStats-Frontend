@@ -12,7 +12,9 @@ const adminGameService = {
 
   // Create a new game
   createGame: async (game: Game): Promise<Game> => {
-    const response = await apiClient.post(GAMES_URL, game);
+    const response = await apiClient.post(GAMES_URL,
+      {...game, date: new Date(game.date).toISOString().split('T')[0]}
+    );
     return response.data;
   },
 

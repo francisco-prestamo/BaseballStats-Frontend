@@ -178,8 +178,8 @@ const ManageGames: React.FC = () => {
                             ))}
                         </select>
                         <input
-                            type="datetime-local"
-                            value={newGame.date.toISOString().substring(0, 16)}
+                            type="date"
+                            value={newGame.date.toISOString().split('T')[0]}
                             onChange={(e) => setNewGame({ ...newGame, date: new Date(e.target.value) })}
                             className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                         />
