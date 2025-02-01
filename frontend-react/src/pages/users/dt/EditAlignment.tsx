@@ -99,7 +99,7 @@ const EditAlignment: React.FC = () => {
       updatedAlignment[index] = {
         position: positions[index],
         player: newPlayer,
-        efectividad: updatedAlignment[index]?.efectividad || 0,
+        effectiveness: updatedAlignment[index]?.effectiveness || 0,
       };
 
       return updatedAlignment;
