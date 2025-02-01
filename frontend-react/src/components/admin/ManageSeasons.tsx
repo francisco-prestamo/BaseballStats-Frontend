@@ -7,6 +7,7 @@ const ManageSeasons: React.FC = () => {
     const [seasons, setSeasons] = useState<Season[]>([]);
     const [newSeasonId, setNewSeasonId] = useState<number | null>(null);
     const [editingSeason, setEditingSeason] = useState<Season | null>(null);
+    const [editingSeasonNewId, setEditingSeasonNewId] = useState<number | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState<number | null>(null);
 
     // Filtering states
@@ -45,7 +46,7 @@ const ManageSeasons: React.FC = () => {
     const handleUpdateSeason = async () => {
         try {
             if (!editingSeason) return;
-            await adminSeasonService.updateSeason(editingSeason.id,editingSeason);
+            await adminSeasonService.updateSeason(editingSeason.id,{id: editingSeasonNewId!});
             fetchSeasons();
             setEditingSeason(null);
         } catch (error) {
@@ -150,7 +151,7 @@ const ManageSeasons: React.FC = () => {
                                 </p>
                                 <div className="flex items-center space-x-2">
                                     <button
-                                        onClick={() => setEditingSeason(season)}
+                                        onClick={() => {setEditingSeason(season); setEditingSeasonNewId(season.id)}}
                                         className="p-2 rounded-lg bg-primary/10 dark:bg-primary-lighter/10 hover:bg-primary/20 dark:hover:bg-primary-lighter/20 transition-all duration-300"
                                     >
                                         <FaEdit className="text-primary dark:text-primary-lighter" />
@@ -187,8 +188,8 @@ const ManageSeasons: React.FC = () => {
                             <input
                                 type="number"
                                 placeholder="Season ID"
-                                value={editingSeason.id}
-                                onChange={(e) => setEditingSeason({ ...editingSeason, id: Number(e.target.value) })}
+                                value={editingSeasonNewId!}
+                                onChange={(e) => setEditingSeasonNewId(Number(e.target.value))}
                                 className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <button
