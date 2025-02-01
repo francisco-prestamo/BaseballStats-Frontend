@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { GiBaseballBat, GiBaseballGlove } from "react-icons/gi";
 
 const reports = [
     { id: 1, label: "Game Stats", url: (param: string) => `/reports/win-teams-by-series/${param}`, placeholder: "Enter Season ID" },
