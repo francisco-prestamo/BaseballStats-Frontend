@@ -11,6 +11,7 @@ import ManagePlayerInPosition from "../../../components/admin/ManagePlayerInPosi
 import ManageDirectionMembers from "../../../components/admin/ManageDirectionMember.tsx";
 import ManageTeamDirectionMembers from "../../../components/admin/ManageTeamDirectionMember.tsx";
 import ManagePitchers from "../../../components/admin/ManagePitchers.tsx";
+import ManageSubstitutions from "../../../components/admin/ManageSubstitutions.tsx";
 
 const AdminPage: React.FC = () => {
     const [activeSection, setActiveSection] = useState(1);
@@ -34,6 +35,7 @@ const AdminPage: React.FC = () => {
                 {activeSection === 10 && <ManageDirectionMembers />}
                 {activeSection === 11 && <ManageTeamDirectionMembers />}
                 {activeSection === 12 && <ManagePitchers />}
+                {activeSection === 13 && <ManageSubstitutions />}
             </main>
         </div>
     );
