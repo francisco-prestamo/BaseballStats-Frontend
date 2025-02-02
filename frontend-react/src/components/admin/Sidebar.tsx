@@ -22,7 +22,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
         GiPositionMarker,   // Manage Player in Position
         FaArrowRight,       // Manage Direction Members
         FaUserTie,          // Manage Directs
-        FaBaseballBall      // Manage Pitchers
+        FaBaseballBall,     // Manage Pitchers
+        FaHandshake         // Manage Substitutions
     ];
 
     const sectionNames = [
@@ -37,7 +38,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
         "PiP",
         "DM",
         "DMiT",
-        "Ptch"
+        "Ptch",
+        "Subs"
     ];
 
     return (
