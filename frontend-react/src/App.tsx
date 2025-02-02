@@ -6,6 +6,7 @@ import Home from './pages/common/Home';
 import Profile from './pages/users/all/Profile';
 import PrivateRoute from './components/common/PrivateRoute';
 import SeasonsPage from './pages/users/all/SeasonsPage';
+import ReportsPage from './pages/users/all/ReportsPage';
 import SeasonDetailPage from './pages/users/all/SeasonDetailsPage';
 import SerieDetailPage from './pages/users/all/SerieDetailPage';
 import GameDetailsPage from './pages/users/all/GameDetailsPage';
@@ -50,6 +51,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute requiredUserType="allAuthenticated">
                                         <Profile />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/reports"
+                                element={
+                                    <PrivateRoute requiredUserType="allAuthenticated">
+                                        <ReportsPage />
                                     </PrivateRoute>
                                 }
                             />
