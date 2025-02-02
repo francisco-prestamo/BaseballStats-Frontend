@@ -20,10 +20,17 @@ const ManageTeams: React.FC = () => {
     const [dtList, setDtList] = useState<Dt[]>([]);
     const [searchDt, setSearchDt] = useState("");
     const [dtSearchTerm, setDtSearchTerm] = useState("");
-
+    const [isDtDropdownOpen, setIsDtDropdownOpen] = useState(false);
+    
     // Filtering states
     const [searchTerm, setSearchTerm] = useState("");
 
+    const handleSelectDt = (dt: Dt) => {
+        setEditingTeam((prev) => prev ? { ...prev, dtId: dt.id } : null);
+        setDtSearchTerm(dt.username);
+        setIsDtDropdownOpen(false);
+    };
+    
     const fetchTeams = async () => {
         try {
             const response = await adminTeamService.getTeams();
@@ -286,19 +293,19 @@ const ManageTeams: React.FC = () => {
                                     type="text"
                                     placeholder="Search Director..."
                                     value={dtSearchTerm}
-                                    onChange={(e) => setDtSearchTerm(e.target.value)}
+                                    onChange={(e) => {
+                                        setDtSearchTerm(e.target.value);
+                                        setIsDtDropdownOpen(true); // Abre el dropdown cuando se escribe
+                                    }}
                                     className="w-full p-3 pl-10 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30 dark:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                                 />
                                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-dark/50 dark:text-text-light/50"/>
-                                {filteredDts.length > 0 && (
+                                {isDtDropdownOpen && filteredDts.length > 0 && (
                                     <div className="absolute top-full left-0 w-full bg-white dark:bg-primary shadow-lg rounded-lg max-h-40 overflow-y-auto z-10">
                                         {filteredDts.map((dt) => (
                                             <div
                                                 key={dt.id}
-                                                onClick={() => {
-                                                    setEditingTeam({ ...editingTeam, dtId: dt.id });
-                                                    setDtSearchTerm(dt.username);
-                                                }}
+                                                onClick={() => handleSelectDt(dt)}
                                                 className="p-2 hover:bg-primary/10 dark:hover:bg-primary-lighter cursor-pointer"
                                             >
                                                 {dt.username}
