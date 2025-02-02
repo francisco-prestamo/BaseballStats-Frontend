@@ -22,7 +22,7 @@ const positions = [
   "Left-Field",
   "Center-Field",
   "Right-Field",
-]
+];
 
 const EditAlignment: React.FC = () => {
   const { gameId, teamId, seasonId, serieId } = useParams();
@@ -30,6 +30,7 @@ const EditAlignment: React.FC = () => {
   const [alignment, setAlignment] = useState<(PlayerInPosition | null)[]>([]);
   const [teamPlayers, setTeamPlayers] = useState<Player[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Set<number>>(new Set());
+  const [playersByPosition, setPlayersByPosition] = useState<Record<string, Set<number>>>({});
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -48,18 +49,23 @@ const EditAlignment: React.FC = () => {
         ]);
 
         if (crudPositions && players) {
+          const positionMap: Record<string, Set<number>> = {};
+          crudPositions.forEach(({ position, playerId }) => {
+            if (!positionMap[position]) {
+              positionMap[position] = new Set();
+            }
+            positionMap[position].add(playerId);
+          });
+          setPlayersByPosition(positionMap);
+
           let initialAlignment = positions.map((pos) => {
             const existing = existingAlignment.find((p) => p.position === pos);
-            if (existing) {
-              return existing;
-            }
-            return crudPositions.find((p) => p.position === pos)
-              ? null
-              : null;
+            return existing || null;
           });
 
           setAlignment(initialAlignment);
           setTeamPlayers(players);
+
           const selectedPlayerIds = initialAlignment
             .filter((pos) => pos !== null)
             .map((pos) => pos!.player.id);
@@ -149,8 +155,9 @@ const EditAlignment: React.FC = () => {
               {teamPlayers
                 .filter(
                   (player) =>
-                    !selectedPlayers.has(player.id) ||
-                    player.id === alignment[index]?.player.id
+                    playersByPosition[pos]?.has(player.id) &&
+                    (!selectedPlayers.has(player.id) ||
+                      player.id === alignment[index]?.player.id)
                 )
                 .map((player) => (
                   <option key={player.id} value={player.id}>
