@@ -35,7 +35,8 @@ apiClient.interceptors.response.use(
           const errorMessages = errorList as string[];
           
           errorMessages.forEach((errMsg: string) => {
-            alert(`Error in ${errorType}: ${errMsg}`);
+            console.error(`Error in ${errorType}: ${errMsg}`);
+            alert(`Error: ${errMsg}`);
           });
         }
       } else {
