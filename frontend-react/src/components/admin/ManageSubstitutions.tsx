@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaExchangeAlt, FaTrash } from "react-icons/fa";
 import adminSubstitutionService from "../../services/users/admin/adminSubstitutionService";
+import adminPlayerService from "../../services/users/admin/adminPlayerService";
 import { fetchAllSeries, fetchGamesInSeries } from "../../services/users/all/serieService";
 import { fetchTeamPlayersInASerie } from "../../services/users/all/TeamService";
 import { Serie } from "../../models/Serie";
@@ -12,6 +13,7 @@ const ManageSubstitutions: React.FC = () => {
     const [series, setSeries] = useState<Serie[]>([]);
     const [games, setGames] = useState<Game[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
+    const [playersListed, setPlayersListed] = useState<Player[]>([]);
     const [substitutions, setSubstitutions] = useState<Substitution[]>([]);
     const [selectedSerie, setSelectedSerie] = useState<Serie | null>(null);
     const [selectedGame, setSelectedGame] = useState<Game | null>(null);
@@ -35,6 +37,16 @@ const ManageSubstitutions: React.FC = () => {
                 console.error("Error loading series:", error);
             }
         };
+        const loadAllPlayers = async () => {
+            try {
+                const allPlayers = await adminPlayerService.getPlayers();
+                setPlayersListed(allPlayers);
+            } catch (error) {
+                console.error("Error loading series:", error);
+            }
+        };
+
+        loadAllPlayers();
         loadSeries();
     }, []);
 
@@ -210,7 +222,7 @@ const ManageSubstitutions: React.FC = () => {
                                 <div>
                                     <p className="font-semibold">Game ID: {sub.gameId}</p>
                                     <p className="text-sm">
-                                        {players.find(p => p.id === sub.playerOutId)?.name} ➔ {players.find(p => p.id === sub.playerInId)?.name}
+                                        {playersListed.find(p => p.id === sub.playerOutId)?.name} ➔ {playersListed.find(p => p.id === sub.playerInId)?.name}
                                     </p>
                                 </div>
                             </div>
