@@ -13,7 +13,6 @@ const ManageSubstitutions: React.FC = () => {
     const [series, setSeries] = useState<Serie[]>([]);
     const [games, setGames] = useState<Game[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
-    const [playersListed, setPlayersListed] = useState<Player[]>([]);
     const [substitutions, setSubstitutions] = useState<Substitution[]>([]);
     const [selectedSerie, setSelectedSerie] = useState<Serie | null>(null);
     const [selectedGame, setSelectedGame] = useState<Game | null>(null);
@@ -37,16 +36,7 @@ const ManageSubstitutions: React.FC = () => {
                 console.error("Error loading series:", error);
             }
         };
-        const loadAllPlayers = async () => {
-            try {
-                const allPlayers = await adminPlayerService.getPlayers();
-                setPlayersListed(allPlayers);
-            } catch (error) {
-                console.error("Error loading series:", error);
-            }
-        };
-
-        loadAllPlayers();
+        
         loadSeries();
     }, []);
 
@@ -222,7 +212,7 @@ const ManageSubstitutions: React.FC = () => {
                                 <div>
                                     <p className="font-semibold">Game ID: {sub.gameId}</p>
                                     <p className="text-sm">
-                                        {playersListed.find(p => p.id === sub.playerOutId)?.name} ➔ {playersListed.find(p => p.id === sub.playerInId)?.name}
+                                        Player Out {sub.playerOutId} ➔ PlayerIn {sub.playerInId}
                                     </p>
                                 </div>
                             </div>
