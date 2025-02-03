@@ -29,7 +29,7 @@ const Home = () => {
                         Baseball Stats
                     </h1>
                     <p className="text-lg md:text-xl animate-slide-up">
-                        lorem ipsum
+                        Welcome to the #1 profesional web in Cuba for Baseball Statistics
                     </p>
                 </div>
             </div>
