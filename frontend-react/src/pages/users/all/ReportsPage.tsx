@@ -25,11 +25,13 @@ const ReportsPage = () => {
 
         try {
             const token = localStorage.getItem("authToken");
+
             const response = await fetch(fullUrl, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/pdf",
                     "Authorization": token ? `${token}` : ""
+
                 },
             });
 
@@ -51,6 +53,7 @@ const ReportsPage = () => {
         } catch (error) {
             console.error("An unknown error occurred while downloading the PDF.");
             alert("An unknown error occurred while downloading the PDF.")
+
         }
     };
 
@@ -78,6 +81,7 @@ const ReportsPage = () => {
                                 className="border p-2 rounded w-full"
                             />
                         ))}
+
                         <button
                             onClick={() => handleDownload(report.id, report.url)}
                             className="bg-primary text-white py-2 px-4 rounded-lg shadow-lg hover:bg-primary-dark transition duration-300 w-full"
