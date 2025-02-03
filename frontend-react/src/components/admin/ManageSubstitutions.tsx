@@ -22,7 +22,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        time: "", // Initialize time as an empty string
+        date: new Date(), // Initialize date as a Date object
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
@@ -96,7 +96,7 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                time: "", // Reset to empty string
+                date: new Date(), // Reset to new Date object
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
@@ -111,6 +111,14 @@ const ManageSubstitutions: React.FC = () => {
         } catch (error) {
             console.error("Error deleting substitution:", error);
         }
+    };
+
+    const handleTimeChange = (time: string) => {
+        const currentDate = new Date(newSubstitution.date);
+        const [hours, minutes] = time.split(":").map(Number);
+        currentDate.setHours(hours);
+        currentDate.setMinutes(minutes);
+        setNewSubstitution({ ...newSubstitution, date: currentDate });
     };
 
     return (
@@ -190,8 +198,8 @@ const ManageSubstitutions: React.FC = () => {
 
                     <input 
                         type="time"
-                        value={newSubstitution.time}
-                        onChange={(e) => setNewSubstitution({...newSubstitution, time: e.target.value})}
+                        value={`${newSubstitution.date.getHours().toString().padStart(2, "0")}:${newSubstitution.date.getMinutes().toString().padStart(2, "0")}`}
+                        onChange={(e) => handleTimeChange(e.target.value)}
                         className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
                     />
 
