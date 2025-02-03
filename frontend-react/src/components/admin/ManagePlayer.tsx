@@ -247,17 +247,14 @@ const ManagePlayers: React.FC = () => {
                             {/* CI Input in Edit Modal */}
                             <div className="mb-4">
                                 <label htmlFor="ci" className="block text-sm font-medium text-text-dark mb-1">
-                                    Carné de Identidad (CI):
+                                    ID:
                                 </label>
                                 <input
-                                    id="ci"
                                     type="number"
-                                    placeholder="Carné de Identidad (CI)"
-                                    value={editingPlayer?.id || 0}
-                                    onChange={(e) =>
-                                        setEditingPlayer({ ...editingPlayer, id: Number(e.target.value) })
-                                    }
-                                    className="w-full p-3 border rounded-lg"
+                                    placeholder="ID (Identity Document)"
+                                    value={editingPlayer.id === 0 ? "" : editingPlayer.id}
+                                    className="w-full mb-3 p-3"
+                                    readOnly
                                 />
                             </div>
 

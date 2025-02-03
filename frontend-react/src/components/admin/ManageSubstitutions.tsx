@@ -35,6 +35,7 @@ const ManageSubstitutions: React.FC = () => {
                 console.error("Error loading series:", error);
             }
         };
+        
         loadSeries();
     }, []);
 
@@ -210,7 +211,7 @@ const ManageSubstitutions: React.FC = () => {
                                 <div>
                                     <p className="font-semibold">Game ID: {sub.gameId}</p>
                                     <p className="text-sm">
-                                        {players.find(p => p.id === sub.playerOutId)?.name} ➔ {players.find(p => p.id === sub.playerInId)?.name}
+                                        Player Out {sub.playerOutId} ➔ PlayerIn {sub.playerInId}
                                     </p>
                                 </div>
                             </div>

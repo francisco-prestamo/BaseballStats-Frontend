@@ -7,7 +7,12 @@ const SERIES_URL = "/series";
 const adminSerieService = {
   // Get all series
   getSeries: async (): Promise<Serie[]> => {
-    const response = await apiClient.get(SERIES_URL);
+    const response: {data: Serie[]} = await apiClient.get(SERIES_URL);
+    for (const serie of response.data)
+    {
+      serie.startDate = new Date(serie.startDate);
+      serie.endDate = new Date(serie.endDate);
+    }
     return response.data;
   },
 
@@ -23,6 +28,10 @@ const adminSerieService = {
       `${SERIES_URL}/${serie.idSeason}/${serie.id}`,
       serie
     );
+
+    response.data.startDate = new Date(response.data.serie.startDate);
+    response.data.endDate = new Date(response.data.serie.endDate);
+
     return response.data;
   },
 
