@@ -3,7 +3,7 @@ import Sidebar from "../../../components/admin/Sidebar.tsx";
 import ManageUsers from "../../../components/admin/ManageUsers.tsx";
 import ManageSeasons from "../../../components/admin/ManageSeasons.tsx";
 import ManageTeams from "../../../components/admin/ManageTeams.tsx";
-import ManagePlayers from "../../../components/admin/ManagePlayer.tsx"; 
+import ManagePlayers from "../../../components/admin/ManagePlayer.tsx";
 import ManageSeries from "../../../components/admin/ManageSeries.tsx";
 import ManageGames from "../../../components/admin/ManageGames.tsx";
 import ManagePlayerInSerie from "../../../components/admin/ManagePlayerInSerie.tsx";
@@ -12,6 +12,7 @@ import ManageDirectionMembers from "../../../components/admin/ManageDirectionMem
 import ManageTeamDirectionMembers from "../../../components/admin/ManageTeamDirectionMember.tsx";
 import ManagePitchers from "../../../components/admin/ManagePitchers.tsx";
 import ManageSubstitutions from "../../../components/admin/ManageSubstitutions.tsx";
+import ManageStarPlayers from "../../../components/admin/ManageStarPlayersInPosition.tsx";
 
 const AdminPage: React.FC = () => {
     const [activeSection, setActiveSection] = useState(1);
@@ -19,7 +20,7 @@ const AdminPage: React.FC = () => {
     return (
         <div className="flex flex-col md:flex-row min-h-screen">
             {/* Sidebar */}
-            <Sidebar activeSection={activeSection} setActiveSection={setActiveSection}/>
+            <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
 
             {/* Main Content */}
             <main className="flex-1 p-4 mx-auto md:ml-16 w-full md:w-3/4 lg:w-4/5">
@@ -36,6 +37,7 @@ const AdminPage: React.FC = () => {
                 {activeSection === 11 && <ManageTeamDirectionMembers />}
                 {activeSection === 12 && <ManagePitchers />}
                 {activeSection === 13 && <ManageSubstitutions />}
+                {activeSection === 14 && <ManageStarPlayers />}
             </main>
         </div>
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import { FaInfoCircle, FaUsers, FaBaseballBall, FaUserAlt, FaListAlt, FaHandshake, FaArrowRight, FaUserTie } from "react-icons/fa";
+import { FaInfoCircle, FaUsers, FaBaseballBall, FaUserAlt, FaListAlt, FaHandshake, FaArrowRight, FaUserTie, FaStar } from "react-icons/fa";
 import { GiPositionMarker } from "react-icons/gi";
 import { BiCalendar } from "react-icons/bi";
 import { MdEdit } from "react-icons/md"; // More fitting icons
@@ -23,7 +23,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
         FaArrowRight,       // Manage Direction Members
         FaUserTie,          // Manage Directs
         FaBaseballBall,     // Manage Pitchers
-        FaHandshake         // Manage Substitutions
+        FaHandshake,        // Manage Substitutions
+        FaStar              // Manage Star Players
     ];
 
     const sectionNames = [
@@ -39,7 +40,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
         "DM",
         "DMiT",
         "Ptch",
-        "Subs"
+        "Subs",
+        "Star"
     ];
 
     return (
@@ -61,16 +63,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
                             onClick={() => setActiveSection(index + 1)}
                             className={`flex my-2 items-center justify-center p-3 rounded-lg transition-all duration-300
                                 ${activeSection === index + 1
-                                ? "bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light shadow-md scale-110"
-                                : "bg-secondary/30 dark:bg-primary/30 hover:bg-secondary/50 dark:hover:bg-primary/50"}
+                                    ? "bg-secondary/80 hover:bg-secondary-light dark:bg-primary/80 dark:hover:bg-primary-light shadow-md scale-110"
+                                    : "bg-secondary/30 dark:bg-primary/30 hover:bg-secondary/50 dark:hover:bg-primary/50"}
                             `}
                             aria-label={sectionNames[index]}
                         >
                             <Icon
                                 className={`text-xl 
                                     ${activeSection === index + 1
-                                    ? "text-primary dark:text-text-light"
-                                    : "text-text-dark/70 dark:text-text-light/70"}
+                                        ? "text-primary dark:text-text-light"
+                                        : "text-text-dark/70 dark:text-text-light/70"}
                                 `}
                             />
                             <span className="ml-3 text-lg font-medium text-text-dark dark:text-text-light">
