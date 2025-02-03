@@ -88,7 +88,13 @@ const ManageSubstitutions: React.FC = () => {
 
     const handleCreateSubstitution = async () => {
         try {
-            const createdSub = await adminSubstitutionService.createSubstitution(newSubstitution);
+            // Sending only gameId, teamId, playerInId, playerOutId, and time
+            const createdSub = await adminSubstitutionService.createSubstitution({
+                ...newSubstitution,
+                gameId: selectedGame?.id || 0,
+                teamId: selectedTeam || 0,
+                date: newSubstitution.date.toTimeString().split(" ")[0], // only send time
+            });
             setSubstitutions([...substitutions, createdSub]);
             setNewSubstitution({
                 id: 0,
@@ -97,7 +103,6 @@ const ManageSubstitutions: React.FC = () => {
                 playerInId: 0,
                 playerOutId: 0,
                 date: new Date(),
-
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
