@@ -37,9 +37,12 @@ const SerieDetailPage: React.FC = () => {
                         };
                     });
 
-                    const sortedStandings = standings.sort((a, b) =>
-                        b.winningPercentage - a.winningPercentage
-                    );
+                    const sortedStandings = standings.sort((a, b) => {
+                        if (a.winGames === b.winGames) {
+                            return a.loseGames - b.loseGames;
+                        }
+                        return b.winGames - a.winGames;
+                    });
 
                     setGames(gamesData);
                     setFilteredGames(gamesData);
