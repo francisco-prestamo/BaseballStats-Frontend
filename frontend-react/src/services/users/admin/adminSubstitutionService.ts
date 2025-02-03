@@ -18,8 +18,14 @@ const adminSubstitutionService = {
     return response.data;
   },
 
-  deleteSubstitution: async (substitutionId: number): Promise<void> => {
-    await apiClient.delete(`${SUBSTITUTIONS_URL}/${substitutionId}`);
+  deleteSubstitution: async (
+    gameId: number, 
+    teamId: number, 
+    playerInId: number, 
+    playerOutId: number, 
+    time: string
+  ): Promise<void> => {
+    await apiClient.delete(`${SUBSTITUTIONS_URL}/${gameId}/${teamId}/${playerInId}/${playerOutId}/${time}`);
   },
 };
 

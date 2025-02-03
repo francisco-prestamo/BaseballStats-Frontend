@@ -28,20 +28,20 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
     ];
 
     const sectionNames = [
-        "",
-        "Usr",
-        "Ssn",
-        "Team",
-        " Plr",
-        " Srs",
-        " PiS",
-        "Gms",
-        "PiP",
-        "DM",
-        "DMiT",
-        "Ptch",
-        "Subs",
-        "Star"
+        "Info",
+        "Users",
+        "Seasons",
+        "Teams",
+        "Players",
+        "Series",
+        "PlrInSeries",
+        "Games",
+        "PlrInPos",
+        "DirectMgr",
+        "DMInTeam",
+        "Pitcher",
+        "Substitution",
+        "StarPlrs"
     ];
 
     return (

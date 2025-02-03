@@ -24,7 +24,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: "", // Ensure date as string in HH:mm:ss format
+        time: "", 
     });
 
     useEffect(() => {
@@ -87,19 +87,19 @@ const ManageSubstitutions: React.FC = () => {
     }, []);
 
     const handleCreateSubstitution = async () => {
-        if (!selectedGame || !selectedTeam || newSubstitution.playerInId === 0 || newSubstitution.playerOutId === 0) {
+        if (!selectedGame || !selectedTeam || newSubstitution.playerInId === 0 || newSubstitution.playerOutId === 0 || newSubstitution.time == "") {
             console.error("Missing required fields");
             return;
         }
 
         try {
-            const formattedTime = `${newSubstitution.date}:00`; // Ensure HH:mm:ss format
+            const formattedTime = `${newSubstitution.time}`;
 
             const createdSub = await adminSubstitutionService.createSubstitution({
                 ...newSubstitution,
                 gameId: selectedGame.id,
                 teamId: selectedTeam,
-                date: formattedTime,
+                time: formattedTime,
             });
 
             setSubstitutions([...substitutions, createdSub]);
@@ -109,17 +109,24 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: "",
+                time: "",
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
         }
     };
 
-    const handleDeleteSubstitution = async (id: number) => {
+    const handleDeleteSubstitution = async (substitution: Substitution) => {
         try {
-            await adminSubstitutionService.deleteSubstitution(id);
-            setSubstitutions(substitutions.filter((sub) => sub.id !== id));
+            await adminSubstitutionService.deleteSubstitution(
+                substitution.gameId,
+                substitution.teamId,
+                substitution.playerInId,
+                substitution.playerOutId,
+                substitution.time
+            );
+    
+            setSubstitutions(substitutions.filter((sub) => sub.id !== substitution.id));
             setDeleteConfirmation(null);
         } catch (error) {
             console.error("Error deleting substitution:", error);
@@ -190,8 +197,8 @@ const ManageSubstitutions: React.FC = () => {
 
                     <input 
                         type="time"
-                        value={newSubstitution.date.replace(":00", "")}
-                        onChange={(e) => setNewSubstitution({ ...newSubstitution, date: `${e.target.value}:00` })}
+                        value={newSubstitution.time.replace(":00", "")}
+                        onChange={(e) => setNewSubstitution({ ...newSubstitution, time: `${e.target.value}:00` })}
                     />
                 </div>
 
@@ -218,10 +225,7 @@ const ManageSubstitutions: React.FC = () => {
                         <h2 className="text-2xl font-semibold mb-4">Confirm Deletion</h2>
                         <p>Are you sure you want to delete this substitution?</p>
                         <div className="flex gap-4 mt-6">
-                            <button
-                                onClick={() => handleDeleteSubstitution(deleteConfirmation.id)}
-                                className="p-3 bg-red-500 text-white rounded-lg"
-                            >
+                            <button onClick={() => handleDeleteSubstitution(deleteConfirmation)}>
                                 Delete
                             </button>
                             <button
