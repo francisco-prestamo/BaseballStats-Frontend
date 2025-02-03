@@ -12,6 +12,7 @@ import { Game } from "../../../models/Game";
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
 import { Change } from "../../../models/Change";
 import baseballFieldImg from '../../../images/baseball-field.png';
+import { useAuth } from '../../authContext';
 
 type Position = 'Pitcher' | 'Catcher' | 'First-Base' | 'Second-Base' | 'Third-Base' |
     'Shortstop' | 'Left-Field' | 'Center-Field' | 'Right-Field';
@@ -30,6 +31,7 @@ const GameDetailsPage: React.FC = () => {
     const [team2Substitutions, setTeam2Substitutions] = useState<Change[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [showingTeam1, setShowingTeam1] = useState<boolean>(true);
+    const { userType } = useAuth();
 
     useEffect(() => {
         const getGameDetails = async () => {
@@ -104,20 +106,21 @@ const GameDetailsPage: React.FC = () => {
                     </div>
                     <div className="flex space-x-4">
                         {/* Navigate to Edit Alignment */}
-                        <button
-                            className="px-4 py-2 bg-primary dark:bg-primary-light rounded-lg text-text-light font-medium hover:bg-primary-light dark:hover:bg-primary transition-all duration-300 border border-primary-lighter/20 hover:scale-105"
-                            onClick={() => {
-                                if (game) {
-                                    navigate(
-                                        `/editalignments/${gameId}/${showingTeam1 ? game.team1.id : game.team2.id}/${seasonId}/${serieId}`
-                                    );
-                                } else {
-                                    console.error('Game is null');
-                                }
-                            }}
-                        >
-                            Edit Alignments
-                        </button>
+                        {userType === "dt" && (
+                            <button
+                                className="px-4 py-2 bg-primary dark:bg-primary-light rounded-lg text-text-light font-medium hover:bg-primary-light dark:hover:bg-primary transition-all duration-300 border border-primary-lighter/20 hover:scale-105"
+                                onClick={() => {
+                                    if (game) {
+                                        const teamId = showingTeam1 ? game.team1.id : game.team2.id;
+                                        navigate(`/editalignments/${gameId}/${teamId}/${seasonId}/${serieId}`);
+                                    } else {
+                                        console.error('Game is null');
+                                    }
+                                }}
+                            >
+                                Edit Alignments
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
