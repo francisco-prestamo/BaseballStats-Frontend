@@ -1,15 +1,35 @@
 import { useState } from "react";
 
 const reports = [
-    { id: 1, label: "Win Team by Series", url: (params: string[]) => `/reports/win-teams-by-series/${params[0] ?? "default"}`, placeholders: ["Enter Season ID"] },
-    { id: 2, label: "a", url: () => `/reports/series/with-most-and-least-games`, placeholders: [] },
-    { id: 3, label: "a", url: () => `/reports/winning-and-losing-teams-by-series`, placeholders: [] },
-    { id: 4, label: "a", url: (params: string[]) => `/reports/player-stats/${params[0] ?? "default"}`, placeholders: ["Enter Player ID"] },
-    { id: 5, label: "a", url: () => `/reports/pitchers-stats`, placeholders: [] },
-    { id: 6, label: "a", url: (params: string[]) => 
-        `/reports/teams/${params[0] ?? "default"}/serie/${params[1] ?? "default"}/${params[2] ?? "default"}/star-players`, 
-        placeholders: ["Enter Team ID", "Enter Season ID", "Enter Serie ID"]
-    }
+    { id: 1, label: "Win Team by Series", url: (params: string[]) => {
+        console.log(params);
+        return `/reports/win-teams-by-series/${params[0] ?? "default"}`;
+    }, placeholders: ["Enter Season ID"] },
+    
+    { id: 2, label: "a", url: (params: string[]) => {
+        console.log(params); 
+        return `/reports/series/with-most-and-least-games`;
+    }, placeholders: [] },
+    
+    { id: 3, label: "a", url: (params: string[]) => {
+        console.log(params);
+        return `/reports/winning-and-losing-teams-by-series`;
+    }, placeholders: [] },
+    
+    { id: 4, label: "a", url: (params: string[]) => {
+        console.log(params);
+        return `/reports/player-stats/${params[0] ?? "default"}`;
+    }, placeholders: ["Enter Player ID"] },
+    
+    { id: 5, label: "a", url: (params: string[]) => {
+        console.log(params);
+        return `/reports/pitchers-stats`;
+    }, placeholders: [] },
+    
+    { id: 6, label: "a", url: (params: string[]) => {
+        console.log(params);
+        return `/reports/teams/${params[0] ?? "default"}/serie/${params[1] ?? "default"}/${params[2] ?? "default"}/star-players`;
+    }, placeholders: ["Enter Team ID", "Enter Season ID", "Enter Serie ID"] }
 ];
 
 const ReportsPage = () => {
@@ -18,16 +38,13 @@ const ReportsPage = () => {
     const handleChange = (id: number, index: number, value: string) => {
         setInputs(prev => ({
             ...prev,
-            [id]: {
-                ...prev[id],
-                [index]: value
-            }
+            [id]: { ...prev[id], [index]: value }
         }));
     };
 
-    const handleDownload = async (id: number, urlFunction: (params?: string[]) => string) => {
+    const handleDownload = async (id: number, urlFunction: (params: string[]) => string) => {
         const params = (inputs[id] || []).map(param => param || "default");
-        const fullUrl = urlFunction(params.length > 0 ? params : undefined); // Pass undefined for reports with no params
+        const fullUrl = urlFunction(params);
 
         try {
             const token = localStorage.getItem("authToken");
@@ -35,7 +52,7 @@ const ReportsPage = () => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/pdf",
-                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    "Authorization": token ? Bearer ${token} : ""
                 },
             });
 
@@ -48,7 +65,7 @@ const ReportsPage = () => {
 
             const a = document.createElement("a");
             a.href = fileUrl;
-            a.download = `${id}-report.pdf`;
+            a.download = ${id}-report.pdf;
             document.body.appendChild(a);
             a.click();
 
