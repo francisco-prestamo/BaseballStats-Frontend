@@ -22,7 +22,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: new Date(),
+        time: "", // Initialize time as an empty string
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
@@ -96,7 +96,7 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: new Date(),
+                time: "", // Reset to empty string
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
@@ -187,6 +187,13 @@ const ManageSubstitutions: React.FC = () => {
                             <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
                     </select>
+
+                    <input 
+                        type="time"
+                        value={newSubstitution.time}
+                        onChange={(e) => setNewSubstitution({...newSubstitution, time: e.target.value})}
+                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
+                    />
 
                     <button
                         onClick={handleCreateSubstitution}
