@@ -252,7 +252,7 @@ const ManagePlayers: React.FC = () => {
                                 <input
                                     type="number"
                                     placeholder="ID (Identity Document)"
-                                    value={newPlayer.id === 0 ? "" : newPlayer.id}
+                                    value={editingPlayer.id === 0 ? "" : editingPlayer.id}
                                     className="w-full mb-3 p-3"
                                     readOnly
                                 />
