@@ -22,7 +22,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: new Date(), // Ensure this captures both date and time
+        date: new Date(),
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
@@ -96,7 +96,8 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: new Date(), // Reset to new Date object to ensure date and time
+                date: new Date(),
+
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
@@ -111,6 +112,14 @@ const ManageSubstitutions: React.FC = () => {
         } catch (error) {
             console.error("Error deleting substitution:", error);
         }
+    };
+
+    const handleTimeChange = (time: string) => {
+        const currentDate = new Date(newSubstitution.date);
+        const [hours, minutes] = time.split(":").map(Number);
+        currentDate.setHours(hours);
+        currentDate.setMinutes(minutes);
+        setNewSubstitution({ ...newSubstitution, date: currentDate });
     };
 
     return (
@@ -189,9 +198,9 @@ const ManageSubstitutions: React.FC = () => {
                     </select>
 
                     <input 
-                        type="datetime-local"
-                        value={newSubstitution.date.toISOString().slice(0, 16)}
-                        onChange={(e) => setNewSubstitution({...newSubstitution, date: new Date(e.target.value)})}
+                        type="time"
+                        value={`${newSubstitution.date.getHours().toString().padStart(2, "0")}:${newSubstitution.date.getMinutes().toString().padStart(2, "0")}`}
+                        onChange={(e) => handleTimeChange(e.target.value)}
                         className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
                     />
 
