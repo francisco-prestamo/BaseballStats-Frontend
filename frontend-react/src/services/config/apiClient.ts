@@ -27,8 +27,18 @@ apiClient.interceptors.response.use(
         window.location.href = "/session-expired";
     }
     if (error.response?.status === 400) {
-        const errorMessage = error.response?.data?.message || "There was an issue with your request. Please check the input or try again.";
-        alert(errorMessage);
+        const errorData = error.response?.data?.errors;
+        if (errorData) {
+            // Loop through each error type in the dictionary
+            for (const [errorType, errorList] of Object.entries(errorData)) {
+                errorList.forEach((errMsg) => {
+                    alert(`Error in ${errorType}: ${errMsg}`);
+                });
+            }
+        } else {
+            const errorMessage = error.response?.data?.message || "There was an issue with your request. Please check the input or try again.";
+            alert(errorMessage);
+        }
     }
     return Promise.reject(error);
   }
