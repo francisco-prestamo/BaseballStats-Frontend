@@ -199,6 +199,41 @@ const ManageSubstitutions: React.FC = () => {
                     Create Substitution
                 </button>
             </div>
+            
+            <div className="bg-bg-light rounded-2xl shadow-lg p-6">
+                <h2 className="text-2xl font-semibold">Substitutions List</h2>
+                {substitutions.map((sub) => (
+                    <div key={sub.id}>
+                        <p>Game ID: {sub.gameId}, Player Out {sub.playerOutId} ➔ Player In {sub.playerInId}</p>
+                        <button onClick={() => setDeleteConfirmation(sub)}>
+                            <FaTrash />
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            {deleteConfirmation && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-bg-light rounded-2xl shadow-lg p-8 w-full max-w-md">
+                        <h2 className="text-2xl font-semibold mb-4">Confirm Deletion</h2>
+                        <p>Are you sure you want to delete this substitution?</p>
+                        <div className="flex gap-4 mt-6">
+                            <button
+                                onClick={() => handleDeleteSubstitution(deleteConfirmation.id)}
+                                className="p-3 bg-red-500 text-white rounded-lg"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                onClick={() => setDeleteConfirmation(null)}
+                                className="p-3 bg-gray-500 text-white rounded-lg"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
