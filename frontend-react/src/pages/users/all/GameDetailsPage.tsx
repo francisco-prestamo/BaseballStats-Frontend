@@ -12,7 +12,7 @@ import { Game } from "../../../models/Game";
 import { PlayerInPosition } from "../../../models/PlayerInPosition";
 import { Change } from "../../../models/Change";
 import baseballFieldImg from '../../../images/baseball-field.png';
-import { useAuth } from '../../authContext';
+import { useAuth } from '../../../authContext';
 
 type Position = 'Pitcher' | 'Catcher' | 'First-Base' | 'Second-Base' | 'Third-Base' |
     'Shortstop' | 'Left-Field' | 'Center-Field' | 'Right-Field';
