@@ -88,12 +88,10 @@ const ManageSubstitutions: React.FC = () => {
 
     const handleCreateSubstitution = async () => {
         try {
-            // Sending only gameId, teamId, playerInId, playerOutId, and time
+            // Get only the time part of the date
             const createdSub = await adminSubstitutionService.createSubstitution({
                 ...newSubstitution,
-                gameId: selectedGame?.id || 0,
-                teamId: selectedTeam || 0,
-                date: newSubstitution.date.toTimeString().split(" ")[0], // only send time
+                date: newSubstitution.date.toISOString().split("T")[1], // Extract only the time part
             });
             setSubstitutions([...substitutions, createdSub]);
             setNewSubstitution({
@@ -102,7 +100,7 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: new Date(),
+                date: new Date(), // Reset to a new date object
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
@@ -120,10 +118,14 @@ const ManageSubstitutions: React.FC = () => {
     };
 
     const handleTimeChange = (time: string) => {
-        const currentDate = new Date(newSubstitution.date);
+        const currentDate = new Date(newSubstitution.date); // Clone the current date object
         const [hours, minutes] = time.split(":").map(Number);
+    
+        // Update the hours and minutes of the date object, but keep the date portion intact
         currentDate.setHours(hours);
         currentDate.setMinutes(minutes);
+    
+        // Set the updated date back into the state
         setNewSubstitution({ ...newSubstitution, date: currentDate });
     };
 
