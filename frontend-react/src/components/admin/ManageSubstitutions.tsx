@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaExchangeAlt, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import adminSubstitutionService from "../../services/users/admin/adminSubstitutionService";
 import { fetchAllSeries, fetchGamesInSeries } from "../../services/users/all/serieService";
 import { fetchTeamPlayersInASerie } from "../../services/users/all/TeamService";
@@ -16,6 +16,8 @@ const ManageSubstitutions: React.FC = () => {
     const [selectedSerie, setSelectedSerie] = useState<Serie | null>(null);
     const [selectedGame, setSelectedGame] = useState<Game | null>(null);
     const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
+    const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
+
     const [newSubstitution, setNewSubstitution] = useState<Substitution>({
         id: 0,
         gameId: 0,
@@ -24,7 +26,6 @@ const ManageSubstitutions: React.FC = () => {
         playerOutId: 0,
         date: "", // Ensure date as string in HH:mm:ss format
     });
-    const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
     useEffect(() => {
         const loadSeries = async () => {
@@ -115,8 +116,14 @@ const ManageSubstitutions: React.FC = () => {
         }
     };
 
-    const handleTimeChange = (time: string) => {
-        setNewSubstitution({ ...newSubstitution, date: `${time}:00` });
+    const handleDeleteSubstitution = async (id: number) => {
+        try {
+            await adminSubstitutionService.deleteSubstitution(id);
+            setSubstitutions(substitutions.filter((sub) => sub.id !== id));
+            setDeleteConfirmation(null);
+        } catch (error) {
+            console.error("Error deleting substitution:", error);
+        }
     };
 
     return (
@@ -159,24 +166,10 @@ const ManageSubstitutions: React.FC = () => {
                     )}
                 </select>
 
-                <select value={newSubstitution.playerOutId} onChange={(e) => setNewSubstitution({...newSubstitution, playerOutId: Number(e.target.value)})}>
-                    <option value="">Player Out</option>
-                    {players.map((p) => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                </select>
-
-                <select value={newSubstitution.playerInId} onChange={(e) => setNewSubstitution({...newSubstitution, playerInId: Number(e.target.value)})}>
-                    <option value="">Player In</option>
-                    {players.map((p) => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                </select>
-
                 <input 
                     type="time"
                     value={newSubstitution.date.replace(":00", "")}
-                    onChange={(e) => handleTimeChange(e.target.value)}
+                    onChange={(e) => setNewSubstitution({ ...newSubstitution, date: `${e.target.value}:00` })}
                 />
 
                 <button onClick={handleCreateSubstitution}>
@@ -195,6 +188,29 @@ const ManageSubstitutions: React.FC = () => {
                     </div>
                 ))}
             </div>
+
+            {deleteConfirmation && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-bg-light rounded-2xl shadow-lg p-8 w-full max-w-md">
+                        <h2 className="text-2xl font-semibold mb-4">Confirm Deletion</h2>
+                        <p>Are you sure you want to delete this substitution?</p>
+                        <div className="flex gap-4 mt-6">
+                            <button
+                                onClick={() => handleDeleteSubstitution(deleteConfirmation.id)}
+                                className="p-3 bg-red-500 text-white rounded-lg"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                onClick={() => setDeleteConfirmation(null)}
+                                className="p-3 bg-gray-500 text-white rounded-lg"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
