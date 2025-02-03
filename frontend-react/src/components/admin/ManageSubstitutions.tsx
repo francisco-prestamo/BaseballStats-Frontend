@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaExchangeAlt, FaTrash } from "react-icons/fa";
 import adminSubstitutionService from "../../services/users/admin/adminSubstitutionService";
-import adminPlayerService from "../../services/users/admin/adminPlayerService";
 import { fetchAllSeries, fetchGamesInSeries } from "../../services/users/all/serieService";
 import { fetchTeamPlayersInASerie } from "../../services/users/all/TeamService";
 import { Serie } from "../../models/Serie";
