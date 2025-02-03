@@ -22,7 +22,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: "", // Date as a string
+        date: "", // Ensure date as string in HH:mm:ss format
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
@@ -35,7 +35,6 @@ const ManageSubstitutions: React.FC = () => {
                 console.error("Error loading series:", error);
             }
         };
-        
         loadSeries();
     }, []);
 
@@ -87,11 +86,21 @@ const ManageSubstitutions: React.FC = () => {
     }, []);
 
     const handleCreateSubstitution = async () => {
+        if (!selectedGame || !selectedTeam || newSubstitution.playerInId === 0 || newSubstitution.playerOutId === 0) {
+            console.error("Missing required fields");
+            return;
+        }
+
         try {
+            const formattedTime = `${newSubstitution.date}:00`; // Ensure HH:mm:ss format
+
             const createdSub = await adminSubstitutionService.createSubstitution({
                 ...newSubstitution,
-                date: newSubstitution.date, // Send date as a string
+                gameId: selectedGame.id,
+                teamId: selectedTeam,
+                date: formattedTime,
             });
+
             setSubstitutions([...substitutions, createdSub]);
             setNewSubstitution({
                 id: 0,
@@ -99,173 +108,93 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: "", // Reset to empty string
+                date: "",
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
         }
     };
 
-    const handleDeleteSubstitution = async (id: number) => {
-        try {
-            await adminSubstitutionService.deleteSubstitution(id);
-            setSubstitutions(substitutions.filter((sub) => sub.id !== id));
-            setDeleteConfirmation(null);
-        } catch (error) {
-            console.error("Error deleting substitution:", error);
-        }
-    };
-
     const handleTimeChange = (time: string) => {
-        // Set the date string with time in HH:mm format
-        setNewSubstitution({ ...newSubstitution, date: time });
+        setNewSubstitution({ ...newSubstitution, date: `${time}:00` });
     };
 
     return (
         <div className="container mx-auto p-6 space-y-10">
             <div className="bg-gradient-to-br from-primary to-primary-light rounded-2xl p-8 shadow-lg text-text-light">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-5xl font-bold">Substitutions Management</h1>
-                        <div className="mt-2 text-lg md:text-xl opacity-90">
-                            <p>Manage Player Substitutions</p>
-                            <p className="mt-1">Total Substitutions: {substitutions.length}</p>
-                        </div>
-                    </div>
-                    <FaExchangeAlt className="text-6xl text-text-light opacity-80" />
-                </div>
+                <h1 className="text-5xl font-bold">Substitutions Management</h1>
             </div>
 
-            <div className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20">
-                <h2 className="text-2xl font-semibold mb-4 pb-2 border-b border-primary-lighter">
-                    New Substitution
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <select 
-                        onChange={(e) => setSelectedSerie(series.find(s => s.id === Number(e.target.value)) || null)}
-                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
-                    >
-                        <option value="">Select Series</option>
-                        {series.map((s) => (
-                            <option key={s.id} value={s.id}>{s.name}</option>
-                        ))}
-                    </select>
+            <div className="bg-bg-light rounded-2xl shadow-lg p-6">
+                <h2 className="text-2xl font-semibold">New Substitution</h2>
 
-                    <select 
-                        onChange={(e) => setSelectedGame(games.find(g => g.id === Number(e.target.value)) || null)}
-                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
-                    >
-                        <option value="">Select Game</option>
-                        {games.map((g) => (
-                            <option key={g.id} value={g.id}>{`${g.team1.name} vs ${g.team2.name}`}</option>
-                        ))}
-                    </select>
-
-                    <select 
-                        onChange={(e) => setSelectedTeam(Number(e.target.value))}
-                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
-                    >
-                        <option value="">Select Team</option>
-                        {selectedGame && (
-                            <>
-                                <option value={selectedGame.team1.id}>{selectedGame.team1.name}</option>
-                                <option value={selectedGame.team2.id}>{selectedGame.team2.name}</option>
-                            </>
-                        )}
-                    </select>
-
-                    <select 
-                        value={newSubstitution.playerOutId}
-                        onChange={(e) => setNewSubstitution({...newSubstitution, playerOutId: Number(e.target.value)})}
-                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
-                    >
-                        <option value="">Player Out</option>
-                        {players.map((p) => (
-                            <option key={p.id} value={p.id}>{p.name}</option>
-                        ))}
-                    </select>
-
-                    <select 
-                        value={newSubstitution.playerInId}
-                        onChange={(e) => setNewSubstitution({...newSubstitution, playerInId: Number(e.target.value)})}
-                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
-                    >
-                        <option value="">Player In</option>
-                        {players.map((p) => (
-                            <option key={p.id} value={p.id}>{p.name}</option>
-                        ))}
-                    </select>
-
-                    <input 
-                        type="time"
-                        value={newSubstitution.date} // Use string format (HH:mm)
-                        onChange={(e) => handleTimeChange(e.target.value)}
-                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
-                    />
-
-                    <button
-                        onClick={handleCreateSubstitution}
-                        className="w-full p-3 bg-primary text-text-light rounded-lg hover:bg-primary-light transition-all duration-300 md:col-span-2"
-                    >
-                        Create Substitution
-                    </button>
-                </div>
-            </div>
-
-            <div className="bg-bg-light dark:bg-primary-light rounded-2xl shadow-lg p-6 animate-slide-up border border-primary/20">
-                <h2 className="text-2xl font-semibold mb-4 pb-2 border-b border-primary-lighter">
-                    Substitutions List
-                </h2>
-                <div className="space-y-4">
-                    {substitutions.map((sub) => (
-                        <div key={sub.id} 
-                            className="flex justify-between items-center p-4 bg-white/50 dark:bg-primary/10 rounded-lg hover:shadow-lg transition-all duration-300"
-                        >
-                            <div className="flex items-center space-x-4">
-                                <FaExchangeAlt className="text-primary" />
-                                <div>
-                                    <p className="font-semibold">Game ID: {sub.gameId}</p>
-                                    <p className="text-sm">
-                                        Player Out {sub.playerOutId} ➔ PlayerIn {sub.playerInId}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex space-x-2">
-                                <button 
-                                    onClick={() => setDeleteConfirmation(sub)}
-                                    className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-all"
-                                >
-                                    <FaTrash className="text-red-500" />
-                                </button>
-                            </div>
-                        </div>
+                <select onChange={(e) => setSelectedSerie(series.find(s => s.id === Number(e.target.value)) || null)}>
+                    <option value="">Select Series</option>
+                    {series.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
                     ))}
-                </div>
+                </select>
+
+                <select onChange={(e) => {
+                    const game = games.find(g => g.id === Number(e.target.value)) || null;
+                    setSelectedGame(game);
+                    setNewSubstitution(prev => ({ ...prev, gameId: game ? game.id : 0 }));
+                }}>
+                    <option value="">Select Game</option>
+                    {games.map((g) => (
+                        <option key={g.id} value={g.id}>{`${g.team1.name} vs ${g.team2.name}`}</option>
+                    ))}
+                </select>
+
+                <select onChange={(e) => {
+                    setSelectedTeam(Number(e.target.value));
+                    setNewSubstitution(prev => ({ ...prev, teamId: Number(e.target.value) }));
+                }}>
+                    <option value="">Select Team</option>
+                    {selectedGame && (
+                        <>
+                            <option value={selectedGame.team1.id}>{selectedGame.team1.name}</option>
+                            <option value={selectedGame.team2.id}>{selectedGame.team2.name}</option>
+                        </>
+                    )}
+                </select>
+
+                <select value={newSubstitution.playerOutId} onChange={(e) => setNewSubstitution({...newSubstitution, playerOutId: Number(e.target.value)})}>
+                    <option value="">Player Out</option>
+                    {players.map((p) => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                </select>
+
+                <select value={newSubstitution.playerInId} onChange={(e) => setNewSubstitution({...newSubstitution, playerInId: Number(e.target.value)})}>
+                    <option value="">Player In</option>
+                    {players.map((p) => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                </select>
+
+                <input 
+                    type="time"
+                    value={newSubstitution.date.replace(":00", "")}
+                    onChange={(e) => handleTimeChange(e.target.value)}
+                />
+
+                <button onClick={handleCreateSubstitution}>
+                    Create Substitution
+                </button>
             </div>
 
-            {/* Delete Confirmation Modal */}
-            {deleteConfirmation && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-                    <div className="bg-bg-light dark:bg-bg-dark rounded-2xl shadow-lg p-8 w-full max-w-md animate-pop-in">
-                        <h2 className="text-2xl font-semibold mb-4">Confirm Deletion</h2>
-                        <p>Are you sure you want to delete this substitution?</p>
-                        <div className="flex gap-4 mt-6">
-                            <button
-                                onClick={() => handleDeleteSubstitution(deleteConfirmation.id)}
-                                className="flex-1 p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
-                            >
-                                Delete
-                            </button>
-                            <button
-                                onClick={() => setDeleteConfirmation(null)}
-                                className="flex-1 p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all"
-                            >
-                                Cancel
-                            </button>
-                        </div>
+            <div className="bg-bg-light rounded-2xl shadow-lg p-6">
+                <h2 className="text-2xl font-semibold">Substitutions List</h2>
+                {substitutions.map((sub) => (
+                    <div key={sub.id}>
+                        <p>Game ID: {sub.gameId}, Player Out {sub.playerOutId} ➔ Player In {sub.playerInId}</p>
+                        <button onClick={() => setDeleteConfirmation(sub)}>
+                            <FaTrash />
+                        </button>
                     </div>
-                </div>
-            )}
+                ))}
+            </div>
         </div>
     );
 };
