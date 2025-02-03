@@ -4,5 +4,5 @@ export interface Substitution {
     teamId: number;
     playerInId: number;
     playerOutId: number;
-    date: Date;
+    time: Date;
 }
