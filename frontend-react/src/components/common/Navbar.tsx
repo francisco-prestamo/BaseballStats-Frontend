@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../authContext';
 import { FaUser, FaMoon, FaSun, FaUserPlus } from 'react-icons/fa';
+import logo from "../../../src/images/official-logo.png";
 
 interface NavbarProps {
     toggleTheme: () => void;
@@ -11,7 +12,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { isAuthenticated ,userType} = useAuth();
+    const { isAuthenticated, userType } = useAuth();
     const navigate = useNavigate();
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -25,11 +26,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
         <nav className="fixed top-5 left-1/2 transform -translate-x-1/2 z-20 w-4/5 max-w-6xl bg-bg-light/70 dark:bg-bg-dark/70 backdrop-blur-md rounded-xl border border-secondary/30 dark:border-primary/30 shadow-lg px-8 py-5">
             <div className="flex items-center justify-between">
                 {/* Logo */}
-                <Link
-                    to="/"
-                    className="text-2xl mr-12 font-bold text-primary dark:text-text-light hover:text-primary-light transition-colors"
-                >
-                    Icon
+                <Link to="/" >
+                    <img src={logo} alt="Official Logo" className="text-xl h-10 mr-12" />
                 </Link>
 
                 {/* Desktop Navigation */}
@@ -130,62 +128,64 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, theme, onLoginClick }) => 
             </div>
 
             {/* Mobile Menu */}
-            {isMenuOpen && (
-                <ul className="md:hidden bg-bg-light/90 dark:bg-bg-dark/90 backdrop-blur-md rounded-xl border border-secondary/30 dark:border-primary/30 shadow-lg py-4 px-6 mt-3 space-y-4">
-                    <li>
-                        <Link
-                            to="/"
-                            onClick={toggleMenu}
-                            className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
-                        >
-                            Home
-                        </Link>
-                    </li>
-                    {isAuthenticated && (
-                        <>
-                            <li>
-                                <Link
-                                    to="/reports"
-                                    onClick={toggleMenu}
-                                    className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
-                                >
-                                    Reports
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/seasons"
-                                    onClick={toggleMenu}
-                                    className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
-                                >
-                                    Seasons
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/series"
-                                    onClick={toggleMenu}
-                                    className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
-                                >
-                                    Series
-                                </Link>
-                            </li>
-                            {userType == "admin" && (
+            {
+                isMenuOpen && (
+                    <ul className="md:hidden bg-bg-light/90 dark:bg-bg-dark/90 backdrop-blur-md rounded-xl border border-secondary/30 dark:border-primary/30 shadow-lg py-4 px-6 mt-3 space-y-4">
+                        <li>
+                            <Link
+                                to="/"
+                                onClick={toggleMenu}
+                                className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                            >
+                                Home
+                            </Link>
+                        </li>
+                        {isAuthenticated && (
+                            <>
                                 <li>
                                     <Link
-                                        to="/admin"
+                                        to="/reports"
                                         onClick={toggleMenu}
-                                        className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                        className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
                                     >
-                                        Admin
+                                        Reports
                                     </Link>
                                 </li>
-                            )}
-                        </>
-                    )}
-                </ul>
-            )}
-        </nav>
+                                <li>
+                                    <Link
+                                        to="/seasons"
+                                        onClick={toggleMenu}
+                                        className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                    >
+                                        Seasons
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        to="/series"
+                                        onClick={toggleMenu}
+                                        className="block text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                    >
+                                        Series
+                                    </Link>
+                                </li>
+                                {userType == "admin" && (
+                                    <li>
+                                        <Link
+                                            to="/admin"
+                                            onClick={toggleMenu}
+                                            className="text-lg font-medium text-text-dark dark:text-text-light hover:text-primary-light transition-colors"
+                                        >
+                                            Admin
+                                        </Link>
+                                    </li>
+                                )}
+                            </>
+                        )}
+                    </ul>
+                )
+            }
+        </nav >
     );
 };
 
