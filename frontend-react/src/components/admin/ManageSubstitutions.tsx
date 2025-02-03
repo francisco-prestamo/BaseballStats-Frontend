@@ -22,7 +22,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: new Date(),
+        date: "", // Date as a string
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
@@ -88,10 +88,9 @@ const ManageSubstitutions: React.FC = () => {
 
     const handleCreateSubstitution = async () => {
         try {
-            // Get only the time part of the date
             const createdSub = await adminSubstitutionService.createSubstitution({
                 ...newSubstitution,
-                date: newSubstitution.date.toISOString().split("T")[1], // Extract only the time part
+                date: newSubstitution.date, // Send date as a string
             });
             setSubstitutions([...substitutions, createdSub]);
             setNewSubstitution({
@@ -100,7 +99,7 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: new Date(), // Reset to a new date object
+                date: "", // Reset to empty string
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
@@ -118,15 +117,8 @@ const ManageSubstitutions: React.FC = () => {
     };
 
     const handleTimeChange = (time: string) => {
-        const currentDate = new Date(newSubstitution.date); // Clone the current date object
-        const [hours, minutes] = time.split(":").map(Number);
-    
-        // Update the hours and minutes of the date object, but keep the date portion intact
-        currentDate.setHours(hours);
-        currentDate.setMinutes(minutes);
-    
-        // Set the updated date back into the state
-        setNewSubstitution({ ...newSubstitution, date: currentDate });
+        // Set the date string with time in HH:mm format
+        setNewSubstitution({ ...newSubstitution, date: time });
     };
 
     return (
@@ -206,7 +198,7 @@ const ManageSubstitutions: React.FC = () => {
 
                     <input 
                         type="time"
-                        value={`${newSubstitution.date.getHours().toString().padStart(2, "0")}:${newSubstitution.date.getMinutes().toString().padStart(2, "0")}`}
+                        value={newSubstitution.date} // Use string format (HH:mm)
                         onChange={(e) => handleTimeChange(e.target.value)}
                         className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
                     />
