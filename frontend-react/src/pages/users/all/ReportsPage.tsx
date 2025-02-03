@@ -49,33 +49,8 @@ const ReportsPage = () => {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(fileUrl);
         } catch (error) {
-            if (error instanceof Error) {
-                console.error("Error downloading the PDF:", error);
-                
-                if (error.response?.status === 401) {
-                  console.warn("Expired or Invalid Token");
-                  window.location.href = "/session-expired";
-                }
-                if (error.response?.status === 400) {
-                  const errorData = error.response?.data?.errors;
-                  if (errorData) {
-                    // Loop through each error type in the dictionary
-                    for (const [errorType, errorList] of Object.entries(errorData)) {
-                      // Explicitly type errorList as an array of strings
-                      const errorMessages = errorList as string[];
-                      
-                      errorMessages.forEach((errMsg: string) => {
-                        alert(`Error in ${errorType}: ${errMsg}`);
-                      });
-                    }
-                  } else {
-                    const errorMessage = error.response?.data?.message || "There was an issue with your request. Please check the input or try again.";
-                    alert(errorMessage);
-                  }
-                }
-            } else {
-                console.error("An unknown error occurred while downloading the PDF.");
-            }
+            console.error("An unknown error occurred while downloading the PDF.");
+            alert("An unknown error occurred while downloading the PDF.")
         }
     };
 
