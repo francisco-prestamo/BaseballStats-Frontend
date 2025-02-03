@@ -22,7 +22,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: new Date().toISOString(), // Updated to ISO string for datetime
+        date: new Date(), // Ensure this captures both date and time
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
@@ -90,7 +90,7 @@ const ManageSubstitutions: React.FC = () => {
         try {
             const createdSub = await adminSubstitutionService.createSubstitution({
                 ...newSubstitution,
-                date: new Date().toISOString(), // Updated to current datetime in ISO string format
+                date: new Date(), // Ensure this captures the current date and time
             });
             setSubstitutions([...substitutions, createdSub]);
             setNewSubstitution({
@@ -99,7 +99,7 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: new Date().toISOString(), // Reset to new datetime in ISO string format
+                date: new Date(), // Reset to new Date object to ensure date and time
             });
         } catch (error) {
             console.error("Error creating substitution:", error);
