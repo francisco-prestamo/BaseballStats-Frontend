@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { FaTrash, FaStar } from "react-icons/fa";
-import starPlayerService from "../../services/users/admin/adminStarPlayerInPosition";
+import starPlayerService from "../../services/users/admin/adminStarPlayerInPositionService";
 import { StarPlayerInPosition } from "../../models/crud/StarPlayerInPosition";
+import seriesService from "../../services/users/admin/adminSerieService";
+import seasonsService from "../../services/users/admin/adminSeasonService";
+import { Season } from "../../models/Season";
+import { Serie } from "../../models/Serie";
+import { positions } from "../../models/crud/positions";
 
-const ManageStarPlayers: React.FC = () => {
+const ManageStarPlayersInPosition: React.FC = () => {
     const [starPlayers, setStarPlayers] = useState<StarPlayerInPosition[]>([]);
+    const [series, setSeries] = useState<Serie[]>([]);
+    const [seasons, setSeasons] = useState<Season[]>([]);
     const [newStarPlayer, setNewStarPlayer] = useState<StarPlayerInPosition>({
         idSerie: 0,
         idSeason: 0,
@@ -17,10 +24,28 @@ const ManageStarPlayers: React.FC = () => {
 
     const fetchStarPlayers = async () => {
         try {
-            const response = await starPlayerService.getStarPlayers();
+            const response = await starPlayerService.getStarPlayersInASerie(newStarPlayer.idSeason.toString(), newStarPlayer.idSerie.toString());
             setStarPlayers(response);
         } catch (error) {
             console.error("Error fetching star players:", error);
+        }
+    };
+
+    const fetchSeries = async () => {
+        try {
+            const response = await seriesService.getSeries();
+            setSeries(response);
+        } catch (error) {
+            console.error("Error fetching series:", error);
+        }
+    };
+
+    const fetchSeasons = async () => {
+        try {
+            const response = await seasonsService.getSeasons();
+            setSeasons(response);
+        } catch (error) {
+            console.error("Error fetching seasons:", error);
         }
     };
 
@@ -48,7 +73,19 @@ const ManageStarPlayers: React.FC = () => {
     const handleDeleteStarPlayer = async () => {
         try {
             if (!deleteConfirmation) return;
-            await starPlayerService.deleteStarPlayer(deleteConfirmation);
+
+            const starPlayer = starPlayers.find(sp => sp.idPlayer === deleteConfirmation);
+            if (!starPlayer) {
+                console.error("Star player not found");
+                return;
+            }
+
+            await starPlayerService.deleteStarPlayer({
+                idSerie: starPlayer.idSerie,
+                idSeason: starPlayer.idSeason,
+                idPlayer: deleteConfirmation,
+            });
+
             fetchStarPlayers();
             setDeleteConfirmation(null);
         } catch (error) {
@@ -57,7 +94,8 @@ const ManageStarPlayers: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchStarPlayers();
+        fetchSeries();
+        fetchSeasons();
     }, []);
 
     return (
@@ -79,25 +117,35 @@ const ManageStarPlayers: React.FC = () => {
                 <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
                     <h2 className="text-2xl font-semibold mb-4">Create New Star Player</h2>
 
-                    <input
-                        type="number"
-                        placeholder="Serie ID"
-                        value={newStarPlayer.idSerie === 0 ? "" : newStarPlayer.idSerie}
+                    <select
+                        value={newStarPlayer.idSerie}
                         onChange={(e) =>
-                            setNewStarPlayer({ ...newStarPlayer, idSerie: Number(e.target.value) || 0 })
+                            setNewStarPlayer({ ...newStarPlayer, idSerie: Number(e.target.value) })
                         }
                         className="w-full mb-3 p-3"
-                    />
+                    >
+                        <option value={0}>Select Serie</option>
+                        {series.map((serie) => (
+                            <option key={serie.id} value={serie.id}>
+                                {serie.name}
+                            </option>
+                        ))}
+                    </select>
 
-                    <input
-                        type="number"
-                        placeholder="Season ID"
-                        value={newStarPlayer.idSeason === 0 ? "" : newStarPlayer.idSeason}
+                    <select
+                        value={newStarPlayer.idSeason}
                         onChange={(e) =>
-                            setNewStarPlayer({ ...newStarPlayer, idSeason: Number(e.target.value) || 0 })
+                            setNewStarPlayer({ ...newStarPlayer, idSeason: Number(e.target.value) })
                         }
                         className="w-full mb-3 p-3"
-                    />
+                    >
+                        <option value={0}>Select Season</option>
+                        {seasons.map((season) => (
+                            <option key={season.id} value={season.id}>
+                                {season.id}
+                            </option>
+                        ))}
+                    </select>
 
                     <input
                         type="number"
@@ -109,13 +157,18 @@ const ManageStarPlayers: React.FC = () => {
                         className="w-full mb-3 p-3"
                     />
 
-                    <input
-                        type="text"
-                        placeholder="Position"
+                    <select
                         value={newStarPlayer.position}
                         onChange={(e) => setNewStarPlayer({ ...newStarPlayer, position: e.target.value })}
                         className="w-full mb-3 p-3"
-                    />
+                    >
+                        <option value="">Select Position</option>
+                        {positions.map((position) => (
+                            <option key={position} value={position}>
+                                {position}
+                            </option>
+                        ))}
+                    </select>
 
                     <button onClick={handleCreateStarPlayer} className="w-full p-3 bg-primary text-white">
                         Create Star Player
@@ -185,4 +238,4 @@ const ManageStarPlayers: React.FC = () => {
     );
 };
 
-export default ManageStarPlayers;
+export default ManageStarPlayersInPosition;
