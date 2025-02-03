@@ -1,35 +1,12 @@
 import { useState } from "react";
 
 const reports = [
-    { id: 1, label: "Win Team by Series", url: (params: string[]) => {
-        console.log(params);
-        return `/reports/win-teams-by-series/${params[0] ?? "default"}`;
-    }, placeholders: ["Enter Season ID"] },
-    
-    { id: 2, label: "a", url: (params: string[]) => {
-        console.log(params); 
-        return `/reports/series/with-most-and-least-games`;
-    }, placeholders: [] },
-    
-    { id: 3, label: "a", url: (params: string[]) => {
-        console.log(params);
-        return `/reports/winning-and-losing-teams-by-series`;
-    }, placeholders: [] },
-    
-    { id: 4, label: "a", url: (params: string[]) => {
-        console.log(params);
-        return `/reports/player-stats/${params[0] ?? "default"}`;
-    }, placeholders: ["Enter Player ID"] },
-    
-    { id: 5, label: "a", url: (params: string[]) => {
-        console.log(params);
-        return `/reports/pitchers-stats`;
-    }, placeholders: [] },
-    
-    { id: 6, label: "a", url: (params: string[]) => {
-        console.log(params);
-        return `/reports/teams/${params[0] ?? "default"}/serie/${params[1] ?? "default"}/${params[2] ?? "default"}/star-players`;
-    }, placeholders: ["Enter Team ID", "Enter Season ID", "Enter Serie ID"] }
+    { id: 1, label: "Win Team by Series", url: (params: string[]) => `/reports/win-teams-by-series/${params[0]}`, placeholders: ["Enter Season ID"] },
+    { id: 2, label: "Series with Most and Least Games", url: () => "/reports/series/with-most-and-least-games", placeholders: [] },
+    { id: 3, label: "Winning and Losing Teams by Series", url: () => "/reports/winning-and-losing-teams-by-series", placeholders: [] },
+    { id: 4, label: "Player Stats", url: (params: string[]) => `/reports/player-stats/${params[0]}`, placeholders: ["Enter Player ID"] },
+    { id: 5, label: "Pitchers Stats", url: () => "/reports/pitchers-stats", placeholders: [] },
+    { id: 6, label: "Star Players by Team and Series", url: (params: string[]) => `/reports/teams/${params[0]}/serie/${params[1]}/${params[2]}/star-players`, placeholders: ["Enter Team ID", "Enter Season ID", "Enter Serie ID"] }
 ];
 
 const ReportsPage = () => {
@@ -42,9 +19,9 @@ const ReportsPage = () => {
         }));
     };
 
-    const handleDownload = async (id: number, urlFunction: (params: string[]) => string) => {
+    const handleDownload = async (id: number, urlFunction: (params?: string[]) => string) => {
         const params = (inputs[id] || []).map(param => param || "default");
-        const fullUrl = urlFunction(params);
+        const fullUrl = urlFunction(params.length ? params : undefined);
 
         try {
             const token = localStorage.getItem("authToken");
@@ -52,7 +29,7 @@ const ReportsPage = () => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/pdf",
-                    "Authorization": token ? Bearer ${token} : ""
+                    "Authorization": token ? `Bearer ${token}` : ""
                 },
             });
 
@@ -65,7 +42,7 @@ const ReportsPage = () => {
 
             const a = document.createElement("a");
             a.href = fileUrl;
-            a.download = ${id}-report.pdf;
+            a.download = `${id}-report.pdf`;
             document.body.appendChild(a);
             a.click();
 
