@@ -22,7 +22,7 @@ const ManageSubstitutions: React.FC = () => {
         teamId: 0,
         playerInId: 0,
         playerOutId: 0,
-        date: new Date(), // Initialize date as a Date object
+        date: new Date(),
     });
     const [deleteConfirmation, setDeleteConfirmation] = useState<Substitution | null>(null);
 
@@ -96,7 +96,8 @@ const ManageSubstitutions: React.FC = () => {
                 teamId: 0,
                 playerInId: 0,
                 playerOutId: 0,
-                date: new Date(), // Reset to new Date object
+                date: new Date(),
+
             });
         } catch (error) {
             console.error("Error creating substitution:", error);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../../../services/config/config";
 
 const reports = [
     { id: 1, label: "Win Team by Series", url: (params: string[] = []) => `/reports/win-teams-by-series/${params[0] || "default"}`, placeholders: ["Enter Season ID"] },
@@ -21,7 +22,7 @@ const ReportsPage = () => {
 
     const handleDownload = async (id: number, urlFunction: (params?: string[]) => string) => {
         const params = inputs[id] || [];
-        const fullUrl = urlFunction(params);
+        const fullUrl = API_URL + urlFunction(params);
 
         try {
             const token = localStorage.getItem("authToken");
