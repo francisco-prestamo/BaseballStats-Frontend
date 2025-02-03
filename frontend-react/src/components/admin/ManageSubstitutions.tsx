@@ -88,10 +88,7 @@ const ManageSubstitutions: React.FC = () => {
 
     const handleCreateSubstitution = async () => {
         try {
-            const createdSub = await adminSubstitutionService.createSubstitution({
-                ...newSubstitution,
-                date: new Date(), // Ensure this captures the current date and time
-            });
+            const createdSub = await adminSubstitutionService.createSubstitution(newSubstitution);
             setSubstitutions([...substitutions, createdSub]);
             setNewSubstitution({
                 id: 0,
@@ -190,6 +187,13 @@ const ManageSubstitutions: React.FC = () => {
                             <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
                     </select>
+
+                    <input 
+                        type="datetime-local"
+                        value={newSubstitution.date.toISOString().slice(0, 16)}
+                        onChange={(e) => setNewSubstitution({...newSubstitution, date: new Date(e.target.value)})}
+                        className="w-full p-3 rounded-lg bg-white/50 dark:bg-primary/10 border border-secondary/30"
+                    />
 
                     <button
                         onClick={handleCreateSubstitution}
