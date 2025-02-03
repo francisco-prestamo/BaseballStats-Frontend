@@ -106,7 +106,7 @@ const GameDetailsPage: React.FC = () => {
                     </div>
                     <div className="flex space-x-4">
                         {/* Navigate to Edit Alignment */}
-                        {userType === "dt" && (
+                        {(userType === "dt" || userType === "admin")  && (
                             <button
                                 className="px-4 py-2 bg-primary dark:bg-primary-light rounded-lg text-text-light font-medium hover:bg-primary-light dark:hover:bg-primary transition-all duration-300 border border-primary-lighter/20 hover:scale-105"
                                 onClick={() => {
