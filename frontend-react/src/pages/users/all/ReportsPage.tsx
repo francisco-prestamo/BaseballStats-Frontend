@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { API_URL } from "../../../services/config/config";
 import adminSeasonService from  "../../../services/users/admin/adminSeasonService";
 import adminSerieService from "../../../services/users/admin/adminSerieService";
