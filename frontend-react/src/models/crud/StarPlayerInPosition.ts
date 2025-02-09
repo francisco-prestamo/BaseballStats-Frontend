@@ -1,6 +1,6 @@
 export interface StarPlayerInPosition {
-  idSerie: number;
-  idSeason: number;
-  idPlayer: number;
+  seriesId: number;
+  seasonId: number;
+  playerId: number;
   position: string;
 }

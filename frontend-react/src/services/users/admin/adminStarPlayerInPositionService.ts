@@ -7,11 +7,9 @@ const STAR_PLAYERS_URL = "/starPlayerInPosition";
 const starPlayerService = {
   // Get all star players
   getStarPlayersInASerie: async (
-    idSeason: string,
-    idSerie: string
   ): Promise<StarPlayerInPosition[]> => {
     const response = await apiClient.get(
-      `${STAR_PLAYERS_URL}/${idSerie}/${idSeason}`
+      `${STAR_PLAYERS_URL}`
     );
     return response.data;
   },
@@ -21,8 +19,7 @@ const starPlayerService = {
     starPlayerData: StarPlayerInPosition
   ): Promise<StarPlayerInPosition> => {
     const response = await apiClient.post(
-      `${STAR_PLAYERS_URL}/${starPlayerData.idSerie}/${starPlayerData.idSeason}
-      /${starPlayerData.idPlayer}/${starPlayerData.position}`,
+      `${STAR_PLAYERS_URL}`,
       starPlayerData
     );
     return response.data;
@@ -30,10 +27,9 @@ const starPlayerService = {
 
   // Delete a star player
   deleteStarPlayer: async (
-    starPlayerData: Omit<StarPlayerInPosition, "position">
+    starPlayerData: StarPlayerInPosition
   ): Promise<void> => {
-    await apiClient.delete(`${STAR_PLAYERS_URL}/${starPlayerData.idSerie}/${starPlayerData.idSeason}
-      /${starPlayerData.idPlayer}`);
+    await apiClient.delete(`${STAR_PLAYERS_URL}/${starPlayerData.seasonId}/${starPlayerData.seriesId}/${starPlayerData.playerId}/${starPlayerData.position}`);
   },
 };
 

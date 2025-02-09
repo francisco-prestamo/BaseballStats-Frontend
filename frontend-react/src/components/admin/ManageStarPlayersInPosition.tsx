@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { FaTrash, FaStar } from "react-icons/fa";
 import starPlayerService from "../../services/users/admin/adminStarPlayerInPositionService";
-import { StarPlayerInPosition } from "../../models/crud/StarPlayerInPosition";
+import adminPlayerService from "../../services/users/admin/adminPlayerService";
 import seriesService from "../../services/users/admin/adminSerieService";
-import seasonsService from "../../services/users/admin/adminSeasonService";
-import { Season } from "../../models/Season";
+import { StarPlayerInPosition } from "../../models/crud/StarPlayerInPosition";
 import { Serie } from "../../models/Serie";
 import { positions } from "../../models/crud/positions";
 
 const ManageStarPlayersInPosition: React.FC = () => {
     const [starPlayers, setStarPlayers] = useState<StarPlayerInPosition[]>([]);
     const [series, setSeries] = useState<Serie[]>([]);
-    const [seasons, setSeasons] = useState<Season[]>([]);
+    const [players, setPlayers] = useState<any[]>([]);
     const [newStarPlayer, setNewStarPlayer] = useState<StarPlayerInPosition>({
-        idSerie: 0,
-        idSeason: 0,
-        idPlayer: 0,
+        seriesId: 0,
+        seasonId: 0,
+        playerId: 0,
         position: "",
     });
 
@@ -24,7 +23,7 @@ const ManageStarPlayersInPosition: React.FC = () => {
 
     const fetchStarPlayers = async () => {
         try {
-            const response = await starPlayerService.getStarPlayersInASerie(newStarPlayer.idSeason.toString(), newStarPlayer.idSerie.toString());
+            const response = await starPlayerService.getStarPlayersInASerie();
             setStarPlayers(response);
         } catch (error) {
             console.error("Error fetching star players:", error);
@@ -40,12 +39,12 @@ const ManageStarPlayersInPosition: React.FC = () => {
         }
     };
 
-    const fetchSeasons = async () => {
+    const fetchPlayers = async () => {
         try {
-            const response = await seasonsService.getSeasons();
-            setSeasons(response);
+            const response = await adminPlayerService.getPlayers();
+            setPlayers(response);
         } catch (error) {
-            console.error("Error fetching seasons:", error);
+            console.error("Error fetching players:", error);
         }
     };
 
@@ -57,14 +56,14 @@ const ManageStarPlayersInPosition: React.FC = () => {
 
     const handleCreateStarPlayer = async () => {
         try {
-            if (!newStarPlayer.idSerie || !newStarPlayer.idSeason || !newStarPlayer.idPlayer || !newStarPlayer.position) {
+            if (!newStarPlayer.seriesId || !newStarPlayer.seasonId || !newStarPlayer.playerId || !newStarPlayer.position) {
                 alert("All fields are required to create a star player.");
                 return;
             }
 
-            await starPlayerService.createStarPlayer(newStarPlayer as StarPlayerInPosition);
+            await starPlayerService.createStarPlayer(newStarPlayer);
             fetchStarPlayers();
-            setNewStarPlayer({ idSerie: 0, idSeason: 0, idPlayer: 0, position: "" });
+            setNewStarPlayer({ seriesId: 0, seasonId: 0, playerId: 0, position: "" });
         } catch (error) {
             console.error("Error creating star player:", error);
         }
@@ -73,19 +72,25 @@ const ManageStarPlayersInPosition: React.FC = () => {
     const handleDeleteStarPlayer = async () => {
         try {
             if (!deleteConfirmation) return;
-
-            const starPlayer = starPlayers.find(sp => sp.idPlayer === deleteConfirmation);
+    
+            const starPlayer = starPlayers.find(sp => sp.playerId === deleteConfirmation);
             if (!starPlayer) {
                 console.error("Star player not found");
                 return;
             }
-
+    
+            // Ensure that the values are trimmed
+            const { seasonId, seriesId, playerId, position } = starPlayer;
+            const cleanedPosition = position.trim();
+    
+            // Now call the delete service with the cleaned values
             await starPlayerService.deleteStarPlayer({
-                idSerie: starPlayer.idSerie,
-                idSeason: starPlayer.idSeason,
-                idPlayer: deleteConfirmation,
+                seasonId,
+                seriesId,
+                playerId,
+                position: cleanedPosition,
             });
-
+    
             fetchStarPlayers();
             setDeleteConfirmation(null);
         } catch (error) {
@@ -95,8 +100,12 @@ const ManageStarPlayersInPosition: React.FC = () => {
 
     useEffect(() => {
         fetchSeries();
-        fetchSeasons();
+        fetchPlayers();
     }, []);
+
+    useEffect(() => {
+        fetchStarPlayers();
+    }, [newStarPlayer.seriesId, newStarPlayer.seasonId]);
 
     return (
         <div className="container mx-auto p-6 space-y-10">
@@ -116,46 +125,45 @@ const ManageStarPlayersInPosition: React.FC = () => {
             <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
                     <h2 className="text-2xl font-semibold mb-4">Create New Star Player</h2>
-
                     <select
-                        value={newStarPlayer.idSerie}
-                        onChange={(e) =>
-                            setNewStarPlayer({ ...newStarPlayer, idSerie: Number(e.target.value) })
-                        }
+                        value={newStarPlayer.seriesId}
+                        onChange={(e) => {
+                            const selectedSerieId = Number(e.target.value);
+                            const selectedSerie = series.find(serie => serie.id === selectedSerieId);
+                            if (selectedSerie) {
+                                // Trim any extra spaces if necessary
+                                const cleanedSeriesName = selectedSerie.name.trim();
+                                setNewStarPlayer({
+                                    ...newStarPlayer,
+                                    seriesId: selectedSerieId,
+                                    seasonId: selectedSerie.idSeason,
+                                });
+                            }
+                        }}
                         className="w-full mb-3 p-3"
                     >
                         <option value={0}>Select Serie</option>
                         {series.map((serie) => (
                             <option key={serie.id} value={serie.id}>
-                                {serie.name}
+                                {serie.name.trim()} {/* Trim series name here */}
                             </option>
                         ))}
                     </select>
 
                     <select
-                        value={newStarPlayer.idSeason}
+                        value={newStarPlayer.playerId}
                         onChange={(e) =>
-                            setNewStarPlayer({ ...newStarPlayer, idSeason: Number(e.target.value) })
+                            setNewStarPlayer({ ...newStarPlayer, playerId: Number(e.target.value) || 0 })
                         }
                         className="w-full mb-3 p-3"
                     >
-                        <option value={0}>Select Season</option>
-                        {seasons.map((season) => (
-                            <option key={season.id} value={season.id}>
-                                {season.id}
+                        <option value={0}>Select Player</option>
+                        {players.map((player) => (
+                            <option key={player.id} value={player.id}>
+                                {player.name}
                             </option>
                         ))}
                     </select>
-
-                    <input
-                        type="number"
-                        placeholder="Player ID"
-                        value={newStarPlayer.idPlayer === 0 ? "" : newStarPlayer.idPlayer}
-                        onChange={(e) =>
-                            setNewStarPlayer({ ...newStarPlayer, idPlayer: Number(e.target.value) || 0 })
-                        }
-                        className="w-full mb-3 p-3"
-                    />
 
                     <select
                         value={newStarPlayer.position}
@@ -196,11 +204,11 @@ const ManageStarPlayersInPosition: React.FC = () => {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredStarPlayers.map((starPlayer) => (
-                            <div key={starPlayer.idPlayer} className="flex justify-between items-center p-4 bg-white rounded-lg shadow-lg">
-                                <p>{starPlayer.position}</p>
+                            <div key={starPlayer.playerId} className="flex justify-between items-center p-4 bg-white rounded-lg shadow-lg">
+                                <p>{players.find(player => player.id === starPlayer.playerId)?.name || "Unknown Player"}</p> - <p>{starPlayer.position}</p> - <p>{series.find(serie => serie.id === starPlayer.seriesId)?.name || "Unknown Series"}</p>
                                 <div className="flex items-center space-x-2">
                                     <button
-                                        onClick={() => setDeleteConfirmation(starPlayer.idPlayer)}
+                                        onClick={() => setDeleteConfirmation(starPlayer.playerId)}
                                         className="p-2 bg-red-500 text-white rounded-lg"
                                     >
                                         <FaTrash />

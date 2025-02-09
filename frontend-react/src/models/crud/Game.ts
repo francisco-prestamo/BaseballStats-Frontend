@@ -4,7 +4,7 @@ export interface Game {
     team2Id: number;
     seasonId: number;
     seriesId: number;
-    date: Date;
+    date: string;
     winTeam: boolean;
     team1Runs: number;
     team2Runs: number;

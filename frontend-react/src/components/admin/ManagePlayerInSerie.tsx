@@ -22,6 +22,7 @@ const ManagePlayerInSeries: React.FC = () => {
     });
     const [editPlayerInSeries, setEditPlayerInSeries] = useState<PlayerInSeries | null>(null);
     const [searchPlayerName, setSearchPlayerName] = useState("");
+    const [deletePlayerInSeries, setDeletePlayerInSeries] = useState<PlayerInSeries | null>(null);
 
     const fetchPlayerInSeries = async () => {
         try {
@@ -75,12 +76,19 @@ const ManagePlayerInSeries: React.FC = () => {
         }
     };
 
-    const handleDeletePlayerInSeries = async (playerId: number, serieId: number, seasonId: number) => {
-        try {
-            await adminPlayerInSeriesService.deletePlayerInSeries(playerId, seasonId, serieId);
-            fetchPlayerInSeries(); // Refresh the list after deletion
-        } catch (error) {
-            console.error("Error deleting PlayerInSeries:", error);
+    const handleDeletePlayerInSeries = async () => {
+        if (deletePlayerInSeries) {
+            try {
+                await adminPlayerInSeriesService.deletePlayerInSeries(
+                    deletePlayerInSeries.playerId, 
+                    deletePlayerInSeries.seasonId, 
+                    deletePlayerInSeries.serieId
+                );
+                fetchPlayerInSeries();
+                setDeletePlayerInSeries(null); // Close modal after deletion
+            } catch (error) {
+                console.error("Error deleting PlayerInSeries:", error);
+            }
         }
     };
 
@@ -92,8 +100,8 @@ const ManagePlayerInSeries: React.FC = () => {
         try {
             if (editPlayerInSeries) {
                 await adminPlayerInSeriesService.updatePlayerInSeries(editPlayerInSeries);
-                fetchPlayerInSeries(); // Refresh the list after update
-                setEditPlayerInSeries(null); // Close the modal
+                fetchPlayerInSeries();
+                setEditPlayerInSeries(null);
             }
         } catch (error) {
             console.error("Error updating PlayerInSeries:", error);
@@ -126,8 +134,6 @@ const ManagePlayerInSeries: React.FC = () => {
                 {/* Create New PlayerInSeries */}
                 <div className="flex-1 bg-bg-light rounded-2xl shadow-lg p-6">
                     <h2 className="text-2xl font-semibold mb-4">Create New Player In Series</h2>
-
-                    {/* Select Team */}
                     <select
                         value={newPlayerInSeries.teamId || ""}
                         onChange={(e) =>
@@ -143,7 +149,6 @@ const ManagePlayerInSeries: React.FC = () => {
                         ))}
                     </select>
 
-                    {/* Select Player */}
                     <select
                         value={newPlayerInSeries.playerId || ""}
                         onChange={(e) =>
@@ -159,7 +164,6 @@ const ManagePlayerInSeries: React.FC = () => {
                         ))}
                     </select>
 
-                    {/* Select Serie */}
                     <select
                         value={newPlayerInSeries.serieId || ""}
                         onChange={(e) =>
@@ -202,7 +206,9 @@ const ManagePlayerInSeries: React.FC = () => {
                         ).map((playerInSeries, index) => (
                             <li key={index} className="border rounded-lg p-3 flex justify-between items-center">
                                 <span>
-                                    Team: {playerInSeries.teamId}, Player: {playerInSeries.playerId}, Serie: {playerInSeries.serieId}, Season: {playerInSeries.seasonId}
+                                    Team: {teams.find(team => team.id === playerInSeries.teamId)?.name}, 
+                                    Player: {players.find(player => player.id === playerInSeries.playerId)?.name}, 
+                                    Serie: {series.find(serie => serie.id === playerInSeries.serieId)?.name}
                                 </span>
                                 <button
                                     onClick={() => handleEditPlayerInSeries(playerInSeries)}
@@ -211,7 +217,7 @@ const ManagePlayerInSeries: React.FC = () => {
                                     Edit
                                 </button>
                                 <button
-                                    onClick={() => handleDeletePlayerInSeries(playerInSeries.playerId, playerInSeries.serieId, playerInSeries.seasonId)}
+                                    onClick={() => setDeletePlayerInSeries(playerInSeries)}
                                     className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700"
                                 >
                                     Delete
@@ -227,7 +233,7 @@ const ManagePlayerInSeries: React.FC = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
                         <h2 className="text-2xl font-semibold mb-4">Edit PlayerInSeries</h2>
-                        {/* Select Team */}
+                        {/* Only Edit Team */}
                         <select
                             value={editPlayerInSeries.teamId}
                             onChange={(e) =>
@@ -239,38 +245,6 @@ const ManagePlayerInSeries: React.FC = () => {
                             {teams.map((team) => (
                                 <option key={team.id} value={team.id}>
                                     {team.name}
-                                </option>
-                            ))}
-                        </select>
-
-                        {/* Select Player */}
-                        <select
-                            value={editPlayerInSeries.playerId}
-                            onChange={(e) =>
-                                setEditPlayerInSeries({ ...editPlayerInSeries, playerId: Number(e.target.value) })
-                            }
-                            className="w-full mb-3 p-3"
-                        >
-                            <option value="">Select Player</option>
-                            {players.map((player) => (
-                                <option key={player.id} value={player.id}>
-                                    {player.name}
-                                </option>
-                            ))}
-                        </select>
-
-                        {/* Select Serie */}
-                        <select
-                            value={editPlayerInSeries.serieId}
-                            onChange={(e) =>
-                                setEditPlayerInSeries({ ...editPlayerInSeries, serieId: Number(e.target.value) })
-                            }
-                            className="w-full mb-3 p-3"
-                        >
-                            <option value="">Select Serie</option>
-                            {series.map((serie) => (
-                                <option key={serie.id} value={serie.id}>
-                                    {serie.name}
                                 </option>
                             ))}
                         </select>
@@ -289,35 +263,33 @@ const ManagePlayerInSeries: React.FC = () => {
                         </button>
                     </div>
                 </div>
-
             )}
 
-            {/* Flexbox de jugadores en series */}
-            <div className="bg-bg-light rounded-2xl shadow-lg p-6 mt-10">
-                <h2 className="text-2xl font-semibold mb-4">Player In Series List</h2>
-                <div className="grid grid-cols-3 gap-6">
-                    {PlayerInSeries.slice(0, 12).map((playerInSeries, index) => {
-                        // Aquí se pueden agregar las tarjetas con la información del jugador
-                        const player = players.find(p => p.id === playerInSeries.playerId); // Busca al jugador
-                        if (!player) return null;
+            {/* Modal for Deleting */}
+            {deletePlayerInSeries && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+                        <h2 className="text-2xl font-semibold mb-4">Confirm Deletion</h2>
+                        <p>Are you sure you want to delete this PlayerInSeries?</p>
+                        <p>Player: {players.find(p => p.id === deletePlayerInSeries.playerId)?.name}</p>
+                        <p>Team: {teams.find(t => t.id === deletePlayerInSeries.teamId)?.name}</p>
+                        <p>Serie: {series.find(s => s.id === deletePlayerInSeries.serieId)?.name}</p>
 
-                        return (
-                            <div key={index} className="border rounded-lg p-4 flex flex-col items-center">
-                                <img
-                                    src="/path/to/player-image.jpg" // Agregar imagen del jugador si es necesario
-                                    alt={player.name}
-                                    className="w-20 h-20 rounded-full mb-3"
-                                />
-                                <h3 className="text-lg font-semibold">{player.name}</h3>
-                                <p>Team: {teams.find(t => t.id === playerInSeries.teamId)?.name}</p>
-                                <p>Serie: {series.find(s => s.id === playerInSeries.serieId)?.name}</p>
-                                <p>Season: {playerInSeries.seasonId}</p>
-                            </div>
-                        );
-                    })}
+                        <button
+                            onClick={handleDeletePlayerInSeries}
+                            className="w-full p-3 bg-red-500 text-white rounded-lg mt-3"
+                        >
+                            Delete
+                        </button>
+                        <button
+                            onClick={() => setDeletePlayerInSeries(null)}
+                            className="w-full mt-3 p-3 bg-gray-500 text-white rounded-lg"
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </div>
-            </div>
-
+            )}
         </div>
     );
 };
