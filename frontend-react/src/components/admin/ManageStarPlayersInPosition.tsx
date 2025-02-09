@@ -131,8 +131,6 @@ const ManageStarPlayersInPosition: React.FC = () => {
                             const selectedSerieId = Number(e.target.value);
                             const selectedSerie = series.find(serie => serie.id === selectedSerieId);
                             if (selectedSerie) {
-                                // Trim any extra spaces if necessary
-                                const cleanedSeriesName = selectedSerie.name.trim();
                                 setNewStarPlayer({
                                     ...newStarPlayer,
                                     seriesId: selectedSerieId,
